@@ -1,0 +1,22 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Frontend client for Nostradamus project",
+  "main": "./src/main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/BK93/projectnostradamus-b1-frontend.git"
+  },
+  "author": "Team MMMNSJTB",
+  "license": "MIT",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+
+}
