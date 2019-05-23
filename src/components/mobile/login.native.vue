@@ -1,8 +1,8 @@
 <template>
-    <Page>
+    <Page actionBarHidden="true">
         <FlexboxLayout class="page">
             <StackLayout class="form">
-                <Image class="logo" src="~/images/logo.png" />
+                <Image class="logo" src="~/images/logos.png" />
                 <Label class="header" text="ClockSystem" />
 
                 <StackLayout class="input-field" marginBottom="25">
@@ -35,13 +35,7 @@
         }
     };
 
-    const HomePage = {
-        template: `
-	<Page>
-		<Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
-	</Page>
-	`
-    };
+    import HomePage from "./home.native.vue";
 
     export default {
         data() {
@@ -66,9 +60,7 @@
                 this.validate();
             },
             validate() {
-                // TODO: Check login data in database with an SQL statement.
-                // Example: if email equal p give error (hacks.)
-                // Else go to the login function. This will navigate to the HomePage.
+                // CHECK DATA
                 if (this.user.email == "p") {
                     this.alert("HACKS.");
                 } else {
@@ -79,17 +71,25 @@
                 userService
                     .login(this.user)
                     .then(() => {
-                        this.$navigateTo(HomePage);
+                        this.$navigateTo(HomePage, {
+							 props: { },
+                            animated: true,
+                            transition: {
+                                name: "slideTop",
+                                duration: 380,
+                                curve: "easeIn"
+                            }
+                        });
                     })
                     .catch(() => {
                         this.alert(
-                            "Unfortunately we could not find your account."
+                            "Er ging iets mis met het verbinden van de applicatie."
                         );
                     });
             },
             alert(message) {
                 return alert({
-                    title: "Error",
+                    title: "Oops",
                     okButtonText: "OK",
                     message: message
                 });
@@ -123,7 +123,7 @@
         font-weight: 600;
         margin-bottom: 70;
         text-align: center;
-        color: #D51A1A;
+        color: #00A2D3;
     }
 
     .input-field {
@@ -142,7 +142,7 @@
     .btn-primary {
         height: 50;
         margin: 30 5 15 5;
-        background-color: #D51A1A;
+        background-color: #00A2D3;
         border-radius: 5;
         font-size: 20;
         font-weight: 600;
