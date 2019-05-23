@@ -132,6 +132,17 @@ a{
     width: 100%;
 }
 
+.LoginButton{
+    width: 150px;
+    height: 111px;
+    background-color: $lightBlue;
+    border: 1px solid $lightBlue;
+    color: $white;
+    font-size: 3rem;
+    font-family: Roboto Bold;
+    text-align: center;
+}
+
 /*.Numpad- prefix designates all styling for Numpad page items */
 .Numpad-InputField{
     width: 450px;
