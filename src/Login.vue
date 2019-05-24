@@ -10,7 +10,7 @@
           <input class="loginInput" type="password" placeholder="Wachtwoord" name="password"/><br>
           <button type="button" class="submitBtn" v-on:click="login()">Login</button>
       </form>
-      
+
     </div>
 </template>
 
@@ -29,8 +29,8 @@ const userService = {
     data() {
       return {
         user: {
-                    email: "",
-                    password: ""
+                    email: "test",
+                    password: "test"
                 }
       };
     },
