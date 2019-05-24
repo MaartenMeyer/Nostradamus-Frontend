@@ -1,0 +1,4 @@
+C:\dev\nostradamus-frontend\platforms\android\app\src\main\assets\app\bundle.js
+C:\dev\nostradamus-frontend\platforms\android\app\src\main\assets\app\starter.js
+C:\dev\nostradamus-frontend\platforms\android\app\src\main\assets\app\tns-java-classes.js
+C:\dev\nostradamus-frontend\platforms\android\app\src\main\assets\app\vendor.js

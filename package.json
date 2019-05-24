@@ -1,28 +1,67 @@
 {
-  "name": "client",
-  "version": "1.0.0",
-  "description": "Frontend client for Nostradamus project",
-  "main": "./src/main.js",
+  "name": "project-frontend",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "test",
-    "sass": "node-sass ./src/assets/style.scss -o ./src/assets/"
+    "build:android": "npm run setup-webpack-config && tns build android --bundle --env.production && npm run remove-webpack-config",
+    "build:ios": "npm run setup-webpack-config && tns build ios --bundle --env.production && npm run remove-webpack-config",
+    "build:web": "vue-cli-service build --mode production.web",
+    "clean:android": "rimraf platforms/android",
+    "clean:ios": "rimraf platforms/ios",
+    "clean:platforms": "rimraf platforms",
+    "debug:android": "npm run setup-webpack-config && tns debug android --bundle --env.development",
+    "debug:ios": "npm run setup-webpack-config && tns debug ios --bundle --env.development",
+    "preview:android": "npm run setup-webpack-config && tns preview --bundle --env.development --env.android",
+    "preview:ios": "npm run setup-webpack-config && tns preview --bundle --env.development --env.ios",
+    "remove-webpack-config": "node ./node_modules/vue-cli-plugin-nativescript-vue/lib/scripts/webpack-maintenance post",
+    "serve:android": "npm run setup-webpack-config && tns run android --bundle --env.development",
+    "serve:ios": "npm run setup-webpack-config && tns run ios --bundle --env.development",
+    "serve:web": "vue-cli-service serve --mode development.web",
+    "setup-webpack-config": "node ./node_modules/vue-cli-plugin-nativescript-vue/lib/scripts/webpack-maintenance pre"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.com/BK93/projectnostradamus-b1-frontend.git"
-  },
-  "author": "Team MMMNSJTB",
-  "license": "MIT",
   "dependencies": {
-    "nativescript": "^5.4.0",
-    "nativescript-vue": "^2.2.2",
-    "node-sass": "^4.12.0",
-    "sass": "^1.20.1",
-    "tracer": "^0.9.8",
-    "vue": "^2.6.10"
+    "axios": "^0.18.0",
+    "core-js": "^2.6.5",
+    "nativescript-vue": "^2.2.0",
+    "nativescript-vue-navigator": "^0.0.3",
+    "tns-core-modules": "^5.2.2",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.1",
+    "@babel/traverse": "^7.4.0",
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "babel-loader": "^8.0.5",
+    "nativescript-dev-webpack": "^0.20.3",
+    "nativescript-vue-template-compiler": "^2.2.0",
+    "nativescript-worker-loader": "~0.9.5",
+    "node-sass": "^4.11.0",
+    "rimraf": "^2.6.3",
+    "string-replace-loader": "^2.1.1",
+    "vue-cli-plugin-nativescript-vue": "0.0.15",
+    "vue-template-compiler": "^2.5.21",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "nativescript": {
+    "id": "org.nativescript.application",
+    "tns-ios": {
+      "version": "5.2.0"
+    },
+    "tns-android": {
+      "version": "5.2.1"
+    }
   }
-  
 }
