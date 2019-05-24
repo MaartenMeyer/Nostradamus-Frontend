@@ -17,7 +17,8 @@
     "serve:android": "npm run setup-webpack-config && tns run android --bundle --env.development",
     "serve:ios": "npm run setup-webpack-config && tns run ios --bundle --env.development",
     "serve:web": "vue-cli-service serve --mode development.web",
-    "setup-webpack-config": "node ./node_modules/vue-cli-plugin-nativescript-vue/lib/scripts/webpack-maintenance pre"
+    "setup-webpack-config": "node ./node_modules/vue-cli-plugin-nativescript-vue/lib/scripts/webpack-maintenance pre",
+    "sass": "node-sass ./src/styles/style.scss -o ./src/styles/"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -26,7 +27,8 @@
     "nativescript-vue-navigator": "^0.0.3",
     "tns-core-modules": "^5.2.2",
     "vue": "^2.6.10",
-    "vue-router": "^3.0.3"
+    "vue-router": "^3.0.3",
+    "sass": "^1.20.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
