@@ -1,43 +1,17 @@
 <template web>
   <div>
-        <h2>Welkom bij</h2>
-        <h2>Nostradamus</h2>
-        <form v-on:submit="login">
-            <input type="text" name="email"/><br>
-            <input type="password" name="password"/><br>
-            <input type="submit" value="Login"/>
-        </form>
+      <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
+
+      <h2 class="welcome1">Welkom bij</h2>
+      <h2 class="welcome2">Nostradamus</h2>
+
+      <form class="loginForm">
+          <input class="loginInput" type="text" placeholder="Gebruikersnaam" name="email"/><br>
+          <input class="loginInput" type="password" placeholder="Wachtwoord" name="password"/><br>
+          <button type="button" class="submitBtn" v-on:click="login()">Login</button>
+      </form>
+      
     </div>
-</template>
-
-<template native>
-  <Page actionBarHidden="true">
-        <FlexboxLayout class="page">
-            <StackLayout class="form">
-                <Image class="logo" src="~/images/logos.png" />
-                <Label class="header" text="ClockSystem" />
-
-                <StackLayout class="input-field" marginBottom="25">
-                    <TextField class="input" hint="Email" keyboardType="email"
-                        autocorrect="false" autocapitalizationType="none"
-                        @returnPress="focusPassword" v-model="user.email"
-                        returnKeyType="next" fontSize="18" />
-                    <StackLayout class="hr-light" />
-                </StackLayout>
-
-                <StackLayout class="input-field" marginBottom="25">
-                    <TextField ref="password" class="input" hint="Password"
-                        secure="true" v-model="user.password" :returnKeyType="'done'"
-                        fontSize="18" />
-                    <StackLayout class="hr-light" />
-                </StackLayout>
-
-                <Button :text="'Log In'" @tap="submit" class="btn btn-primary m-t-20" />
-            </StackLayout>
-
-
-        </FlexboxLayout>
-    </Page>
 </template>
 
 <script>
@@ -49,6 +23,7 @@ const userService = {
 
   import axios from "axios"
   import Dashboard from "./views/Dashboard.vue";
+  import router from "./router.js";
 
   export default {
     data() {
@@ -84,15 +59,8 @@ const userService = {
             userService
                 .login(this.user)
                 .then(() => {
-                    this.$navigateTo(Dashboard, {
-						                props: { },
-                            animated: true,
-                            transition: {
-                                name: "slideTop",
-                                duration: 380,
-                                curve: "easeIn"
-                            }
-                        });
+                    //console.log(errors);
+                    router.push("Dashboard")
                     })
                     .catch(() => {
                         this.alert(
@@ -106,18 +74,18 @@ const userService = {
                 okButtonText: "OK",
                 message: message
             });
-        }
+        },
       // login: (e) => {
       //           e.preventDefault();
       //           let email = e.target.elements.email.value;
       //           let password = e.target.elements.password.value;
-
+      //
       //           let login = () => {
       //               let data = {
       //                   email: email,
       //                   password: password
       //               };
-
+      //
       //               axios.post("/api/login", data)
       //                   .then((response) => {
       //                       console.log("Logged in");
@@ -134,66 +102,72 @@ const userService = {
 </script>
 
 <style scoped>
-    .page {
-        align-items: center;
-        flex-direction: column;
+    .welcome1{
+        font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: -15px;
+        margin-top: 60px;
+        color: #676A6C;
     }
 
-    .form {
-        margin-left: 30;
-        margin-right: 30;
+    .welcome2{
+        font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: 50px;
+        color: #676A6C;
+    }
+
+    .loginForm{
+        text-align: center;
         flex-grow: 2;
         vertical-align: middle;
     }
 
-    .logo {
-        margin-bottom: 12;
-        height: 90;
-        font-weight: bold;
+    input[type=text] {
+        width: 20%;
+        font-family: "Roboto";
+        font-size: 16px;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
     }
 
-    .header {
-        horizontal-align: center;
-        font-size: 25;
-        font-weight: 600;
-        margin-bottom: 70;
+    input[type=password] {
+        width: 20%;
+        font-family: "Roboto";
+        font-size: 16px;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+    }
+
+    input:focus{
+        outline: none;
+    }
+
+    .submitBtn{
+        font-family: "Roboto";
+        background-color: #00A0D1;
+        width: 20%;
+        margin-top: 50px;
+        border: none;
+        color: white;
+        padding: 20px;
         text-align: center;
-        color: #00A2D3;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 2rem;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    .submitBtn:hover {
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     }
 
-    .input-field {
-        margin-bottom: 25;
-    }
-
-    .input {
-        font-size: 18;
-        placeholder-color: #A8A8A8;
-    }
-
-    .input-field .input {
-        font-size: 54;
-    }
-
-    .btn-primary {
-        height: 50;
-        margin: 30 5 15 5;
-        background-color: #00A2D3;
-        border-radius: 5;
-        font-size: 20;
-        font-weight: 600;
-    }
-
-    .login-label {
-        horizontal-align: center;
-        color: #A8A8A8;
-        font-size: 16;
-    }
-
-    .sign-up-label {
-        margin-bottom: 20;
-    }
-
-    .bold {
-        color: #000000;
-    }
 </style>

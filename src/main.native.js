@@ -1,14 +1,14 @@
 import Vue from 'nativescript-vue';
 import Navigator from 'nativescript-vue-navigator'
 
-import App from './App.vue';
+import Login from './Login.native.vue';
 import { options } from './router';
 
 // adapt vue-router routes to nativescript-vue-navigator
 const routes = options.routes.reduce((data, route) => {
   data[route.name] = {
     component: route.component
-  }
+  };
   return data
 }, {});
 
@@ -21,5 +21,5 @@ Vue.config.silent = false;
 // Vue.config.debug = true;
 
 new Vue({
-  render: h => h('frame', [h(App)]),
+  render: h => h('frame', [h(Login)]),
 }).$start();

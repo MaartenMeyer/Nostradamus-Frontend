@@ -1,1 +1,1 @@
-C:\dev\nostradamus-frontend\platforms\android\app/src/main/assets/app
+C:\Workspace\NostradamusClientFrontend\platforms\android\app/src/main/assets/app
