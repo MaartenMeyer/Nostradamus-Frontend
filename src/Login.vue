@@ -6,8 +6,8 @@
       <h2 class="welcome2">Nostradamus</h2>
 
       <form class="loginForm">
-          <input class="loginInput" type="text" placeholder="Gebruikersnaam" name="email"/><br>
-          <input class="loginInput" type="password" placeholder="Wachtwoord" name="password"/><br>
+          <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
+          <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
           <button type="button" class="submitBtn" v-on:click="login()">Login</button>
       </form>
 
@@ -15,90 +15,113 @@
 </template>
 
 <script>
-const userService = {
-        login(user) {
-            return Promise.resolve(user);
-        }
-    };
 
-  import axios from "axios"
-  import Dashboard from "./views/Dashboard.vue";
-  import router from "./router.js";
+    import axios from "axios"
+    import Dashboard from "./views/Dashboard.vue";
+    import router from "./router.js";
 
-  export default {
-    data() {
-      return {
-        user: {
-                    email: "test",
-                    password: "test"
+    export default {
+        data() {
+            return {
+                input: {
+                    username: "",
+                    password: ""
                 }
-      };
-    },
-    methods: {
-        focusPassword() {
-            this.$refs.password.nativeView.focus();
-        },
-
-        submit() {
-            if (!this.user.email || !this.user.password) {
-                this.alert(
-                    "Email en/of wachtwoord vergeten in te voeren.");
-                return;
-            }
-            this.validate();
-        },
-        validate() {
-            // CHECK DATA
-            if (this.user.email == "p") {
-                this.alert("HACKS.");
-            } else {
-                this.login();
             }
         },
-        login() {
-            userService
-                .login(this.user)
-                .then(() => {
-                    //console.log(errors);
-                    router.push("Dashboard")
-                    })
-                    .catch(() => {
-                        this.alert(
-                            "Er ging iets mis met het verbinden van de applicatie."
-                        );
-                    });
-        },
-        alert(message) {
-            return alert({
-                title: "Oops",
-                okButtonText: "OK",
-                message: message
-            });
-        },
-      // login: (e) => {
-      //           e.preventDefault();
-      //           let email = e.target.elements.email.value;
-      //           let password = e.target.elements.password.value;
-      //
-      //           let login = () => {
-      //               let data = {
-      //                   email: email,
-      //                   password: password
-      //               };
-      //
-      //               axios.post("/api/login", data)
-      //                   .then((response) => {
-      //                       console.log("Logged in");
-      //                       this.$router.push("/dashboard")
-      //                   })
-      //                   .catch((errors) => {
-      //                       console.log("Cannot log in")
-      //                   })
-      //           };
-      //           login();
-      //       }
+        methods: {
+            login() {
+                if (this.input.username == "" && this.input.password == "") {
+                    router.go("Dashboard");
+                }
+            }
+        }
     }
-  };
+
+// const userService = {
+//         login(user) {
+//             return Promise.resolve(user);
+//         }
+//     };
+//
+//   import axios from "axios"
+//   import Dashboard from "./views/Dashboard.vue";
+//   import router from "./router.js";
+//
+//   export default {
+//     data() {
+//       return {
+//         user: {
+//                     email: "test",
+//                     password: "test"
+//                 }
+//       };
+//     },
+//     methods: {
+//         focusPassword() {
+//             this.$refs.password.nativeView.focus();
+//         },
+//
+//         submit() {
+//             if (!this.user.email || !this.user.password) {
+//                 this.alert(
+//                     "Email en/of wachtwoord vergeten in te voeren.");
+//                 return;
+//             }
+//             this.validate();
+//         },
+//         validate() {
+//             // CHECK DATA
+//             if (this.user.email == "p") {
+//                 this.alert("HACKS.");
+//             } else {
+//                 this.login();
+//             }
+//         },
+//         login() {
+//             userService
+//                 .login(this.user)
+//                 .then(() => {
+//                     //console.log(errors);
+//                     router.push("Dashboard")
+//                     })
+//                     .catch(() => {
+//                         this.alert(
+//                             "Er ging iets mis met het verbinden van de applicatie."
+//                         );
+//                     });
+//         },
+//         alert(message) {
+//             return alert({
+//                 title: "Oops",
+//                 okButtonText: "OK",
+//                 message: message
+//             });
+//         },
+//       // login: (e) => {
+//       //           e.preventDefault();
+//       //           let email = e.target.elements.email.value;
+//       //           let password = e.target.elements.password.value;
+//       //
+//       //           let login = () => {
+//       //               let data = {
+//       //                   email: email,
+//       //                   password: password
+//       //               };
+//       //
+//       //               axios.post("/api/login", data)
+//       //                   .then((response) => {
+//       //                       console.log("Logged in");
+//       //                       this.$router.push("/dashboard")
+//       //                   })
+//       //                   .catch((errors) => {
+//       //                       console.log("Cannot log in")
+//       //                   })
+//       //           };
+//       //           login();
+//       //       }
+//     }
+//   };
 </script>
 
 <style scoped>

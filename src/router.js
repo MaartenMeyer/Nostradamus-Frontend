@@ -2,17 +2,16 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import Login from '@/Login.vue';
-import Dashboard from '~/views/Dashboard.vue';
+import Dashboard from './views/Dashboard.vue';
+import Register from './views/Register.vue';
 
 Vue.use(Router);
 
-export const options = {
+export default new Router({
   routes: [
     {
       path: '/',
-      redirect: {
-        name: "Login"
-      }
+      redirect: '/login'
     },
     {
       path: '/login',
@@ -23,7 +22,15 @@ export const options = {
       path: '/dashboard',
       name: 'Dashboard',
       component: Dashboard
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
+    },
+    {
+      path: '*',
+      redirect: '/login'
     }
   ]
-};
-export default new Router(options);
+});
