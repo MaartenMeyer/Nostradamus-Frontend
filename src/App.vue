@@ -1,27 +1,15 @@
-<template web>
-  <div>
-        <h2>Welkom bij</h2>
-        <h2>Nostradamus</h2>
-        <form v-on:submit="login">
-            <input type="text" name="email"/><br>
-            <input type="password" name="password"/><br>
-            <input type="submit" value="Login"/>
-        </form>
-    </div>
-</template>
-
-<template native>
-  <Page actionBarHidden="true">
+<template>
+    <Page actionBarHidden="true">
         <FlexboxLayout class="page">
             <StackLayout class="form">
-                <Image class="logo" src="~/images/logos.png" />
+                <Image class="logo" src="~/assets/logos.png" />
                 <Label class="header" text="ClockSystem" />
 
                 <StackLayout class="input-field" marginBottom="25">
-                    <TextField class="input" hint="Email" keyboardType="email"
-                        autocorrect="false" autocapitalizationType="none"
-                        @returnPress="focusPassword" v-model="user.email"
-                        returnKeyType="next" fontSize="18" />
+                    <TextField class="input" hint="Gebuikersnaam"
+                        keyboardType="email" autocorrect="false"
+                        autocapitalizationType="none" @returnPress="focusPassword"
+                        v-model="user.username" returnKeyType="next" fontSize="18" />
                     <StackLayout class="hr-light" />
                 </StackLayout>
 
@@ -41,51 +29,54 @@
 </template>
 
 <script>
-const userService = {
+    const userService = {
         login(user) {
             return Promise.resolve(user);
         }
     };
 
-  import axios from "axios"
-  import Dashboard from "./views/Dashboard.vue";
+    import HomePage from "./views/Dashboard";
 
-  export default {
-    data() {
-      return {
-        user: {
-                    email: "",
-                    password: ""
+    export default {
+        data() {
+            return {
+                user: {
+                    username: "test",
+                    password: "test"
                 }
-      };
-    },
-    methods: {
-        focusPassword() {
-            this.$refs.password.nativeView.focus();
+            };
         },
+        methods: {
+            focusPassword() {
+                this.$refs.password.nativeView.focus();
+            },
 
-        submit() {
-            if (!this.user.email || !this.user.password) {
-                this.alert(
-                    "Email en/of wachtwoord vergeten in te voeren.");
-                return;
-            }
-            this.validate();
-        },
-        validate() {
-            // CHECK DATA
-            if (this.user.email == "p") {
-                this.alert("HACKS.");
-            } else {
-                this.login();
-            }
-        },
-        login() {
-            userService
-                .login(this.user)
-                .then(() => {
-                    this.$navigateTo(Dashboard, {
-						                props: { },
+            submit() {
+                if (!this.user.username || !this.user.password) {
+                    this.alert(
+                        "Gebruikersnaam en/of wachtwoord vergeten in te voeren."
+                    );
+                    return;
+                }
+                this.validate();
+            },
+            validate() {
+                // CHECK DATA
+                if (this.user.username == "test" && this.user.password ==
+                    "test") {
+                    this.login();
+                } else {
+                    this.alert(
+                        "Incorrecte invoer van gebruikersnaam en/of wachtwoord."
+                    );
+                }
+            },
+            login() {
+                userService
+                    .login(this.user)
+                    .then(() => {
+                        this.$navigateTo(HomePage, {
+                            props: {},
                             animated: true,
                             transition: {
                                 name: "slideTop",
@@ -99,38 +90,16 @@ const userService = {
                             "Er ging iets mis met het verbinden van de applicatie."
                         );
                     });
-        },
-        alert(message) {
-            return alert({
-                title: "Oops",
-                okButtonText: "OK",
-                message: message
-            });
+            },
+            alert(message) {
+                return alert({
+                    title: "Oops",
+                    okButtonText: "OK",
+                    message: message
+                });
+            }
         }
-      // login: (e) => {
-      //           e.preventDefault();
-      //           let email = e.target.elements.email.value;
-      //           let password = e.target.elements.password.value;
-
-      //           let login = () => {
-      //               let data = {
-      //                   email: email,
-      //                   password: password
-      //               };
-
-      //               axios.post("/api/login", data)
-      //                   .then((response) => {
-      //                       console.log("Logged in");
-      //                       this.$router.push("/dashboard")
-      //                   })
-      //                   .catch((errors) => {
-      //                       console.log("Cannot log in")
-      //                   })
-      //           };
-      //           login();
-      //       }
-    }
-  };
+    };
 </script>
 
 <style scoped>

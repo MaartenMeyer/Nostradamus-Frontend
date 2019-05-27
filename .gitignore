@@ -26,3 +26,12 @@ local.properties
 .idea/modules.xml
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
 .idea/navEditor.xml
+platforms/android/app/src/main/assets/app/App_Resources/Android/settings.json
+platforms/android/app/src/main/assets/app/App_Resources/Android/settings.gradle
+platforms/android/app/src/main/assets/app/App_Resources/Android/drawable-hdpi/icon.png
+platforms/android/app/src/main/assets/app/App_Resources/Android/drawable-hdpi/background.png
+platforms/android/app/src/main/assets/app/App_Resources/Android/app.gradle
+platforms/android/app/src/main/assets/app/App_Resources/Android/AndroidManifest.xml
+platforms/
+src/App_Resources/Android/settings.json
+src/App_Resources/Android/settings.gradle

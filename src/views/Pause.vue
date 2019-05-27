@@ -1,52 +1,36 @@
 <template>
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <ActionBar class="action-bar">
-            <Label class="action-bar-title" text="Dashboard"></Label>
-            <NavigationButton visibility="collapsed" />
+            <Label class="action-bar-title" text="Pauze"></Label>
         </ActionBar>
         <FlexboxLayout class="page" verticalAlignment="center">
-            <Button :text="'In/Uit Klokken'" @tap="clickClocking" class="btn btn-primary m-t-20" />
-            <Button :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />
-            <Button text="Log out" @tap="clickLogout" class="btn btn-secondary" />
+            <TextField class="input" hint="Personeels nummer" keyboardType="number"
+                style="width:75%;" fontSize="18" v-model="personNumber" />
+            <Button :text="'Pauze'" @tap="clickValidatePause" class="btn btn-primary m-t-20" />
         </FlexboxLayout>
     </Page>
 </template>
 
 <script>
-    import LoginPage from "../App";
-    import ClockingPage from "./Clocking";
-    import PausePage from "./Pause";
+    import HomePage from "./Dashboard";
 
     export default {
         data() {
-            return {};
+            return {
+                personNumber: null
+            };
         },
         methods: {
-            clickLogout() {
-                this.$navigateTo(LoginPage, {
-                    props: {},
-                    animated: true,
-                    transition: {
-                        name: "slideBottom",
-                        duration: 380,
-                        curve: "easeOut"
-                    },
-                    clearHistory: true
-                });
+            clickValidatePause() {
+                if (this.personNumber == null) {
+                    this.alert("Er is geen personeelsnummer ingevoerd.");
+                } else {
+                    this.clickStartPause();
+                }
             },
-            clickPause() {
-                this.$navigateTo(PausePage, {
-                    props: {},
-                    animated: true,
-                    transition: {
-                        name: "slideTop",
-                        duration: 380,
-                        curve: "easeIn"
-                    }
-                });
-            },
-            clickClocking() {
-                this.$navigateTo(ClockingPage, {
+            clickStartPause() {
+                this.alert(this.personNumber + " is het personeels nummer.");
+                this.$navigateTo(HomePage, {
                     props: {},
                     animated: true,
                     transition: {
@@ -58,8 +42,8 @@
             },
 
             alert(message) {
-                return alert({
-                    title: "Oops",
+                return confirm({
+                    title: "Test message",
                     okButtonText: "OK",
                     message: message
                 });
@@ -114,16 +98,6 @@
         margin: 30 5 15 5;
         background-color: #00A2D3;
         border-radius: 5;
-        font-size: 20;
-        font-weight: 600;
-    }
-
-    .btn-secondary {
-        height: 50;
-        margin: 30 5 15 5;
-        background-color: #eaeaea;
-        border-radius: 5;
-        color: #00A2D3;
         font-size: 20;
         font-weight: 600;
     }
