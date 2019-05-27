@@ -6,7 +6,7 @@
         <h2 class="dashboardWelcome2">Welkom {{this.user.name}}</h2>
 
       <div class="buttons">
-          <button class="button">Klokken</button>
+          <button class="button">In/Uit Klokken</button>
       </div>
 
       <div class="buttons">
@@ -14,7 +14,7 @@
       </div>
 
       <div class="buttons">
-          <button class="button">Uitloggen</button>
+          <button class="button" v-on:click="logout()">Uitloggen</button>
       </div>
 
     </div>
@@ -56,7 +56,11 @@
         },
         mounted () {
             this.getUserData()
-        }
+        },
+
+      logout(){
+          this.$router.push({path: '/login'});
+      }
   }
 </script>
 

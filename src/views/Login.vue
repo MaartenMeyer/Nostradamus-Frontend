@@ -1,16 +1,17 @@
 <template web>
-  <div>
+  <div class="main">
       <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
 
-      <h2 class="welcome1">Welkom bij</h2>
-      <h2 class="welcome2">Nostradamus</h2>
+      <div class="main2">
+          <h2 class="welcome1">Welkom bij</h2>
+          <h2 class="welcome2">Nostradamus</h2>
 
-      <form class="loginForm">
-          <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
-          <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
-          <button type="button" class="submitBtn" v-on:click="login()">Login</button>
-
-      </form>
+          <form class="loginForm">
+              <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
+              <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
+              <button type="button" class="submitBtn" v-on:click="login()">Login</button>
+          </form>
+      </div>
     </div>
 </template>
 
@@ -131,6 +132,34 @@
 </script>
 
 <style scoped>
+    .main {
+        width: 100%;
+        min-height: 100vh;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        background: #00A0D1;
+        background: -webkit-linear-gradient(bottom, #00A0D1, #FFFFFF);
+        background: -o-linear-gradient(bottom, #00A0D1, #FFFFFF);
+        background: -moz-linear-gradient(bottom, #00A0D1, #FFFFFF);
+        background: linear-gradient(bottom, #00A0D1, #FFFFFF);
+        position: relative;
+        z-index: 1;
+    }
+
+    .main2 {
+        width: 450px;
+        background: #fff;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
     .welcome1{
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
@@ -155,7 +184,7 @@
     }
 
     input[type=text] {
-        width: 20%;
+        width: 300px;
         font-family: "Roboto";
         font-size: 16px;
         padding: 12px 20px;
@@ -163,10 +192,11 @@
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
+        background: transparent;
     }
 
     input[type=password] {
-        width: 20%;
+        width: 300px;
         font-family: "Roboto";
         font-size: 16px;
         padding: 12px 20px;
@@ -174,6 +204,7 @@
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
+        background: transparent;
     }
 
     input:focus{
@@ -183,15 +214,16 @@
     .submitBtn{
         font-family: "Roboto";
         background-color: #00A0D1;
-        width: 20%;
+        /*width: 200px;*/
         margin-top: 50px;
+        margin-bottom: 30px;
         border: none;
         color: white;
         padding: 20px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 2rem;
+        font-size: 1rem;
         cursor: pointer;
         border-radius: 5px;
     }

@@ -17,6 +17,12 @@
 /*
     Headers&Paragraphs
 */
+
+
+body.noScroll{
+  overflow: hidden;
+}
+
 h1 {
   font-family: Helvetica Neue Light;
   color: #676A6C;
