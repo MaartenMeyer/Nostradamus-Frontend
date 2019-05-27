@@ -1,19 +1,7 @@
 import Vue from 'nativescript-vue';
 import Navigator from 'nativescript-vue-navigator'
 
-import Login from './views/Login.native.vue';
-import App from './App.vue';
-import { options } from './router.native';
-
-// adapt vue-router routes to nativescript-vue-navigator
-const routes = options.routes.reduce((data, route) => {
-  data[route.name] = {
-    component: route.component
-  };
-  return data
-}, {});
-
-Vue.use(Navigator, { routes });
+import Login from '@/views/Login.native.vue';
 
 // Set the following to `true` to hide the logs created by nativescript-vue
 Vue.config.silent = false;
@@ -22,5 +10,5 @@ Vue.config.silent = false;
 // Vue.config.debug = true;
 
 new Vue({
-  render: h => h('frame', [h(App)]),
+  render: h => h('frame', [h(Login)]),
 }).$start();

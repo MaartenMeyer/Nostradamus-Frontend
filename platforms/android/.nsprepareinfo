@@ -1,20 +1,26 @@
 {
 	"nativePlatformStatus": "3",
 	"appFilesHashes": {
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\App.vue": "e962355c1980016a230785f5e54c5d65bb800833",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\assets\\logo.png": "31f09bdba72293198ee2e2a83c4fe5aa5744bc3d",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\main.js": "2f3859f98e6dbdf0688abe1a054164eb71a64992",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\main.native.js": "0119b6c9dbef1e22594c51514d3b70e04b4cc865",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\package.json": "4954d8e81fd95692cc002298eee594bf922a9063",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\router.js": "03bada865012b4f186545a4437f5475faa107237",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\styles\\style-one.css": "b8cc0f72c4fa5d8781cf626f6f034f940d11277f",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\views\\Dashboard.vue": "809634fd13da0e88ed3b29616977a6486d737bbe",
-		"C:\\Workspace\\NostradamusClientFrontend\\src\\styles\\style-two.css": "7ba825764015ee868905bb27f474608a37625c55"
+		"C:\\dev\\nostradamus-frontend\\src\\App.vue": "5c94bf28a37f4de442b7c1ba472d38d2e89dd669",
+		"C:\\dev\\nostradamus-frontend\\src\\package.json": "4954d8e81fd95692cc002298eee594bf922a9063",
+		"C:\\dev\\nostradamus-frontend\\src\\router.js": "0a4da7a724e77705de749e36a6f857371a5b73b6",
+		"C:\\dev\\nostradamus-frontend\\src\\main.native.js": "23c61b95797e181c45418aef7abd29b217cdd319",
+		"C:\\dev\\nostradamus-frontend\\src\\styles\\style.css": "c9dc4eca6c80b4cb9497446ee86f02ea24bad1e0",
+		"C:\\dev\\nostradamus-frontend\\src\\styles\\style.scss": "a55a3bb6a174b1031f1619f493122582a882133a",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Dashboard.native.vue": "24dfa2051000e9c80e9888d92ca45732f708f79d",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Dashboard.vue": "6ca3615771f1f54fdfb4a5b96e90922e8f8b25b1",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Login.native.vue": "315ba5a88974097597d4be9c14b007c9dcad6be8",
+		"C:\\dev\\nostradamus-frontend\\src\\router.native.js": "417aa99f2c3d5f37a1d952991b5f3520a36617a0",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Login.vue": "18e9f47135195b65e43e82ded80e68c977b345d1",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Register.native.vue": "8db89f052675d48d007e4c7511e1719da2fc8297",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Register.vue": "1738796d4a8b5142aafb1607f6852f559aab5cb4",
+		"C:\\dev\\nostradamus-frontend\\src\\assets\\logo.png": "31f09bdba72293198ee2e2a83c4fe5aa5744bc3d",
+		"C:\\dev\\nostradamus-frontend\\src\\main.js": "8d08802cf0d8324485dc675ccab9f5dbd8e495df"
 	},
 	"release": false,
 	"bundle": true,
-	"changesRequireBuild": true,
-	"time": "Fri May 24 2019 11:04:05 GMT+0200 (GMT+02:00)",
-	"changesRequireBuildTime": "Fri May 24 2019 11:04:05 GMT+0200 (GMT+02:00)",
-	"projectFileHash": "e82d905cae4e4af0da8f7f22482de1befddc8e12ff7e2b051c6fb82042a68246"
+	"changesRequireBuild": false,
+	"time": "Mon May 27 2019 14:42:58 GMT+0200 (GMT+02:00)",
+	"changesRequireBuildTime": "Mon May 27 2019 14:22:22 GMT+0200 (GMT+02:00)",
+	"projectFileHash": "d7a87f138a4b1df5af2d73b26173f76e4b1517f7497a0a115a70bf1bf485341e"
 }
