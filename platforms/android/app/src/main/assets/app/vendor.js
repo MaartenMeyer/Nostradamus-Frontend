@@ -619,7 +619,7 @@ module.exports = function httpAdapter(config) {
 
     if (!proxy && proxy !== false) {
       var proxyEnv = protocol.slice(0, -1) + '_proxy';
-      var proxyUrl = Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})[proxyEnv] || Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})[proxyEnv.toUpperCase()];
+      var proxyUrl = Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})[proxyEnv] || Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})[proxyEnv.toUpperCase()];
 
       if (proxyUrl) {
         var parsedProxyUrl = url.parse(proxyUrl);
@@ -5651,7 +5651,7 @@ function load() {
 
 
   if (!r && typeof process !== 'undefined' && 'env' in process) {
-    r = Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG;
+    r = Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG;
   }
 
   return r;
@@ -6025,7 +6025,7 @@ try {
  */
 
 
-exports.inspectOpts = Object.keys(Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})).filter(key => {
+exports.inspectOpts = Object.keys(Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})).filter(key => {
   return /^debug_/i.test(key);
 }).reduce((obj, key) => {
   // Camel-case
@@ -6033,7 +6033,7 @@ exports.inspectOpts = Object.keys(Object({"NODE_ENV":"development","VUE_APP_CLI_
     return k.toUpperCase();
   }); // Coerce string value into JS value
 
-  let val = Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})[key];
+  let val = Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"})[key];
 
   if (/^(yes|on|true|enabled)$/i.test(val)) {
     val = true;
@@ -6104,11 +6104,11 @@ function log() {
 
 function save(namespaces) {
   if (namespaces) {
-    Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG = namespaces;
+    Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG = namespaces;
   } else {
     // If you set a process.env field to null or undefined, it gets cast to the
     // string 'null' or 'undefined'. Just delete instead.
-    delete Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG;
+    delete Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG;
   }
 }
 /**
@@ -6120,7 +6120,7 @@ function save(namespaces) {
 
 
 function load() {
-  return Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG;
+  return Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).DEBUG;
 }
 /**
  * Init logic for `debug` instances.
@@ -31934,7 +31934,7 @@ module.exports = __webpack_require__("../node_modules/readable-stream/readable.j
 
 var Stream = __webpack_require__("../node_modules/stream-browserify/index.js");
 
-if (Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).READABLE_STREAM === 'disable' && Stream) {
+if (Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).READABLE_STREAM === 'disable' && Stream) {
   module.exports = Stream;
   exports = module.exports = Stream.Readable;
   exports.Readable = Stream.Readable;
@@ -31969,7 +31969,7 @@ var Stream = __webpack_require__("../node_modules/stream-browserify/index.js");
 
 var Writable = __webpack_require__("../node_modules/readable-stream/lib/_stream_writable.js");
 
-if (Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).READABLE_STREAM === 'disable') {
+if (Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).READABLE_STREAM === 'disable') {
   module.exports = Stream && Stream.Writable || Writable;
 } else {
   module.exports = Writable;
@@ -32528,7 +32528,7 @@ const os = __webpack_require__("../node_modules/os-browserify/browser.js");
 
 const hasFlag = __webpack_require__("../node_modules/has-flag/index.js");
 
-const env = Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"});
+const env = Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"});
 let forceColor;
 
 if (hasFlag('no-color') || hasFlag('no-colors') || hasFlag('color=false')) {
@@ -77169,7 +77169,7 @@ var debugs = {};
 var debugEnviron;
 
 exports.debuglog = function (set) {
-  if (isUndefined(debugEnviron)) debugEnviron = Object({"NODE_ENV":"development","VUE_APP_CLI_UI_URL":"","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).NODE_DEBUG || '';
+  if (isUndefined(debugEnviron)) debugEnviron = Object({"NODE_ENV":"development","VUE_APP_MODE":"native","VUE_APP_PLATFORM":"android","BASE_URL":"/"}).NODE_DEBUG || '';
   set = set.toUpperCase();
 
   if (!debugs[set]) {

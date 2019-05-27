@@ -9,16 +9,15 @@
           <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
           <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
           <button type="button" class="submitBtn" v-on:click="login()">Login</button>
-      </form>
 
+      </form>
     </div>
 </template>
 
 <script>
 
-    import axios from "axios"
-    import Dashboard from "./views/Dashboard.vue";
-    import router from "./router.js";
+    import axios from "axios/index"
+    import Dashboard from "./Dashboard.vue";
 
     export default {
         data() {
@@ -29,10 +28,17 @@
                 }
             }
         },
+        // watch: {
+        //     '$route'(to, from){
+        //         if(this.$route.name.indexOf('Dashboard') > -1){
+        //             this.loadPage();
+        //         }
+        //     }
+        // },
         methods: {
             login() {
                 if (this.input.username == "" && this.input.password == "") {
-                    router.go("Dashboard");
+                    this.$router.push({path: '/dashboard'});
                 }
             }
         }

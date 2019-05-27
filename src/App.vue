@@ -1,40 +1,19 @@
-<!--<template>-->
-<!--    <div id="app">-->
-<!--        <div id="nav">-->
-<!--            <router-link v-if="authenticated" to="/dashboard">Logout</router-link>-->
-<!--        </div>-->
-<!--        <router-view @authenticated="setAuthenticated" />-->
-<!--    </div>-->
-<!--</template>-->
+<template web>
+    <div id="app">
+        <component :is="layout">
+            <router-view/>
+        </component>
+    </div>
+</template>
 
-<!--<script>-->
-<!--    export default {-->
-<!--        name: 'App',-->
-<!--        data() {-->
-<!--            return {-->
-<!--                authenticated: false,-->
-<!--                mockAccount: {-->
-<!--                    username: "test",-->
-<!--                    password: "test"-->
-<!--                }-->
-<!--            }-->
-<!--        },-->
-<!--        // mounted() {-->
-<!--        //     if(!this.authenticated) {-->
-<!--        //         this.$router.replace({ name: "login" });-->
-<!--        //     }-->
-<!--        // },-->
-<!--        methods: {-->
-<!--            setAuthenticated(status) {-->
-<!--                this.authenticated = status;-->
-<!--            },-->
-<!--            logout() {-->
-<!--                this.authenticated = false;-->
-<!--            }-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
+<script>
+    const default_layout = "layout";
 
-<!--<style>-->
-
-<!--</style>-->
+    export default {
+        computed: {
+            layout() {
+                return(this.$route.meta.layout || default_layout) + '-layout';
+            }
+        }
+    }
+</script>

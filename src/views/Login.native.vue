@@ -2,7 +2,6 @@
     <Page actionBarHidden="true">
         <FlexboxLayout class="page">
             <StackLayout class="form">
-                <Image class="logo" src="~/images/logos.png" />
                 <Label class="header" text="ClockSystem" />
 
                 <StackLayout class="input-field" marginBottom="25">
@@ -35,8 +34,8 @@
         }
     };
 
-    import axios from "axios"
-    import Dashboard from "./views/Dashboard.native.vue";
+    import axios from "axios/index"
+    import Dashboard from "./Dashboard.native.vue";
 
     export default {
         data() {
