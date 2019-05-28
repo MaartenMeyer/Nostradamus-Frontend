@@ -7,7 +7,7 @@ import Register from '@/views/Register.vue';
 
 Vue.use(Router);
 
-export const options = ({
+const router = new Router ({
   mode: 'history',
   routes: [
     {
@@ -37,4 +37,4 @@ export const options = ({
   ]
 });
 
-export default new Router(options)
+export default router;

@@ -34,6 +34,7 @@
         },
         methods: {
             login() {
+                const r = this;
                 if (this.input.username != "" && this.input.password != "") {
                     axios({
                         method: 'post',
@@ -43,7 +44,7 @@
                         })
                         .then(function (response) {
                             //handle success
-                            this.router.push({path: '/dashboard'});
+                            r.$router.push({path: '/dashboard'});
                             console.log(response);
                         })
                         .catch(function (response) {

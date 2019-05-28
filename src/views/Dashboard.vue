@@ -43,26 +43,25 @@
         }
     },
     methods: {
-          getUserData: function () {
-              let self = this;
-              axios.get("/api/user")
-                  .then((response) => {
-                      console.log(response);
-                      self.$set(this, "user", response.data.user)
-                  })
-                  .catch((errors) => {
-                      console.log(errors);
-                      router.push("/dashboard")
-                  })
+        getUserData: function () {
+            const r = this;
+            axios.get("/api/user")
+                .then((response) => {
+                    console.log(response);
+                    r.$set(this, "user", response.data.user)
+                })
+                .catch((errors) => {
+                    console.log(errors);
+                    r.$router.push("/dashboard")
+                })
             }
         },
         mounted () {
             this.getUserData()
         },
-
-      logout(){
-          this.$router.push({path: '/login'});
-      }
+        logout(){
+            this.$router.push({path: '/login'});
+        }
   }
 </script>
 
