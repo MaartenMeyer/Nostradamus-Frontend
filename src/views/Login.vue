@@ -21,6 +21,7 @@
     import Dashboard from "./Dashboard.vue";
 
     export default {
+        name: 'Login',
         data() {
             return {
                 input: {
@@ -29,17 +30,25 @@
                 }
             }
         },
-        // watch: {
-        //     '$route'(to, from){
-        //         if(this.$route.name.indexOf('Dashboard') > -1){
-        //             this.loadPage();
-        //         }
-        //     }
-        // },
         methods: {
             login() {
-                if (this.input.username == "" && this.input.password == "") {
-                    this.$router.push({path: '/dashboard'});
+                if (this.input.username != "" && this.input.password != "") {
+                    axios({
+                        method: 'post',
+                        url: 'http://127.0.0.1:3000/api/login',
+                        data: { userName: this.input.username, password: this.input.password },
+                        config: { headers: {'Content-Type': 'application/json' }}
+                        })
+                        .then(function (response) {
+                            //handle success
+                            this.router.push({path: '/dashboard'});
+                            console.log(response);
+                        })
+                        .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                        });
+
                 }
             }
         }
