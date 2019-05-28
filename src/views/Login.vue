@@ -35,6 +35,14 @@
                 error: false
             }
         },
+        // Checks if user is already logged in when loading site
+        created(){
+            this.checkLogin();
+        },
+        // Checks if user is already logged in when refreshing site
+        updated(){
+            this.checkLogin();
+        },
         methods: {
             login() {
                 if (this.input.username != "" && this.input.password != "") {
@@ -50,7 +58,6 @@
                 }
             },
             loginSuccessful(req){
-                //const r = this;
                 if(!req.data.token){
                     this.loginFailed();
                     return;
@@ -64,6 +71,11 @@
             loginFailed(){
                 this.error = true;
                 delete localStorage.token;
+            },
+            checkLogin(){
+                if(localStorage.token){
+                    this.$router.replace('/dashboard');
+                }
             }
 
         }
