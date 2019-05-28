@@ -25,10 +25,11 @@
     "core-js": "^2.6.5",
     "nativescript-vue": "^2.2.0",
     "nativescript-vue-navigator": "^0.0.3",
+    "sass": "^1.20.1",
     "tns-core-modules": "^5.2.2",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
-    "sass": "^1.20.1"
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

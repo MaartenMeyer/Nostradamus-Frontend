@@ -74,7 +74,7 @@
             },
             checkLogin(){
                 if(localStorage.token){
-                    this.$router.replace('/dashboard');
+                    this.$router.replace(this.$route.query.redirect || '/dashboard');
                 }
             }
 
