@@ -1,16 +1,18 @@
 <template web>
-  <div class="main">
+  <div class="mainDiv">
       <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
 
-      <div class="main2">
+      <div class="formBox">
+
           <h2 class="welcome1">Welkom bij</h2>
           <h2 class="welcome2">Nostradamus</h2>
 
-          <form class="loginForm">
+          <div class="loginDiv">
               <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
               <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
-              <button type="button" class="submitBtn" v-on:click="login()">Login</button>
-          </form>
+              <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
+          </div>
+
       </div>
     </div>
 </template>
@@ -141,7 +143,7 @@
 </script>
 
 <style scoped>
-    .main {
+    .mainDiv {
         width: 100%;
         min-height: 100vh;
         display: -webkit-box;
@@ -152,23 +154,30 @@
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        padding: 15px;
-        background: #00A0D1;
-        background: -webkit-linear-gradient(bottom, #00A0D1, #FFFFFF);
-        background: -o-linear-gradient(bottom, #00A0D1, #FFFFFF);
-        background: -moz-linear-gradient(bottom, #00A0D1, #FFFFFF);
-        background: linear-gradient(bottom, #00A0D1, #FFFFFF);
         position: relative;
         z-index: 1;
     }
 
-    .main2 {
-        width: 450px;
+    /* Form div */
+    .formBox {
+        width: 350px;
+        height: 400px;
         background: #fff;
-        border-radius: 3px;
+        border-radius: 15px;
         overflow: hidden;
+        margin: 0 auto 0 auto;
+        padding:0px 0px 20px 0px;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     }
 
+    /* login Div */
+    .loginDiv{
+        text-align: center;
+        flex-grow: 2;
+        vertical-align: middle;
+    }
+
+    /* Welcome 1 and 2 */
     .welcome1{
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
@@ -177,21 +186,15 @@
         margin-top: 60px;
         color: #676A6C;
     }
-
     .welcome2{
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
         color: #676A6C;
     }
 
-    .loginForm{
-        text-align: center;
-        flex-grow: 2;
-        vertical-align: middle;
-    }
-
+    /* Input fields */
     input[type=text] {
         width: 300px;
         font-family: "Roboto";
@@ -203,7 +206,6 @@
         border-bottom: 1px solid #00A0D1;
         background: transparent;
     }
-
     input[type=password] {
         width: 300px;
         font-family: "Roboto";
@@ -215,29 +217,46 @@
         border-bottom: 1px solid #00A0D1;
         background: transparent;
     }
-
     input:focus{
         outline: none;
     }
 
+    /* Login button style */
     .submitBtn{
         font-family: "Roboto";
+        font-size: 21px;
         background-color: #00A0D1;
-        /*width: 200px;*/
-        margin-top: 50px;
-        margin-bottom: 30px;
-        border: none;
-        color: white;
         padding: 20px;
+        border: 4px solid #00A0D1;
+        border-radius: 5px;
+        display: inline-block;
+        width: 150px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: white;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
-        font-size: 1rem;
         cursor: pointer;
-        border-radius: 5px;
+        outline: none;
+        position: relative;
+        transition: 0.5s;
+        box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
     }
-    .submitBtn:hover {
-        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    .submitBtn:after {
+        content: '»';
+        position: absolute;
+        opacity: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+    .submitBtn:hover{
+        border-radius: 50px;
+        padding-right: 24px;
+        padding-left:8px;
+    }
+    .submitBtn:hover:after {
+        opacity: 1;
+        right: 10px;
     }
 
 </style>

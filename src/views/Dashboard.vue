@@ -1,22 +1,24 @@
 <template web>
-  <div>
+  <div class="mainDiv">
       <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
 
-        <h2 class="dashboardWelcome">Dashboard</h2>
-        <h2 class="dashboardWelcome2">Welkom {{this.user.name}}</h2>
+      <div class="box">
+            <h2 class="dashboardWelcome">Dashboard</h2>
+            <h2 class="dashboardWelcome2">Welkom {{this.user.name}}</h2>
 
-      <div class="buttons">
-          <button class="button">In/Uit Klokken</button>
+          <div class="buttonsDiv">
+              <button class="button">In/Uit Klokken</button>
+          </div>
+
+          <div class="buttons">
+              <button class="button">Pauze</button>
+          </div>
+
+          <div class="buttons">
+              <button class="button" v-on:click="logout()">Uitloggen</button>
+          </div>
+
       </div>
-
-      <div class="buttons">
-          <button class="button">Pauze</button>
-      </div>
-
-      <div class="buttons">
-          <button class="button" v-on:click="logout()">Uitloggen</button>
-      </div>
-
     </div>
 </template>
 
@@ -65,6 +67,32 @@
 </script>
 
 <style scoped>
+    .mainDiv {
+        width: 100%;
+        min-height: 100vh;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .box {
+        width: 500px;
+        height: 450px;
+        background: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 0 auto 0 auto;
+        padding:0px 0px 70px 0px;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
     .dashboardWelcome{
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
@@ -78,59 +106,39 @@
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
         color: #676A6C;
     }
 
-    .buttons{
+    .buttonsDiv{
         text-align: center;
         flex-grow: 2;
         vertical-align: middle;
     }
 
-    input[type=text] {
-        width: 20%;
-        font-family: "Roboto";
-        font-size: 16px;
-        padding: 12px 20px;
-        margin: 8px 0;
-        box-sizing: border-box;
-        border: none;
-        border-bottom: 1px solid #00A0D1;
-    }
-
-    input[type=password] {
-        width: 20%;
-        font-family: "Roboto";
-        font-size: 16px;
-        padding: 12px 20px;
-        margin: 8px 0;
-        box-sizing: border-box;
-        border: none;
-        border-bottom: 1px solid #00A0D1;
-    }
-
-    input:focus{
-        outline: none;
-    }
-
+    /* Login button style */
     .button{
         font-family: "Roboto";
+        font-size: 18px;
         background-color: #00A0D1;
-        width: 20%;
-        margin-top: 50px;
-        border: none;
-        color: white;
         padding: 20px;
+        border: 4px solid #00A0D1;
+        border-radius: 5px;
+        display: inline-block;
+        width: 200px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: white;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
-        font-size: 2rem;
         cursor: pointer;
-        border-radius: 5px;
+        outline: none;
+        position: relative;
+        transition: 0.5s;
+        box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
     }
-    .button:hover {
-        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    .button:hover{
+        border-radius: 50px;
     }
 
 </style>
