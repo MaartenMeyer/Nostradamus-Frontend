@@ -1,8 +1,9 @@
 <template web>
-  <div class="main">
+  <div class="mainDiv">
       <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
 
-      <div class="main2">
+      <div class="formBox">
+
           <h2 class="welcome1">Welkom bij</h2>
           <h2 class="welcome2">Nostradamus</h2>
 
@@ -132,7 +133,7 @@
 </script>
 
 <style scoped>
-    .main {
+    .mainDiv {
         width: 100%;
         min-height: 100vh;
         display: -webkit-box;
@@ -143,21 +144,19 @@
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        padding: 15px;
-        background: #00A0D1;
-        background: -webkit-linear-gradient(bottom, #00A0D1, #FFFFFF);
-        background: -o-linear-gradient(bottom, #00A0D1, #FFFFFF);
-        background: -moz-linear-gradient(bottom, #00A0D1, #FFFFFF);
-        background: linear-gradient(bottom, #00A0D1, #FFFFFF);
         position: relative;
         z-index: 1;
     }
 
-    .main2 {
-        width: 450px;
+    .formBox {
+        width: 350px;
+        height: 400px;
         background: #fff;
-        border-radius: 3px;
+        border-radius: 15px;
         overflow: hidden;
+        margin: 0 auto 0 auto;
+        padding:0px 0px 20px 0px;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     }
 
     .welcome1{
@@ -173,7 +172,7 @@
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
         color: #676A6C;
     }
 
@@ -214,7 +213,7 @@
     .submitBtn{
         font-family: "Roboto";
         background-color: #00A0D1;
-        /*width: 200px;*/
+        width: 200px;
         margin-top: 50px;
         margin-bottom: 30px;
         border: none;
@@ -226,6 +225,7 @@
         font-size: 1rem;
         cursor: pointer;
         border-radius: 5px;
+        outline: none;
     }
     .submitBtn:hover {
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
