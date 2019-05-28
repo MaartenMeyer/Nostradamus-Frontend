@@ -4,7 +4,7 @@
 
       <div class="box">
             <h2 class="dashboardWelcome">Dashboard</h2>
-            <h2 class="dashboardWelcome2">Welkom {{this.user.name}}</h2>
+            <h2 class="dashboardWelcome2">Welkom {{currentUser.UserId}}</h2>
 
           <div class="buttonsDiv">
               <button class="button">In/Uit Klokken</button>
@@ -24,23 +24,13 @@
 
 <script>
   import axios from "axios"
-
-  // export default {
-  //     name: 'Dashboard',
-  //     data() {
-  //         return {};
-  //     }
-  // }
+  import { mapGetters } from 'vuex'
 
   const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
   export default {
-    data () {
-        return {
-            user: {
-                name: "Richard"
-            }
-        }
+    computed: {
+        ...mapGetters({ currentUser: 'currentUser' })
     },
     methods: {
         getUserData: function () {
@@ -54,14 +44,15 @@
                     console.log(errors);
                     r.$router.push("/dashboard")
                 })
-            }
+
         },
         mounted () {
             this.getUserData()
         },
         logout(){
-            this.$router.push({path: '/login'});
+            this.$router.push('/logout');
         }
+    }
   }
 </script>
 

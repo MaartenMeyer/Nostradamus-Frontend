@@ -21,8 +21,8 @@
 <script>
 
     import axios from "axios/index"
-    import Dashboard from "./Dashboard.vue";
     import { request } from 'http';
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'Login',
@@ -35,6 +35,9 @@
                 error: false
             }
         },
+        computed: {
+        ...mapGetters({ currentUser: 'currentUser' })
+        },
         // Checks if user is already logged in when loading site
         created(){
             this.checkLogin();
@@ -44,18 +47,20 @@
             this.checkLogin();
         },
         methods: {
-            login() {
-                if (this.input.username != "" && this.input.password != "") {
-                    axios({
-                        method: 'post',
-                        url: 'http://127.0.0.1:3000/api/login',
-                        data: { userName: this.input.username, password: this.input.password },
-                        config: { headers: {'Content-Type': 'application/json' }}
-                        })
-                        .then(request => this.loginSuccessful(request))
-                        .catch(() => this.loginFailed());
-
+            checkLogin(){
+                if(this.currentUser){
+                    this.$router.replace(this.$route.query.redirect || '/dashboard');
                 }
+            },
+            login() {
+                axios({
+                    method: 'post',
+                    url: 'http://127.0.0.1:3000/api/login',
+                    data: { userName: this.input.username, password: this.input.password },
+                    config: { headers: {'Content-Type': 'application/json' }}
+                    })
+                    .then(request => this.loginSuccessful(request))
+                    .catch(() => this.loginFailed());
             },
             loginSuccessful(req){
                 if(!req.data.token){
@@ -63,21 +68,16 @@
                     return;
                 }
 
-                localStorage.token = req.data.token;
                 this.error = false;
-
+                localStorage.token = req.data.token;
+                this.$store.dispatch('login');
                 this.$router.replace('/dashboard');
             },
             loginFailed(){
                 this.error = true;
+                this.$store.dispatch('logout');
                 delete localStorage.token;
-            },
-            checkLogin(){
-                if(localStorage.token){
-                    this.$router.replace(this.$route.query.redirect || '/dashboard');
-                }
             }
-
         }
     }
 </script>

@@ -10,22 +10,28 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     const default_layout = "layout";
 
     export default {
+        name: 'app',
         computed: {
             layout() {
                 return(this.$route.meta.layout || default_layout) + '-layout';
-            }
+            },
+            ...mapGetters({ currentUser: 'currentUser' })
         },
         created(){
-            if (!localStorage.token && this.$route.path !== '/') {
-                this.$router.push('/?redirect=' + this.$route.path)
-            }
+            this.checkLogin();
         },
         updated(){
-            if (!localStorage.token && this.$route.path !== '/') {
-                this.$router.push('/?redirect=' + this.$route.path)
+            this.checkLogin();
+        },
+        methods: {
+            checkLogin(){
+                if (!this.currentUser && this.$route.path !== '/') {
+                    this.$router.push('/?redirect=' + this.$route.path);
+                }
             }
         }
     }
