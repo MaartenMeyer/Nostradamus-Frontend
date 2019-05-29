@@ -170,6 +170,19 @@
         margin-top: 20px;
         margin-left: 20px;
         margin-right: 20px;
+        position: relative;
+        /*display: block;*/
+        outline: none;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        cursor: pointer;
+    }
+    .selection:focus{
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        cursor: pointer;
+    }
+    .selection:hover{
 
     }
 
