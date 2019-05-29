@@ -7,11 +7,11 @@
             <h2 class="dashboardWelcome2">Welkom {{currentUser.userId}}</h2>
 
           <div class="buttonsDiv">
-              <button class="button">In/Uit Klokken</button>
+              <button class="button" v-on:click="clock()">In/Uit Klokken</button>
           </div>
 
           <div class="buttons">
-              <button class="button">Pauze</button>
+              <button class="button" v-on:click="takeBreak()">Pauze</button>
           </div>
 
           <div class="buttons">
@@ -46,8 +46,34 @@
                 })
 
         },
+        clock(){
+            axios({
+                method: 'post',
+                url: 'http://127.0.0.1:3000/api/clocking',
+                data: { userNumber: this.currentUser.userNumber },
+                config: { headers: {'Authorization': "bearer " + localStorage.token}}
+                })
+                .then(request => this.clockInSuccessful(request))
+                .catch(() => this.clockInFailed());
+        },
+        takeBreak(){
+            axios({
+                method: 'post',
+                url: 'http://127.0.0.1:3000/api/breaking',
+                data: { userNumber: this.currentUser.userNumber },
+                config: { headers: {'Authorization': "bearer " + localStorage.token}}
+                })
+                .then(request => this.clockInSuccessful(request))
+                .catch(() => this.clockInFailed());
+        },
         mounted () {
             this.getUserData()
+        },
+        clockInSuccessful(){
+
+        },
+        clockInFailed(){
+
         },
         logout(){
             this.$router.push('/logout');
