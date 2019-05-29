@@ -10,7 +10,7 @@
           <div class="loginDiv">
               <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
               <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
-              <p v-if="error">Username or password incorrect!</p>
+              <p v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
               <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
           </div>
 

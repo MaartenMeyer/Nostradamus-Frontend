@@ -4,7 +4,7 @@
 
       <div class="box">
             <h2 class="dashboardWelcome">Dashboard</h2>
-            <h2 class="dashboardWelcome2">Welkom {{currentUser.UserId}}</h2>
+            <h2 class="dashboardWelcome2">Welkom {{currentUser.userId}}</h2>
 
           <div class="buttonsDiv">
               <button class="button">In/Uit Klokken</button>
