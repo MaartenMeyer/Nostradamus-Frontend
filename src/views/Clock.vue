@@ -1,0 +1,221 @@
+<template web>
+    <div class="mainDiv">
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
+
+        <div class="formBox">
+
+            <h2 class="welcome1">Voer je gegevens in:</h2>
+
+            <div class="loginDiv">
+                <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
+
+                <select class="selection">
+                    <option>Selecteer je locatie</option>
+                    <option value="Breda">Breda</option>
+                    <option value="BergenOpZoom">Bergen op Zoom</option>
+                    <option value="Papendrecht">Papendrecht</option>
+                </select>
+
+                <select class="selection">
+                    <option>Selecteer je afdeling</option>
+                    <option value="DKW">DKW</option>
+                    <option value="Kassa">Kassa</option>
+                    <option value="AGF">AGF</option>
+                </select>
+
+                <p v-if="error">Invoer is nog niet compleet!</p>
+
+                <div class="buttonsDiv">
+                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Inklokken</span></button>
+                </div>
+                <div class="buttonsDiv">
+                    <button type="button" class="submitBtn" v-on:click="cancel()"><span>Annuleer</span></button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<script>
+    import axios from "axios"
+    import { mapGetters } from 'vuex'
+
+    const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
+
+    export default {
+        name: 'Clock',
+        data() {
+            return {
+                input: {
+                    username: "",
+                    password: ""
+                },
+                error: false
+            }
+        },
+        computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
+        },
+        methods: {
+            getUserData: function () {
+                const r = this;
+                axios.get("/api/user")
+                    .then((response) => {
+                        console.log(response);
+                        r.$set(this, "user", response.data.user)
+                    })
+                    .catch((errors) => {
+                        console.log(errors);
+                        r.$router.push("/dashboard")
+                    })
+
+            },
+            clock(){
+                axios({
+                    method: 'post',
+                    url: 'http://127.0.0.1:3000/api/clocking',
+                    data: { userNumber: this.currentUser.userNumber },
+                    config: { headers: {'Authorization': "bearer " + localStorage.token}}
+                })
+                    .then(request => this.clockInSuccessful(request))
+                    .catch(() => this.clockInFailed());
+            },
+            cancel(){
+                this.$router.push('/dashboard');
+            },
+            mounted () {
+                this.getUserData()
+            },
+            clockInSuccessful(){
+
+            },
+            clockInFailed(){
+
+            },
+            logout(){
+                this.$router.push('/logout');
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .mainDiv {
+        width: 100%;
+        min-height: 100vh;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Form div */
+    .formBox {
+        width: 450px;
+        height: 450px;
+        background: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 0 auto 0 auto;
+        padding:0px 0px 20px 0px;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
+    /* login Div */
+    .loginDiv{
+        text-align: center;
+        flex-grow: 2;
+        vertical-align: middle;
+    }
+
+    /* Welcome 1 and 2 */
+    .welcome1{
+        font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
+        font-size: 28px;
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        color: #676A6C;
+    }
+
+    /* Input fields */
+    input[type=text] {
+        width: 300px;
+        font-family: "Roboto";
+        font-size: 16px;
+        color: #676A6C;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        background: transparent;
+    }
+    input:focus{
+        outline: none;
+    }
+
+    .selection{
+        font-family: "Roboto";
+        color: #676A6C;
+        font-size: 16px;
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+
+    }
+
+    .buttonsDiv{
+        text-align: center;
+        flex-grow: 2;
+        vertical-align: middle;
+        margin-top: 10px;
+    }
+
+    /* Login button style */
+    .submitBtn{
+        font-family: "Roboto";
+        font-size: 21px;
+        background-color: #00A0D1;
+        padding: 20px;
+        border: 4px solid #00A0D1;
+        border-radius: 5px;
+        display: inline-block;
+        width: 150px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        outline: none;
+        position: relative;
+        transition: 0.5s;
+        box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
+    }
+    .submitBtn:after {
+        content: '»';
+        position: absolute;
+        opacity: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+    .submitBtn:hover{
+        border-radius: 50px;
+        padding-right: 24px;
+        padding-left:8px;
+    }
+    .submitBtn:hover:after {
+        opacity: 1;
+        right: 10px;
+    }
+
+</style>

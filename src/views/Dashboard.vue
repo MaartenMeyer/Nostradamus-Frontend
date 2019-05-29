@@ -47,33 +47,13 @@
 
         },
         clock(){
-            axios({
-                method: 'post',
-                url: 'http://127.0.0.1:3000/api/clocking',
-                data: { userNumber: this.currentUser.userNumber },
-                config: { headers: {'Authorization': "bearer " + localStorage.token}}
-                })
-                .then(request => this.clockInSuccessful(request))
-                .catch(() => this.clockInFailed());
+            this.$router.replace('/clock');
         },
         takeBreak(){
-            axios({
-                method: 'post',
-                url: 'http://127.0.0.1:3000/api/breaking',
-                data: { userNumber: this.currentUser.userNumber },
-                config: { headers: {'Authorization': "bearer " + localStorage.token}}
-                })
-                .then(request => this.clockInSuccessful(request))
-                .catch(() => this.clockInFailed());
+            this.$router.replace('/break');
         },
         mounted () {
             this.getUserData()
-        },
-        clockInSuccessful(){
-
-        },
-        clockInFailed(){
-
         },
         logout(){
             this.$router.push('/logout');

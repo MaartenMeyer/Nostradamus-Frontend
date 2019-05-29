@@ -3,6 +3,8 @@ import Router from 'vue-router';
 
 import Login from '@/views/Login.vue';
 import Dashboard from '@/views/Dashboard.vue';
+import Clock from '@/views/Clock.vue';
+// import Break from '@/views/Break.vue';
 import Register from '@/views/Register.vue';
 import Logout from '@/views/Logout.vue'
 
@@ -31,6 +33,16 @@ const router = new Router ({
       name: 'Dashboard',
       component: Dashboard
     },
+    {
+      path: '/clock',
+      name: 'Clock',
+      component: Clock
+    },
+    // {
+    //   path: '/break',
+    //   name: 'Break',
+    //   component: Break
+    // },
     {
       path: '/register',
       name: 'Register',

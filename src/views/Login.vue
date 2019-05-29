@@ -10,7 +10,7 @@
           <div class="loginDiv">
               <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
               <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
-              <p v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
+              <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
               <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
           </div>
 
@@ -171,7 +171,8 @@
         border-radius: 5px;
         display: inline-block;
         width: 150px;
-        margin-top: 30px;
+        position: fixed;
+        margin-top: 20px;
         margin-bottom: 10px;
         color: white;
         text-align: center;
@@ -197,6 +198,15 @@
     .submitBtn:hover:after {
         opacity: 1;
         right: 10px;
+    }
+
+    .errorMsg{
+        font-family: Roboto;
+        font-weight: bold;
+        font-size: 11px;
+        margin-top: 10px;
+        margin-bottom: 0px;
+        color: red;
     }
 
 </style>
