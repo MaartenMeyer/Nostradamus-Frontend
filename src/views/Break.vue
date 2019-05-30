@@ -9,26 +9,10 @@
             <div class="loginDiv">
                 <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
-                <select required>
-                    <option value="" hidden>Selecteer je locatie</option>
-                    <option value="1">Breda</option>
-                    <option value="2">Amsterdam</option>
-                    <option value="3">Rotterdam</option>
-                    <option value="4">Bergen op Zoom</option>
-                </select>
-
-                <select required>
-                    <option value="" hidden>Selecteer je afdeling</option>
-                    <option value="5">DKW</option>
-                    <option value="6">Kassa</option>
-                    <option value="7">Magazijn</option>
-                    <option value="8">AGF</option>
-                </select>
-
                 <p v-if="error">Invoer is nog niet compleet!</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Klokken</span></button>
+                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Pauze</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="submitBtn" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -163,29 +147,6 @@
     }
     input:focus{
         outline: none;
-    }
-
-    select{
-        font-family: "Roboto";
-        color: #676A6C;
-        font-size: 16px;
-        margin-top: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-        outline: none;
-        border: none;
-        border-bottom: 1px solid #00A0D1;
-        cursor: pointer;
-    }
-    select:focus {
-        border: none;
-        border-bottom: 1px solid #00A0D1;
-        cursor: pointer;
-    }
-    select:hover{
-        border: none;
-        border-bottom: 1px solid #00A0D1;
-        cursor: pointer;
     }
 
     .buttonsDiv{
