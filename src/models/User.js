@@ -4,6 +4,7 @@ export default class User{
   static from (token){
     try {
       let object = JwtDecode(token);
+      localStorage.userId = object.data.UserId;
       return new User(object.data);
     } catch(_){
       return null;

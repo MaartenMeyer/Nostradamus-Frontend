@@ -33,19 +33,6 @@
         ...mapGetters({ currentUser: 'currentUser' })
     },
     methods: {
-        getUserData: function () {
-            const r = this;
-            axios.get("/api/user")
-                .then((response) => {
-                    console.log(response);
-                    r.$set(this, "user", response.data.user)
-                })
-                .catch((errors) => {
-                    console.log(errors);
-                    r.$router.push("/dashboard")
-                })
-
-        },
         clock(){
             this.$router.replace('/clock');
         },

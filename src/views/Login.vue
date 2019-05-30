@@ -71,13 +71,30 @@
                 this.error = false;
                 localStorage.token = req.data.token;
                 this.$store.dispatch('login');
-                this.$router.replace('/dashboard');
+                this.loadData();
             },
             loginFailed(){
                 this.error = true;
                 this.$store.dispatch('logout');
                 delete localStorage.token;
-            }
+            },
+            loadData(){
+                axios({
+                    method: 'get',
+                    url: 'http://127.0.0.1:3000/api/data/'+localStorage.userId,
+                    config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
+                    .then(request => this.loadDataSuccessful(request))
+                    .catch(() => this.loadDataFailed());
+
+            },
+            loadDataSuccessful(req){
+                console.log(req);
+                this.$router.replace('/dashboard');
+            },
+            loadDataFailed(){
+                //this.$router.replace('/dashboard');
+
+            },
         }
     }
 </script>
