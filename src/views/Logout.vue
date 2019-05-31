@@ -14,6 +14,7 @@ export default {
   created () {
     delete localStorage.token;
     delete localStorage.userId;
+    localStorage.removeItem('company');
     this.$store.dispatch('logout');
     this.$router.push('/')
   },

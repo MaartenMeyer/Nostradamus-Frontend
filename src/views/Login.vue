@@ -88,11 +88,10 @@
 
             },
             loadDataSuccessful(req){
-                console.log(req);
+                localStorage.setItem('company', JSON.stringify(req.data));
                 this.$router.replace('/dashboard');
             },
             loadDataFailed(){
-                //this.$router.replace('/dashboard');
 
             },
         }
