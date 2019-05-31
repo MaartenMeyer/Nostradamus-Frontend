@@ -17,7 +17,7 @@
                     <option value="" hidden>Selecteer je afdeling</option>
                 </select>
 
-                <p v-if="error">Invoer is nog niet compleet!</p>
+                <p class="errorMsg" v-if="error">Invoer is nog niet compleet!</p>
 
                 <div class="buttonsDiv">
                     <button type="button" class="submitBtn" v-on:click="clock()"><span>Klokken</span></button>
@@ -43,9 +43,7 @@
         data() {
             return {
                 input: {
-                    userNumber: "",
-                    branchId: "",
-                    departmentId: ""
+                    userNumber: ""
                 },
                 error: false
             }
@@ -73,7 +71,7 @@
             addDepartmentOptions(){
                 // Clears select department options list on select branch change
                 var s = document.getElementById("selectDepartment");
-                for(i = s.options.length - 1 ; i >= 0 ; i--){
+                for(i = s.options.length - 1 ; i >= 1 ; i--){
                         s.remove(i);
                 }
 
@@ -102,23 +100,34 @@
                 $('#selectDepartment').append( optionsAsString );
             },
             clock(){
-                axios({
+                // Get values of selectBranch and selectDepartment components
+                var branch = document.getElementById("selectBranch");
+                var branchId = branch.options[branch.selectedIndex].value;
+                var department = document.getElementById("selectDepartment");
+                var departmentId = department.options[department.selectedIndex].value;
+
+                // Checks if default values have been changed / if user has selected options for both branch and department
+                if(branchId != "" && departmentId != ""){
+                    axios({
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/clocking',
-                    data: { userNumber: this.input.userNumber, branchId: this.input.branchId, departmentId: this.input.departmentId },
-                    config: { headers: {'Authorization': "bearer " + localStorage.token}}
-                })
+                    data: { userNumber: this.input.userNumber, branchId: branchId, departmentId: departmentId },
+                    headers: {'Authorization': "bearer " + localStorage.token}})
                     .then(request => this.clockInSuccessful(request))
                     .catch(() => this.clockInFailed());
+                }else{
+                    this.error = true;
+                }
+
             },
             cancel(){
                 this.$router.push('/dashboard');
             },
             clockInSuccessful(){
-
+                this.$router.push('/dashboard');
             },
             clockInFailed(){
-
+                this.error = true;
             },
             logout(){
                 this.$router.push('/logout');
@@ -255,6 +264,15 @@
     .submitBtn:hover:after {
         opacity: 1;
         right: 10px;
+    }
+
+    .errorMsg{
+        font-family: Roboto;
+        font-weight: bold;
+        font-size: 11px;
+        margin-top: 10px;
+        margin-bottom: 0px;
+        color: red;
     }
 
 </style>
