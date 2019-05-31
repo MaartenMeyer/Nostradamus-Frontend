@@ -9,20 +9,12 @@
             <div class="loginDiv">
                 <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
-                <select required>
-                    <option value="" hidden>Selecteer je locatie</option>
-                    <option value="1">Breda</option>
-                    <option value="2">Amsterdam</option>
-                    <option value="3">Rotterdam</option>
-                    <option value="4">Bergen op Zoom</option>
+                <select required id='selectBranch' @change="addDepartmentOptions()">
+                    <option value="" disabled selected hidden>Selecteer je locatie</option>
                 </select>
 
-                <select required>
+                <select required id='selectDepartment'>
                     <option value="" hidden>Selecteer je afdeling</option>
-                    <option value="5">DKW</option>
-                    <option value="6">Kassa</option>
-                    <option value="7">Magazijn</option>
-                    <option value="8">AGF</option>
                 </select>
 
                 <p v-if="error">Invoer is nog niet compleet!</p>
@@ -51,8 +43,9 @@
         data() {
             return {
                 input: {
-                    username: "",
-                    password: ""
+                    userNumber: "",
+                    branchId: "",
+                    departmentId: ""
                 },
                 error: false
             }
@@ -60,25 +53,59 @@
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
+        mounted(){
+            this.addBranchOptions();
+        },
         methods: {
-            getUserData: function () {
-                const r = this;
-                axios.get("/api/user")
-                    .then((response) => {
-                        console.log(response);
-                        r.$set(this, "user", response.data.user)
-                    })
-                    .catch((errors) => {
-                        console.log(errors);
-                        r.$router.push("/dashboard")
-                    })
+            // Adds branches to options of selectBranch select element
+            addBranchOptions(){
+                var jsonObj = JSON.parse(localStorage.getItem('company'));
+                var branches = jsonObj.branches;
 
+                // Creates and inserts new options from the array branches into the selectBranch options list
+                var optionsAsString = "";
+                for(var i = 0; i < branches.length; i++) {
+                    optionsAsString += "<option value='" + branches[i].branchId + "'>" + branches[i].branchName + "</option>";
+                }
+                $('#selectBranch').append( optionsAsString );
+            },
+            // Adds departments to options of selectDepartment select element
+            addDepartmentOptions(){
+                // Clears select department options list on select branch change
+                var s = document.getElementById("selectDepartment");
+                for(i = s.options.length - 1 ; i >= 0 ; i--){
+                        s.remove(i);
+                }
+
+                var jsonObj = JSON.parse(localStorage.getItem('company'));
+                var branches = jsonObj.branches;
+
+                var select = document.getElementById("selectBranch");
+                var branchId = select.options[select.selectedIndex].value;
+
+                // Function to find an department element in the branches array
+                function findElement(arr, propName, propValue) {
+                    for (var i=0; i < arr.length; i++)
+                        if (arr[i][propName] == propValue){
+                            return arr[i];
+                    }
+                }
+
+                var branch = findElement(branches, "branchId", branchId);
+                var departments = branch.departments;
+
+                // Creates and inserts new options from the array departments into the selectDepartment options list
+                var optionsAsString = "";
+                for(var i = 0; i < departments.length; i++) {
+                    optionsAsString += "<option value='" + departments[i].departmentId + "'>" + departments[i].departmentName + "</option>";
+                }
+                $('#selectDepartment').append( optionsAsString );
             },
             clock(){
                 axios({
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/clocking',
-                    data: { userNumber: this.currentUser.userNumber },
+                    data: { userNumber: this.input.userNumber, branchId: this.input.branchId, departmentId: this.input.departmentId },
                     config: { headers: {'Authorization': "bearer " + localStorage.token}}
                 })
                     .then(request => this.clockInSuccessful(request))
@@ -86,9 +113,6 @@
             },
             cancel(){
                 this.$router.push('/dashboard');
-            },
-            mounted () {
-                this.getUserData()
             },
             clockInSuccessful(){
 
