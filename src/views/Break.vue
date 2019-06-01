@@ -9,10 +9,10 @@
             <div class="loginDiv">
                 <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
-                <p v-if="error">Invoer is nog niet compleet!</p>
+                <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Pauze</span></button>
+                    <button type="button" class="submitBtn" v-on:click="clockBreak()"><span>Pauze</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="submitBtn" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -31,58 +31,45 @@
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
-        name: 'Clock',
+        name: 'Break',
         data() {
             return {
                 input: {
-                    username: "",
-                    password: ""
+                    userNumber: "",
                 },
-                error: false
+                error: false,
+                errorMessage: ""
             }
         },
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
         methods: {
-            getUserData: function () {
-                const r = this;
-                axios.get("/api/user")
-                    .then((response) => {
-                        console.log(response);
-                        r.$set(this, "user", response.data.user)
-                    })
-                    .catch((errors) => {
-                        console.log(errors);
-                        r.$router.push("/dashboard")
-                    })
-
-            },
-            clock(){
-                axios({
+            clockBreak(){
+                // Checks if default values have been changed / if user has entered userNumber
+                if(this.input.userNumber != ""){
+                    axios({
                     method: 'post',
-                    url: 'http://127.0.0.1:3000/api/clocking',
-                    data: { userNumber: this.currentUser.userNumber },
-                    config: { headers: {'Authorization': "bearer " + localStorage.token}}
-                })
-                    .then(request => this.clockInSuccessful(request))
-                    .catch(() => this.clockInFailed());
+                    url: 'http://127.0.0.1:3000/api/breaking',
+                    data: { userNumber: this.input.userNumber },
+                    headers: {'Authorization': "bearer " + localStorage.token}})
+                    .then(request => this.clockBreakSuccessful(request))
+                    .catch(() => this.clockBreakFailed());
+                }else{
+                    this.errorMessage = "Voer een werknemersnummer in!";
+                    this.error = true;
+                }
             },
             cancel(){
                 this.$router.push('/dashboard');
             },
-            mounted () {
-                this.getUserData()
+            clockBreakSuccessful(){
+                this.$router.push('/dashboard');
             },
-            clockInSuccessful(){
-
+            clockBreakFailed(){
+                this.errorMessage = "Pauze niet ingeklokt. Werknemersnummer niet correct of je bent nog niet ingeklokt!";
+                this.error = true;
             },
-            clockInFailed(){
-
-            },
-            logout(){
-                this.$router.push('/logout');
-            }
         }
     }
 </script>
@@ -192,6 +179,15 @@
     .submitBtn:hover:after {
         opacity: 1;
         right: 10px;
+    }
+
+    .errorMsg{
+        font-family: Roboto;
+        font-weight: bold;
+        font-size: 11px;
+        margin-top: 10px;
+        margin-bottom: 0px;
+        color: red;
     }
 
 </style>

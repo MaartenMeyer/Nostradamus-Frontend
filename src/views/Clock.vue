@@ -107,7 +107,7 @@
                 var departmentId = department.options[department.selectedIndex].value;
 
                 // Checks if default values have been changed / if user has selected options for both branch and department
-                if(branchId != "" && departmentId != ""){
+                if(branchId != "" && departmentId != "" && this.input.userNumber != ""){
                     axios({
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/clocking',
