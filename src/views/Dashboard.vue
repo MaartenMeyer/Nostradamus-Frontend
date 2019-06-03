@@ -15,7 +15,7 @@
           </div>
 
           <div class="buttons">
-              <button class="button" v-on:click="logout()">Uitloggen</button>
+              <button class="buttonLogOut" v-on:click="logout()">Uitloggen</button>
           </div>
 
       </div>
@@ -117,11 +117,50 @@
         cursor: pointer;
         outline: none;
         position: relative;
+        transition: transform 0.3s;
         transition: 0.5s;
-        box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
+        z-index: 1;
     }
-    .button:hover{
-        border-radius: 50px;
+    .button:hover {
+        background-color: #00799e;
+        border: 4px solid #00799e;
+    }
+    .button:after {
+        z-index: -1;
+    }
+    .button:active {
+        transform: scale(.95);
+    }
+
+    .buttonLogOut {
+        font-family: "Roboto";
+        font-size: 18px;
+        background-color: #676A6C;
+        padding: 20px;
+        border: 4px solid #676A6C;
+        border-radius: 5px;
+        display: inline-block;
+        width: 200px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        outline: none;
+        position: relative;
+        transition: transform 0.3s;
+        z-index: 1;
+    }
+    .buttonLogOut:hover {
+        background-color: #4b4d4f;
+        border: 4px solid #4b4d4f;
+    }
+    .buttonLogOut:after {
+        z-index: -1;
+    }
+    .buttonLogOut:active {
+        transform: scale(.95);
     }
 
 </style>

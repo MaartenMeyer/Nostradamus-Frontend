@@ -187,7 +187,6 @@
         border-radius: 5px;
         display: inline-block;
         width: 150px;
-        position: fixed;
         margin-top: 20px;
         margin-bottom: 10px;
         color: white;
@@ -196,8 +195,9 @@
         cursor: pointer;
         outline: none;
         position: relative;
+        transition: transform 0.25s;
         transition: 0.5s;
-        box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
+        z-index: 1;
     }
     .submitBtn:after {
         content: '»';
@@ -205,9 +205,11 @@
         opacity: 0;
         right: -20px;
         transition: 0.5s;
+        z-index: -1;
     }
-    .submitBtn:hover{
-        border-radius: 50px;
+    .submitBtn:hover {
+        background-color: #00799e;
+        border: 4px solid #00799e;
         padding-right: 24px;
         padding-left:8px;
     }
@@ -215,8 +217,11 @@
         opacity: 1;
         right: 10px;
     }
+    .submitBtn:active {
+        transform: scale(.95);
+    }
 
-    .errorMsg{
+    .errorMsg {
         font-family: Roboto;
         font-weight: bold;
         font-size: 11px;

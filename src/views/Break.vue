@@ -15,7 +15,7 @@
                     <button type="button" class="submitBtn" v-on:click="clockBreak()"><span>Pauze</span></button>
                 </div>
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="cancel()"><span>Annuleer</span></button>
+                    <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
                 </div>
 
             </div>
@@ -161,8 +161,9 @@
         cursor: pointer;
         outline: none;
         position: relative;
+        transition: transform 0.25s;
         transition: 0.5s;
-        box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
+        z-index: 1;
     }
     .submitBtn:after {
         content: '»';
@@ -172,13 +173,59 @@
         transition: 0.5s;
     }
     .submitBtn:hover{
-        border-radius: 50px;
+        background-color: #00799e;
+        border: 4px solid #00799e;
         padding-right: 24px;
         padding-left:8px;
     }
     .submitBtn:hover:after {
         opacity: 1;
         right: 10px;
+    }
+    .submitBtn:active {
+        transform: scale(.95);
+    }
+
+    .buttonCancel {
+        font-family: "Roboto";
+        font-size: 21px;
+        background-color: #676A6C;
+        padding: 20px;
+        border: 4px solid #676A6C;
+        border-radius: 5px;
+        display: inline-block;
+        width: 150px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        outline: none;
+        position: relative;
+        transition: transform 0.25s;
+        transition: 0.5s;
+        z-index: 1;
+    }
+    .buttonCancel:after {
+        content: '»';
+        position: absolute;
+        opacity: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+    .buttonCancel:hover{
+        background-color: #4b4d4f;
+        border: 4px solid #4b4d4f;
+        padding-right: 24px;
+        padding-left:8px;
+    }
+    .buttonCancel:hover:after {
+        opacity: 1;
+        right: 10px;
+    }
+    .buttonCancel:active {
+        transform: scale(.95);
     }
 
     .errorMsg{
