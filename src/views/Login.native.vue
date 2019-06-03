@@ -2,12 +2,13 @@
     <Page actionBarHidden="true">
         <FlexboxLayout class="page">
             <StackLayout class="form">
+                <Image class="logo" src="~/assets/logos.png" />
                 <Label class="header" text="ClockSystem" />
 
                 <StackLayout class="input-field" marginBottom="25">
-                    <TextField class="input" hint="Email" keyboardType="email"
+                    <TextField class="input" hint="Gebruikersnaam" keyboardType="text"
                                autocorrect="false" autocapitalizationType="none"
-                               @returnPress="focusPassword" v-model="user.email"
+                               @returnPress="focusPassword" v-model="user.username"
                                returnKeyType="next" fontSize="18" />
                     <StackLayout class="hr-light" />
                 </StackLayout>
@@ -36,23 +37,48 @@
 
     import axios from "axios/index"
     import Dashboard from "./Dashboard.native.vue";
+    import { request } from 'http';
+    import { mapGetters } from 'vuex'
 
     export default {
+        name: 'Login',
         data() {
             return {
                 user: {
-                    email: "",
+                    username: "",
                     password: ""
                 }
             };
         },
+        //checking for current user does not work at this time
+        //using similar methods to web version
+        //throws error; undefined mapGetters
+
+        // computed: {
+        // ...mapGetters({ currentUser: 'currentUser' })
+        // },
+        // Checks if user is already logged in when loading site
+        // created(){
+        //     this.checkLogin();
+        // },
+        // Checks if user is already logged in when refreshing site
+        // updated(){
+        //     this.checkLogin();
+        // },        
         methods: {
+            // checkLogin(){
+            //     if(this.currentUser){
+            //         this.$navigateTo(Dashboard);
+            //     }
+            //},
             focusPassword() {
                 this.$refs.password.nativeView.focus();
             },
 
+            currentUser = this.user,
+
             submit() {
-                if (!this.user.email || !this.user.password) {
+                if (!this.user.username || !this.user.password) {
                     this.alert(
                         "Email en/of wachtwoord vergeten in te voeren.");
                     return;
@@ -61,18 +87,33 @@
             },
             validate() {
                 // CHECK DATA
-                if (this.user.email == "p") {
-                    this.alert("HACKS.");
-                } else {
-                    this.login();
-                }
+                axios({
+                method: 'post',
+                //this needs to be changed to server IP
+                //currently local IP, does not work with emulator/phys. device
+                //Using 192.168.2.146:3000/api for testing
+                //check local IP before testing yourself
+                url: 'http://145.49.8.169:3000/api/login',
+                data: { userName: this.user.username, password: this.user.password },
+                config: { headers: {'Content-Type': 'application/json' }}
+                })
+                .then(request => this.login(request))
+                .catch(() => this.loginFailed());
             },
-            login() {
+            login(req) {
+                if(!req.data.token){
+                    this.loginFailed();
+                    return;
+                }
+                this.error = false;
+                localStorage.token = req.data.token;
                 userService
                     .login(this.user)
                     .then(() => {
                         this.$navigateTo(Dashboard, {
-                            props: { },
+                            props: { 
+                                currentUser
+                            },
                             animated: true,
                             transition: {
                                 name: "slideTop",
@@ -93,7 +134,17 @@
                     okButtonText: "OK",
                     message: message
                 });
+            },
+            loginFailed(){
+                this.error = true;
+                this.alert(
+                    "Er ging iets mis met het verbinden van de applicatie."
+                );
+                delete localStorage.token;
             }
+            //Uncommented chunk of code, no idea what it means
+            //
+
             // login: (e) => {
             //           e.preventDefault();
             //           let email = e.target.elements.email.value;
@@ -115,9 +166,10 @@
             //                   })
             //           };
             //           login();
-            //       }
-        }
-    };
+            //     }
+            //    }
+    }
+};    
 </script>
 
 <style scoped>
