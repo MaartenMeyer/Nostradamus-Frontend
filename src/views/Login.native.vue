@@ -35,10 +35,14 @@
         }
     };
 
-    import axios from "axios/index"
-    import Dashboard from "./Dashboard.native.vue";
-    import { request } from 'http';
-    import { mapGetters } from 'vuex'
+    // import axios from "axios/index"
+    // import Dashboard from "./Dashboard.native.vue";
+    // import { request } from 'http';
+    // import { mapGetters } from 'vuex'
+    const axios = require('axios/index');
+    const Dashboard = require('./Dashboard.native.vue');
+    const { request } = require('http');
+    const { mapGetters } = require('vuex');
 
     export default {
         name: 'Login',
@@ -65,6 +69,11 @@
         // updated(){
         //     this.checkLogin();
         // },        
+
+        computed: {
+            currentUser = this.user
+        },
+
         methods: {
             // checkLogin(){
             //     if(this.currentUser){
@@ -74,9 +83,7 @@
             focusPassword() {
                 this.$refs.password.nativeView.focus();
             },
-
-            currentUser = this.user,
-
+ 
             submit() {
                 if (!this.user.username || !this.user.password) {
                     this.alert(
