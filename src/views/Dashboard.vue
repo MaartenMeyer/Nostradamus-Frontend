@@ -4,7 +4,7 @@
 
       <div class="box">
             <h2 class="dashboardWelcome">Dashboard</h2>
-            <h2 class="dashboardWelcome2">Welkom {{currentUser.userId}}</h2>
+            <h2 class="dashboardWelcome2">Welkom {{currentUser.userName}}</h2>
 
           <div class="buttonsDiv">
               <button class="button" v-on:click="clock()">In/Uit Klokken</button>
@@ -150,6 +150,7 @@
         outline: none;
         position: relative;
         transition: transform 0.3s;
+        transition: 0.5s;
         z-index: 1;
     }
     .buttonLogOut:hover {

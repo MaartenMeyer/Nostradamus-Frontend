@@ -1,15 +1,14 @@
 <template>
   <transition name="modal-fade">
     <div class="modal-backdrop">
+      <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
+
       <div class="modal" role="dialog" aria-describedby="modalDescription">
-        <section class="modal-body" id="modalDescription">
-          <slot name="body"></slot>
-        </section>
-        <footer class="modal-footer">
-          <slot name="footer">
-            <button type="button" class="btn-close" @click="close" aria-label="Close modal">OK</button>
-          </slot>
-        </footer>
+
+        <section id="modalDescription"></section>
+
+        <button type="button" class="btn-close" @click="close" aria-label="Close modal">OK</button>
+
       </div>
     </div>
   </transition>
@@ -41,32 +40,14 @@
   }
 
   .modal {
+    font-family: "Roboto";
+    color: #676A6C;
+    width: 320px;
+    height: 220px;
     background: #FFFFFF;
     box-shadow: 2px 2px 20px 1px;
     overflow-x: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .modal-header,
-  .modal-footer {
-    padding: 15px;
-    display: flex;
-  }
-
-  .modal-header {
-    border-bottom: 1px solid #eeeeee;
-    color: #4AAE9B;
-    justify-content: space-between;
-  }
-
-  .modal-footer {
-    border-top: 1px solid #eeeeee;
-    justify-content: flex-end;
-  }
-
-  .modal-body {
-    position: relative;
+    border-radius: 15px;
     padding: 20px 10px;
   }
 
@@ -77,13 +58,32 @@
     padding: 20px;
     border: 4px solid #00A0D1;
     border-radius: 5px;
+    vertical-align: bottom;
+    width: 150px;
+    margin-top: 80px;
     color: white;
+    outline: none;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-    outline: none;
-    border: 1px solid #4AAE9B;
-    border-radius: 2px;
+    transition: transform 0.3s;
+    transition: 0.5s;
+    z-index: 1;
+  }
+  .btn-close:after {
+    position: absolute;
+    opacity: 0;
+    transition: 0.5s;
+  }
+  .btn-close:hover{
+    background-color: #00799e;
+    border: 4px solid #00799e;
+  }
+  .btn-close:hover:after {
+    opacity: 1;
+  }
+  .btn-close:active {
+    transform: scale(.95);
   }
 
   .modal-fade-enter,

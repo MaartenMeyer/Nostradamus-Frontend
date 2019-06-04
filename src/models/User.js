@@ -11,8 +11,9 @@ export default class User{
     }
   }
 
-  constructor({ UserId}){
+  constructor({ UserId, UserName}){
     this.id = UserId;
+    this.name = UserName;
   }
 
   // constructor({ user_id, userName, accountType}){
@@ -23,5 +24,9 @@ export default class User{
 
   get userId(){
     return this.id;
+  }
+
+  get userName() {
+    return this.name;
   }
 }

@@ -62,11 +62,11 @@
         methods: {
             // Adds branches to options of selectBranch select element
             addBranchOptions(){
-                var jsonObj = JSON.parse(localStorage.getItem('company'));
-                var branches = jsonObj.branches;
+                let jsonObj = JSON.parse(localStorage.getItem('company'));
+                let branches = jsonObj.branches;
 
                 // Creates and inserts new options from the array branches into the selectBranch options list
-                var optionsAsString = "";
+                let optionsAsString = "";
                 for(var i = 0; i < branches.length; i++) {
                     optionsAsString += "<option value='" + branches[i].branchId + "'>" + branches[i].branchName + "</option>";
                 }
@@ -75,16 +75,16 @@
             // Adds departments to options of selectDepartment select element
             addDepartmentOptions(){
                 // Clears select department options list on select branch change
-                var s = document.getElementById("selectDepartment");
+                let s = document.getElementById("selectDepartment");
                 for(i = s.options.length - 1 ; i >= 1 ; i--){
                         s.remove(i);
                 }
 
-                var jsonObj = JSON.parse(localStorage.getItem('company'));
-                var branches = jsonObj.branches;
+                let jsonObj = JSON.parse(localStorage.getItem('company'));
+                let branches = jsonObj.branches;
 
-                var select = document.getElementById("selectBranch");
-                var branchId = select.options[select.selectedIndex].value;
+                let select = document.getElementById("selectBranch");
+                let branchId = select.options[select.selectedIndex].value;
 
                 // Function to find an department element in the branches array
                 function findElement(arr, propName, propValue) {
@@ -94,11 +94,11 @@
                     }
                 }
 
-                var branch = findElement(branches, "branchId", branchId);
-                var departments = branch.departments;
+                let branch = findElement(branches, "branchId", branchId);
+                let departments = branch.departments;
 
                 // Creates and inserts new options from the array departments into the selectDepartment options list
-                var optionsAsString = "";
+                let optionsAsString = "";
                 for(var i = 0; i < departments.length; i++) {
                     optionsAsString += "<option value='" + departments[i].departmentId + "'>" + departments[i].departmentName + "</option>";
                 }
@@ -106,10 +106,10 @@
             },
             clock(){
                 // Get values of selectBranch and selectDepartment components
-                var branch = document.getElementById("selectBranch");
-                var branchId = branch.options[branch.selectedIndex].value;
-                var department = document.getElementById("selectDepartment");
-                var departmentId = department.options[department.selectedIndex].value;
+                let branch = document.getElementById("selectBranch");
+                let branchId = branch.options[branch.selectedIndex].value;
+                let department = document.getElementById("selectDepartment");
+                let departmentId = department.options[department.selectedIndex].value;
 
                 // Checks if default values have been changed / if user has selected options for both branch and department
                 if(branchId != "" && departmentId != "" && this.input.userNumber != ""){
@@ -129,7 +129,14 @@
                 this.$router.push('/dashboard');
             },
             clockInSuccessful(){
-                this.showModal("Ingeklokt!");
+                let branch = document.getElementById("selectBranch");
+                let branchId = branch.options[branch.selectedIndex].text;
+                let department = document.getElementById("selectDepartment");
+                let departmentId = department.options[department.selectedIndex].text;
+                let date = new Date();
+                let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
+                this.showModal("Je bent ingeklokt met werknemersnummer " + this.input.userNumber + " op locatie " + branchId + " op afdeling " + departmentId + ", Begintijd " + time + ", fijne dienst!");
             },
             clockInFailed(){
                 this.error = true;
@@ -138,7 +145,7 @@
                 this.$router.push('/logout');
             },
             showModal(string) {
-                $("#modalDescription").html(string)
+                $("#modalDescription").html(string);
                 this.isModalVisible = true;
             },
             closeModal() {
