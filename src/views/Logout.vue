@@ -12,12 +12,17 @@
 export default {
   name: 'Logout',
   created () {
-    delete localStorage.token;
-    delete localStorage.userId;
+    this.$cookie.delete('access-token');
+    this.$cookie.delete('user-id')
     localStorage.removeItem('company');
     this.$store.dispatch('logout');
-    this.$router.push('/')
+    setTimeout(() => this.close(), 2500);
   },
+  methods: {
+      close(){
+          this.$router.push('/');
+      }
+  }
 }
 </script>
 

@@ -69,20 +69,18 @@
                 }
 
                 this.error = false;
-                localStorage.token = req.data.token;
+                this.$cookie.set('access-token', req.data.token);
                 this.$store.dispatch('login');
                 this.loadData();
             },
             loginFailed(){
                 this.error = true;
-                this.$store.dispatch('logout');
-                delete localStorage.token;
             },
             loadData(){
                 axios({
                     method: 'get',
-                    url: 'http://127.0.0.1:3000/api/data/'+localStorage.userId,
-                    config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
+                    url: 'http://127.0.0.1:3000/api/data/'+ this.$cookie.get('user-id'),
+                    config: { headers: {"Authorization" : "Bearer "+ this.$cookie.get('access-token')+""}}})
                     .then(request => this.loadDataSuccessful(request))
                     .catch(() => this.loadDataFailed());
 

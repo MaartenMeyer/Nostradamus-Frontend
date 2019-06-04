@@ -52,7 +52,7 @@
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/breaking',
                     data: { userNumber: this.input.userNumber },
-                    headers: {'Authorization': "bearer " + localStorage.token}})
+                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                     .then(request => this.clockBreakSuccessful(request))
                     .catch(() => this.clockBreakFailed());
                 }else{

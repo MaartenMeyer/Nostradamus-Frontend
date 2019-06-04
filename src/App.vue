@@ -40,7 +40,7 @@
 <style>
     .fade-enter-active,
     .fade-leave-active {
-        transition-duration: 0.5s;
+        transition-duration: 0.4s;
         transition-property: opacity;
         transition-timing-function: ease;
     }

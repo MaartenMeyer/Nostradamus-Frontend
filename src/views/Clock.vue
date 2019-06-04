@@ -111,13 +111,19 @@
                 let department = document.getElementById("selectDepartment");
                 let departmentId = department.options[department.selectedIndex].value;
 
+                // Lines to get the current time in the format the database requires
+                // var today = new Date();
+                // var date = today.getFullYear()+'-'+(("0" + (today.getMonth()+1)).slice(-2))+'-'+("0" + today.getDate()).slice(-2);
+                // var time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+                // var dateTime = date+' '+time;
+
                 // Checks if default values have been changed / if user has selected options for both branch and department
                 if(branchId != "" && departmentId != "" && this.input.userNumber != ""){
                     axios({
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/clocking',
                     data: { userNumber: this.input.userNumber, branchId: branchId, departmentId: departmentId },
-                    headers: {'Authorization': "bearer " + localStorage.token}})
+                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                     .then(request => this.clockInSuccessful(request))
                     .catch(() => this.clockInFailed());
                 }else{

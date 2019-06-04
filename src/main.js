@@ -4,11 +4,15 @@ import router from './router';
 import store from './store';
 window.$ = require('jquery')
 window.JQuery = require('jquery')
+import VueCookie from 'vue-cookie';
 
 Vue.config.productionTip = false;
+
+Vue.use(VueCookie);
 
 new Vue({
   router,
   store,
+  VueCookie,
   render: (h) => h(App)
 }).$mount('#app');

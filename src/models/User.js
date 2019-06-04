@@ -1,10 +1,11 @@
 import JwtDecode from 'jwt-decode'
+import VueCookie from 'vue-cookie';
 
 export default class User{
   static from (token){
     try {
       let object = JwtDecode(token);
-      localStorage.userId = object.data.UserId;
+      VueCookie.set('user-id', object.data.UserId);
       return new User(object.data);
     } catch(_){
       return null;
@@ -15,12 +16,6 @@ export default class User{
     this.id = UserId;
     this.name = UserName;
   }
-
-  // constructor({ user_id, userName, accountType}){
-  //   this.id = user_id;
-  //   this.userName = userName;
-  //   this.accountType = accountType;
-  // }
 
   get userId(){
     return this.id;

@@ -1,13 +1,14 @@
 import User from '@/models/User'
 import * as MutationTypes from './mutation-types'
+import VueCookie from 'vue-cookie';
 
 const state = {
-  user: User.from(localStorage.token)
+  user: User.from(VueCookie.get('access-token'))
 }
 
 const mutations = {
   [MutationTypes.LOGIN] (state) {
-    state.user = User.from(localStorage.token)
+    state.user = User.from(VueCookie.get('access-token'))
   },
   [MutationTypes.LOGOUT] (state) {
     state.user = null
