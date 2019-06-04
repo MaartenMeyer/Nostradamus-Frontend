@@ -20,14 +20,14 @@
                 <p class="errorMsg" v-if="error">Invoer is nog niet compleet!</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Klokken</span></button>
+                    <button type="button" class="submitBtn" v-on:click="clockInSuccessful()"><span>Klokken</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
                 </div>
 
             </div>
-
+            <modal id="modal" v-show="isModalVisible" @close="closeModal()"/>
         </div>
     </div>
 </template>
@@ -35,17 +35,22 @@
 <script>
     import axios from "axios"
     import { mapGetters } from 'vuex'
+    import modal from './Modal.vue';
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
         name: 'Clock',
+        components: {
+            modal,
+        },
         data() {
             return {
                 input: {
                     userNumber: ""
                 },
-                error: false
+                error: false,
+                isModalVisible: false
             }
         },
         computed: {
@@ -124,13 +129,21 @@
                 this.$router.push('/dashboard');
             },
             clockInSuccessful(){
-                this.$router.push('/dashboard');
+                this.showModal("Ingeklokt!");
             },
             clockInFailed(){
                 this.error = true;
             },
             logout(){
                 this.$router.push('/logout');
+            },
+            showModal(string) {
+                $("#modalDescription").html(string)
+                this.isModalVisible = true;
+            },
+            closeModal() {
+                this.isModalVisible = false;
+                this.$router.push('/dashboard');
             }
         }
     }
