@@ -113,7 +113,7 @@
                     return;
                 }
                 this.error = false;
-                localStorage.token = req.data.token;
+                //localStorage.token = req.data.token;
                 userService
                     .login(this.user)
                     .then(() => {
@@ -147,7 +147,7 @@
                 this.alert(
                     "Er ging iets mis met het verbinden van de applicatie."
                 );
-                delete localStorage.token;
+                //delete localStorage.token;
             }
             //Uncommented chunk of code, no idea what it means
             //
