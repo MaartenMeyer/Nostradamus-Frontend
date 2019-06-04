@@ -39,10 +39,10 @@
     // import Dashboard from "./Dashboard.native.vue";
     // import { request } from 'http';
     // import { mapGetters } from 'vuex'
-    const axios = require('axios/index');
-    const Dashboard = require('./Dashboard.native.vue');
-    const { request } = require('http');
-    const { mapGetters } = require('vuex');
+    // const axios = require('axios/index');
+    // const Dashboard = require('./Dashboard.native.vue');
+    // const { request } = require('http');
+    // const { mapGetters } = require('vuex');
 
     export default {
         name: 'Login',
@@ -61,18 +61,18 @@
         // computed: {
         // ...mapGetters({ currentUser: 'currentUser' })
         // },
-        // Checks if user is already logged in when loading site
+        // //Checks if user is already logged in when loading site
         // created(){
         //     this.checkLogin();
         // },
-        // Checks if user is already logged in when refreshing site
+        // //Checks if user is already logged in when refreshing site
         // updated(){
         //     this.checkLogin();
         // },        
 
-        computed: {
-            currentUser = this.user
-        },
+        // computed: {
+        //     currentUser = this.user
+        // },
 
         methods: {
             // checkLogin(){
@@ -93,19 +93,20 @@
                 this.validate();
             },
             validate() {
+                
                 // CHECK DATA
-                axios({
-                method: 'post',
-                //this needs to be changed to server IP
-                //currently local IP, does not work with emulator/phys. device
-                //Using 192.168.2.146:3000/api for testing
-                //check local IP before testing yourself
-                url: 'http://145.49.8.169:3000/api/login',
-                data: { userName: this.user.username, password: this.user.password },
-                config: { headers: {'Content-Type': 'application/json' }}
-                })
-                .then(request => this.login(request))
-                .catch(() => this.loginFailed());
+                // axios({
+                // method: 'post',
+                // //this needs to be changed to server IP
+                // //currently local IP, does not work with emulator/phys. device
+                // //Using 192.168.2.146:3000/api for testing
+                // //check local IP before testing yourself
+                // url: 'http://145.49.8.169:3000/api/login',
+                // data: { userName: this.user.username, password: this.user.password },
+                // config: { headers: {'Content-Type': 'application/json' }}
+                // })
+                // .then(request => this.login(request))
+                // .catch(() => this.loginFailed());
             },
             login(req) {
                 if(!req.data.token){
