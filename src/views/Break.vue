@@ -17,9 +17,8 @@
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
                 </div>
-
             </div>
-
+            <modal id="modal" v-show="isModalVisible" @close="closeModal()"/>
         </div>
     </div>
 </template>
@@ -27,18 +26,23 @@
 <script>
     import axios from "axios"
     import { mapGetters } from 'vuex'
+    import modal from './Modal.vue';
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
         name: 'Break',
+        components: {
+            modal,
+        },
         data() {
             return {
                 input: {
                     userNumber: "",
                 },
                 error: false,
-                errorMessage: ""
+                errorMessage: "",
+                isModalVisible: false
             }
         },
         computed: {
@@ -63,13 +67,29 @@
             cancel(){
                 this.$router.push('/dashboard');
             },
-            clockBreakSuccessful(){
-                this.$router.push('/dashboard');
+            clockBreakSuccessful(object) {
+                let date = new Date();
+                let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+                
+                if (object.data.message === "User break clocked in."){
+                    this.showModal("Hallo " + this.input.userNumber + " je pauze is ingeklokt " + ", Begintijd " + time + ", fijne pauze!");
+                } else if (object.data.message === "User break clocked off.") {
+                    this.showModal("Hallo " + this.input.userNumber + ", je pauze is uitgeklokt " + ", Eindtijd " + time)
+                }
             },
             clockBreakFailed(){
                 this.errorMessage = "Pauze niet ingeklokt. Werknemersnummer niet correct of je bent nog niet ingeklokt!";
                 this.error = true;
             },
+            showModal(string) {
+                console.log(string);
+                $("#modalDescription").html(string);
+                this.isModalVisible = true;
+            },
+            closeModal() {
+                this.isModalVisible = false;
+                this.$router.push('/dashboard');
+            }
         }
     }
 </script>
@@ -153,7 +173,7 @@
         border-radius: 5px;
         display: inline-block;
         width: 150px;
-        margin-top: 20px;
+        margin-top: 40px;
         margin-bottom: 10px;
         color: white;
         text-align: center;

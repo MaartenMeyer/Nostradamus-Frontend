@@ -45,6 +45,7 @@
     width: 320px;
     height: 220px;
     background: #FFFFFF;
+    line-height: 1.3;
     box-shadow: 2px 2px 20px 1px;
     overflow-x: auto;
     border-radius: 15px;

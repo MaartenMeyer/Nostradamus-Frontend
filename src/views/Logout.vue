@@ -16,7 +16,7 @@ export default {
     this.$cookie.delete('user-id')
     localStorage.removeItem('company');
     this.$store.dispatch('logout');
-    setTimeout(() => this.close(), 2500);
+    setTimeout(() => this.close(), 1500);
   },
   methods: {
       close(){
@@ -27,7 +27,6 @@ export default {
 </script>
 
 <style>
-
     .mainDiv {
         width: 100%;
         min-height: 100vh;

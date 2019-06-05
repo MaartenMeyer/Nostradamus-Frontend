@@ -9,18 +9,22 @@
             <div class="loginDiv">
                 <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
-                <select required id='selectBranch' @change="addDepartmentOptions()">
-                    <option value="" disabled selected hidden>Selecteer je locatie</option>
-                </select>
+                <div class="optionsDiv">
+                    <select required id='selectBranch' @change="addDepartmentOptions()">
+                        <option value="" disabled selected hidden>Selecteer je locatie</option>
+                    </select>
+                </div>
 
-                <select required id='selectDepartment'>
-                    <option value="" hidden>Selecteer je afdeling</option>
-                </select>
+                <div class="optionsDiv">
+                    <select required id='selectDepartment'>
+                        <option value="" hidden>Selecteer je afdeling</option>
+                    </select>
+                </div>
 
                 <p class="errorMsg" v-if="error">Invoer is nog niet compleet!</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="clockInSuccessful()"><span>Klokken</span></button>
+                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Klokken</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -129,26 +133,28 @@
                 }else{
                     this.error = true;
                 }
-
             },
             cancel(){
                 this.$router.push('/dashboard');
             },
-            clockInSuccessful(){
+            clockInSuccessful(object){
+                console.log(object);
+                
                 let branch = document.getElementById("selectBranch");
                 let branchId = branch.options[branch.selectedIndex].text;
                 let department = document.getElementById("selectDepartment");
                 let departmentId = department.options[department.selectedIndex].text;
                 let date = new Date();
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-
-                this.showModal("Je bent ingeklokt met werknemersnummer " + this.input.userNumber + " op locatie " + branchId + " op afdeling " + departmentId + ", Begintijd " + time + ", fijne dienst!");
+                
+                if (object.data.message === "User is clocked in."){
+                    this.showModal("Je bent ingeklokt met werknemersnummer " + this.input.userNumber + " op locatie " + branchId + " op afdeling " + departmentId + ", Begintijd " + time + ", fijne dienst!");
+                } else if (object.data.message === "User is clocked off."){
+                    this.showModal("Hallo " + this.input.userNumber + ", je bent uitgeklokt!")
+                }
             },
             clockInFailed(){
                 this.error = true;
-            },
-            logout(){
-                this.$router.push('/logout');
             },
             showModal(string) {
                 $("#modalDescription").html(string);
@@ -213,8 +219,7 @@
         font-family: "Roboto";
         font-size: 16px;
         color: #676A6C;
-        padding: 12px 20px;
-        margin: 8px 0;
+        padding: 0px 5px;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -227,6 +232,7 @@
     select{
         font-family: "Roboto";
         color: #676A6C;
+        width: 300px;
         font-size: 16px;
         margin-top: 20px;
         margin-left: 20px;
@@ -245,6 +251,12 @@
         border: none;
         border-bottom: 1px solid #00A0D1;
         cursor: pointer;
+    }
+
+    .optionsDiv {
+        position: relative;
+        display: block;
+        text-align: center;
     }
 
     .buttonsDiv{

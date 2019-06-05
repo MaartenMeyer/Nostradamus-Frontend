@@ -23,7 +23,6 @@
 </template>
 
 <script>
-  import axios from "axios"
   import { mapGetters } from 'vuex'
 
   const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
