@@ -10,7 +10,7 @@
           <div class="loginDiv">
               <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
               <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
-              <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
+              <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
               <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
           </div>
 
@@ -32,7 +32,8 @@
                     username: "",
                     password: ""
                 },
-                error: false
+                error: false,
+                errorMessage: ""
             }
         },
         computed: {
@@ -60,7 +61,16 @@
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
                     .then(request => this.loginSuccessful(request))
-                    .catch(() => this.loginFailed());
+                    .catch((error) => {
+                        if(error.response){
+                            if(error.response.status == 401){
+                                this.loginFailed("Gebruikersnaam of wachtwoord onjuist!");
+                            }
+
+                        } else if (error.request.status == 0){
+                            this.loginFailed("Inloggen niet mogelijk. Geen verbinding met server!");
+                        }
+                    });
             },
             loginSuccessful(req){
                 if(!req.data.token){
@@ -73,7 +83,8 @@
                 this.$store.dispatch('login');
                 this.loadData();
             },
-            loginFailed(){
+            loginFailed(error){
+                this.errorMessage = error;
                 this.error = true;
             },
             loadData(){
