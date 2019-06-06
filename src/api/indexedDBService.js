@@ -81,6 +81,37 @@ async function getAllFromDatabaseWithUserNumber(storeName, userNumber, callback)
     })
 }
 
+// Gets all entries from database where startTime and endTime are not null
+// e.g. clockIn/clockOut has been completed
+async function getUnsynchronizedData(storeName, callback) {
+    const db = await openDB('ClockingDB', 1, {
+        upgrade(db) {
+            const store = db.createObjectStore(storeName, {
+                keyPath: 'id',
+                autoIncrement: true,
+            });
+            // Create an index on userNumber property of objects
+            store.createIndex('userNumber', 'userNumber');
+        }
+    });
+
+    var transaction = db.transaction(storeName, 'readonly');
+    var objectStore = transaction.objectStore(storeName);
+    var items = [];
+
+    // Get all entries from the given storename from the database
+    var a = objectStore.getAll();
+    // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
+    a.then(function (result) {
+        for (var i = 0; i < result.length; i++) {
+            if (result[i].startTime != null && result[i].endTime != null) {
+                items.push(result[i]);
+            }
+        }
+        callback(items);
+    });
+}
+
 async function getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, callback) {
     const db = await openDB('ClockingDB', 1);
 
@@ -99,9 +130,20 @@ async function getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNum
     })
 }
 
+async function deleteFromDatabase(storeName, id){
+    const db = await openDB('ClockingDB', 1);
+
+    var transaction = db.transaction([storeName], 'readwrite');
+    var objectStore = transaction.objectStore(storeName);
+
+    objectStore.delete(id);
+}
+
 export default {
     saveToDatabase,
     getAllFromDatabase,
     getAllFromDatabaseWithUserNumber,
-    getAllFromDatabaseWithUserNumberWithoutEndtime
+    getAllFromDatabaseWithUserNumberWithoutEndtime,
+    getUnsynchronizedData,
+    deleteFromDatabase
 }

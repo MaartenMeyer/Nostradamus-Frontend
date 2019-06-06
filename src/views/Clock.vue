@@ -136,7 +136,7 @@
                             if(error.response.status == 500){
                                 this.clockInFailed("Medewerkersnummer bestaat niet!");
                             }else{
-                                console.log(error.response);
+                                //console.log(error.response);
                             }
                         } else if (error.request.status == 0){
                             // Switch to indexedDB storage
@@ -165,8 +165,6 @@
                 this.$router.push('/dashboard');
             },
             clockInSuccessful(object){
-                console.log(object);
-
                 let branch = document.getElementById("selectBranch");
                 let branchId = branch.options[branch.selectedIndex].text;
                 let department = document.getElementById("selectDepartment");
