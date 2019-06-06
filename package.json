@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
+    "idb": "^4.0.3",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",
     "nativescript-vue": "^2.2.0",

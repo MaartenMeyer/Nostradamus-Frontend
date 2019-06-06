@@ -21,7 +21,7 @@
                     </select>
                 </div>
 
-                <p class="errorMsg" v-if="error">Invoer is nog niet compleet!</p>
+                <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                 <div class="buttonsDiv">
                     <button type="button" class="submitBtn" v-on:click="clock()"><span>Klokken</span></button>
@@ -40,6 +40,7 @@
     import axios from "axios"
     import { mapGetters } from 'vuex'
     import modal from './Modal.vue';
+    import idbs from '../api/indexedDBService'
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -54,6 +55,7 @@
                     userNumber: ""
                 },
                 error: false,
+                errorMessage: "",
                 isModalVisible: false
             }
         },
@@ -129,9 +131,42 @@
                     data: { userNumber: this.input.userNumber, branchId: branchId, departmentId: departmentId },
                     headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                     .then(request => this.clockInSuccessful(request))
-                    .catch(() => this.clockInFailed());
+                    .catch((error) => {
+                        if(error.response){
+                            if(error.response.status == 500){
+                                this.clockInFailed("Medewerkersnummer bestaat niet!");
+                            }else{
+                                console.log(error.response);
+                            }
+                        } else if (error.request.status == 0){
+                            // Switch to indexedDB storage
+                            let clockEntry = {
+                                userNumber: "",
+                                branchId: "",
+                                departmentId: "",
+                                startTime: null,
+                                endTime: null
+                            }
+                            clockEntry.userNumber = this.input.userNumber;
+                            clockEntry.branchId = branchId;
+                            clockEntry.departmentId = departmentId;
+
+                            // Lines to get the current time in the format the database requires
+                            let today = new Date();
+                            let date = today.getFullYear()+'-'+(("0" + (today.getMonth()+1)).slice(-2))+'-'+("0" + today.getDate()).slice(-2);
+                            let time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+                            let dateTime = date+' '+time;
+
+                            clockEntry.startTime = dateTime;
+
+                            var object = JSON.parse(JSON.stringify(clockEntry));
+
+                            idbs.saveToDatabase("clockingEntries", object);
+                            this.showModal("Geklokt!")
+                        }
+                    });
                 }else{
-                    this.error = true;
+                    this.clockInFailed("Invoer is nog niet compleet!");
                 }
             },
             cancel(){
@@ -139,21 +174,22 @@
             },
             clockInSuccessful(object){
                 console.log(object);
-                
+
                 let branch = document.getElementById("selectBranch");
                 let branchId = branch.options[branch.selectedIndex].text;
                 let department = document.getElementById("selectDepartment");
                 let departmentId = department.options[department.selectedIndex].text;
                 let date = new Date();
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-                
+
                 if (object.data.message === "User is clocked in."){
                     this.showModal("Je bent ingeklokt met werknemersnummer " + this.input.userNumber + " op locatie " + branchId + " op afdeling " + departmentId + ", Begintijd " + time + ", fijne dienst!");
                 } else if (object.data.message === "User is clocked off."){
                     this.showModal("Hallo " + this.input.userNumber + ", je bent uitgeklokt!")
                 }
             },
-            clockInFailed(){
+            clockInFailed(string){
+                this.errorMessage = string;
                 this.error = true;
             },
             showModal(string) {
