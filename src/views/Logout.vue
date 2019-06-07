@@ -1,8 +1,11 @@
 <template>
     <div class="mainDiv">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+
         <div class="formBox">
 
             <h2 class="welcome1">U bent uitgelogd.</h2>
+            <i class="fas fa-check"></i>
 
         </div>
     </div>
@@ -60,6 +63,12 @@ export default {
         margin-bottom: -15px;
         margin-top: 60px;
         color: #676A6C;
+    }
+
+    .fa-check {
+        margin-top: 50px;
+        font-size: 200px;
+        color: #00A0D1;
     }
 
 </style>

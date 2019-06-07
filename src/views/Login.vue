@@ -1,6 +1,7 @@
 <template web>
   <div class="mainDiv">
       <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
 
       <div class="formBox">
 
@@ -209,7 +210,9 @@
         z-index: 1;
     }
     .submitBtn:after {
-        content: '»';
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f2f6";
         position: absolute;
         opacity: 0;
         right: -20px;

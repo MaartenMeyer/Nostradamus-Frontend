@@ -1,6 +1,7 @@
 <template web>
   <div class="mainDiv">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
 
     <div class="box">
       <h2 class="dashboardWelcome">Dashboard</h2>
@@ -13,11 +14,20 @@
       <div class="buttons">
         <button class="button" v-on:click="takeBreak()">Pauze</button>
       </div>
+    </div>
 
       <div class="buttons">
-        <button class="buttonLogOut" v-on:click="logout()">Uitloggen</button>
+        <button class="buttonLogOut" v-on:click="logout()"><i class="fas fa-sign-out-alt"></i></button>
       </div>
+
+    <div class="buttons">
+      <button class="buttonOverview" v-on:click=""><i class="fas fa-list-ul"></i></button>
     </div>
+
+    <div class="buttons">
+      <button class="buttonRegister" v-on:click=""><i class="fas fa-user-plus"></i></button>
+    </div>
+
   </div>
 </template>
 
@@ -157,7 +167,7 @@
   border-radius: 5px;
   display: inline-block;
   width: 200px;
-  margin-top: 30px;
+  margin-top: 60px;
   margin-bottom: 10px;
   color: white;
   text-align: center;
@@ -180,30 +190,37 @@
   transform: scale(0.95);
 }
 
+/* Log out button */
 .buttonLogOut {
   font-family: "Roboto";
-  font-size: 18px;
+  position:absolute;
+  top: -15px;
+  right: 0;
+  font-size: 25px;
   background-color: #676a6c;
-  padding: 20px;
+  padding: 10px;
   border: 4px solid #676a6c;
   border-radius: 5px;
   display: inline-block;
-  width: 200px;
-  margin-top: 30px;
-  margin-bottom: 10px;
+  width: 60px;
+  margin-right: 5px;
   color: white;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   outline: none;
-  position: relative;
   transition: transform 0.3s;
   transition: 0.5s;
   z-index: 1;
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+  0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 .buttonLogOut:hover {
   background-color: #4b4d4f;
   border: 4px solid #4b4d4f;
+  transform: scale(0.85);
+  transition: 0.5s;
+  font-size: 27px;
 }
 .buttonLogOut:after {
   z-index: -1;
@@ -211,4 +228,83 @@
 .buttonLogOut:active {
   transform: scale(0.95);
 }
+
+/* Overview button */
+.buttonOverview {
+  font-family: "Roboto";
+  position:absolute;
+  top: 60px;
+  right: 0;
+  font-size: 25px;
+  background-color: #676a6c;
+  padding: 10px;
+  border: 4px solid #676a6c;
+  border-radius: 5px;
+  display: inline-block;
+  width: 60px;
+  margin-right: 5px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.3s;
+  transition: 0.5s;
+  z-index: 1;
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+  0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+.buttonOverview:hover {
+  background-color: #4b4d4f;
+  border: 4px solid #4b4d4f;
+  transform: scale(0.85);
+  transition: 0.5s;
+  font-size: 27px;
+}
+.buttonOverview:after {
+  z-index: -1;
+}
+.buttonOverview:active {
+  transform: scale(0.95);
+}
+
+/* Register button */
+.buttonRegister {
+  font-family: "Roboto";
+  position:absolute;
+  top: 140px;
+  right: 0;
+  font-size: 25px;
+  background-color: #676a6c;
+  padding: 10px;
+  border: 4px solid #676a6c;
+  border-radius: 5px;
+  display: inline-block;
+  width: 60px;
+  margin-right: 5px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.3s;
+  transition: 0.5s;
+  z-index: 1;
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+  0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+.buttonRegister:hover {
+  background-color: #4b4d4f;
+  border: 4px solid #4b4d4f;
+  transform: scale(0.85);
+  transition: 0.5s;
+  font-size: 27px;
+}
+.buttonRegister:after {
+  z-index: -1;
+}
+.buttonRegister:active {
+  transform: scale(0.95);
+}
+
 </style>

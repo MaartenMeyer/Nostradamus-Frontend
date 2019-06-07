@@ -21,6 +21,7 @@
     "sass": "node-sass ./src/styles/style.scss -o ./src/styles/"
   },
   "dependencies": {
+    "@fortawesome/vue-fontawesome": "^0.1.6",
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "idb": "^4.0.3",
@@ -39,6 +40,7 @@
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.1",
     "@babel/traverse": "^7.4.0",
+    "@fortawesome/fontawesome-free": "^5.9.0",
     "@vue/cli-plugin-babel": "^3.7.0",
     "@vue/cli-service": "^3.7.0",
     "babel-loader": "^8.0.5",
