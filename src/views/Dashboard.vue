@@ -60,23 +60,17 @@
                 this.$router.push('/logout');
             },
             checkConnection(){
-                console.log("Deze unauthorized error hieronder V staat hier even tot backend is opgelost")
                 axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:3000/api/login',
+                    method: 'get',
+                    url: 'http://127.0.0.1:3000/api/status',
                     data: { },
-                    config: { headers: {'Content-Type': 'application/json' }}})
-                    .then()
+                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
+                    .then((request => this.synchronize()))
                     .catch((error) => {
-                        if(error.response){
-                            if(error.response.status == 401){
-                                this.synchronize();
-                            }
-
-                        } else if (error.request.status == 0){
-                            console.log("No connection with server, using IndexedDB.")
+                        if (error.request.status == 0){
+                            console.log("Dashboard: no connection with server, using IndexedDB.")
                         }
-                    });
+                    })
             },
             synchronize(){
                 idbs.getUnsynchronizedData("clockingEntries", function (items) {
@@ -90,7 +84,7 @@
                             data: { userNumber: items[i].userNumber, branchId: items[i].branchId, departmentId: items[i].departmentId, startTime: items[i].startTime, endTime: items[i].endTime },
                             headers: {'Authorization': "bearer " + VueCookie.get('access-token')}})
                             .then(request => {
-                                console.log("Data synchronized!");
+                                console.log("Dashboard: data synchronized!");
                                 idbs.deleteFromDatabase("clockingEntries", id);
                             })
                             .catch((error) => {
@@ -98,7 +92,7 @@
                             });
                         }
                     }else {
-                        console.log("No data synchronization needed!");
+                        console.log("Dashboard: no data synchronization needed!");
                     }
                 });
             }
