@@ -70,11 +70,11 @@
             clockBreakSuccessful(object) {
                 let date = new Date();
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-                
+
                 if (object.data.message === "User break clocked in."){
-                    this.showModal("Hallo " + this.input.userNumber + " je pauze is ingeklokt " + ", Begintijd " + time + ", fijne pauze!");
+                    this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Begintijd: " + time + "<br>Fijne pauze!");
                 } else if (object.data.message === "User break clocked off.") {
-                    this.showModal("Hallo " + this.input.userNumber + ", je pauze is uitgeklokt " + ", Eindtijd " + time)
+                    this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Eindtijd: " + time)
                 }
             },
             clockBreakFailed(){

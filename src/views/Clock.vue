@@ -173,9 +173,9 @@
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
                 if (object.data.message === "User is clocked in."){
-                    this.showModal("<b>Ingeklokt!</b><br>Werknemersnummer: " + this.input.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!");
+                    this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!");
                 } else if (object.data.message === "User is clocked off."){
-                    this.showModal("<b>Uitgeklokt!</b><br>Werknemersnummer: " + this.input.userNumber + "<br>Eindtijd: "+ time)
+                    this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Eindtijd: "+ time)
                 }
             },
             clockInFailed(string){
