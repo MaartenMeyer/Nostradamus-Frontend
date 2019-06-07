@@ -43,7 +43,7 @@
     font-family: "Roboto";
     color: #676A6C;
     width: 320px;
-    height: 220px;
+    height: 280px;
     background: #FFFFFF;
     line-height: 1.3;
     box-shadow: 2px 2px 20px 1px;
