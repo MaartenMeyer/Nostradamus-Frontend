@@ -31,6 +31,7 @@
     "nativescript-vue-navigator": "^0.0.3",
     "sass": "^1.20.1",
     "tns-core-modules": "^5.2.2",
+    "v-debounce": "^0.1.2",
     "vue": "^2.6.10",
     "vue-cookie": "^1.1.4",
     "vue-router": "^3.0.3",

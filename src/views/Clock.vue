@@ -8,16 +8,16 @@
             <h2 class="welcome1">Voer je gegevens in:</h2>
 
             <div class="loginDiv">
-                <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
+                <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
                 <div class="optionsDiv">
-                    <select required id='selectBranch' @change="addDepartmentOptions()">
+                    <select required id='selectBranch' :disabled="disabled" style='visibility:hidden' @change="addDepartmentOptions()">
                         <option value="" disabled selected hidden>Selecteer je locatie</option>
                     </select>
                 </div>
 
                 <div class="optionsDiv">
-                    <select required id='selectDepartment'>
+                    <select required id='selectDepartment' :disabled="disabled" style='visibility:hidden'>
                         <option value="" hidden>Selecteer je afdeling</option>
                     </select>
                 </div>
@@ -42,6 +42,7 @@
     import { mapGetters } from 'vuex'
     import modal from './Modal.vue';
     import idbs from '../api/indexedDBService'
+    import debounce from 'v-debounce'
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -52,13 +53,28 @@
         },
         data() {
             return {
-                input: {
-                    userNumber: ""
-                },
+                userNumber: "",
                 error: false,
                 errorMessage: "",
-                isModalVisible: false
+                isModalVisible: false,
+                delay: 700,
+                disabled: true
             }
+        },
+        watch: {
+            userNumber () {
+                this.checkUsernumberValidity();
+                if(this.userNumber != ""){
+                    document.getElementById("selectBranch").style.visibility="visible";
+                    document.getElementById("selectDepartment").style.visibility="visible" ;
+                }else{
+                    document.getElementById("selectBranch").style.visibility="hidden";
+                    document.getElementById("selectDepartment").style.visibility="hidden" ;
+                }
+            }
+        },
+        directives: {
+            debounce
         },
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
@@ -67,6 +83,11 @@
             this.addBranchOptions();
         },
         methods: {
+            checkUsernumberValidity(){
+                // Todo: check if userNumber is valid
+                // disabled: set dropdowns to disabled until userNumber is valid(exists in db)
+                this.disabled = false;
+            },
             // Adds branches to options of selectBranch select element
             addBranchOptions(){
                 let jsonObj = JSON.parse(localStorage.getItem('company'));
@@ -118,18 +139,12 @@
                 let department = document.getElementById("selectDepartment");
                 let departmentId = department.options[department.selectedIndex].value;
 
-                // Lines to get the current time in the format the database requires
-                // var today = new Date();
-                // var date = today.getFullYear()+'-'+(("0" + (today.getMonth()+1)).slice(-2))+'-'+("0" + today.getDate()).slice(-2);
-                // var time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
-                // var dateTime = date+' '+time;
-
                 // Checks if default values have been changed / if user has selected options for both branch and department
-                if(branchId != "" && departmentId != "" && this.input.userNumber != ""){
+                if(branchId != "" && departmentId != "" && this.userNumber != ""){
                     axios({
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/clocking',
-                    data: { userNumber: this.input.userNumber, branchId: branchId, departmentId: departmentId },
+                    data: { userNumber: this.userNumber, branchId: branchId, departmentId: departmentId },
                     headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                     .then(request => this.clockInSuccessful(request))
                     .catch((error) => {
@@ -148,7 +163,7 @@
                                 startTime: null,
                                 endTime: null
                             }
-                            clockEntry.userNumber = this.input.userNumber;
+                            clockEntry.userNumber = this.userNumber;
                             clockEntry.branchId = branchId;
                             clockEntry.departmentId = departmentId;
 
@@ -174,9 +189,9 @@
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
                 if (object.data.message === "User is clocked in."){
-                    this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!");
+                    this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!");
                 } else if (object.data.message === "User is clocked off."){
-                    this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Eindtijd: "+ time)
+                    this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: "+ time)
                 }
             },
             clockInFailed(string){
@@ -303,7 +318,7 @@
         border-radius: 5px;
         display: inline-block;
         width: 150px;
-        margin-top: 20px;
+        margin-top: 15px;
         margin-bottom: 10px;
         color: white;
         text-align: center;
@@ -386,7 +401,7 @@
         font-family: Roboto;
         font-weight: bold;
         font-size: 11px;
-        margin-top: 10px;
+        margin-top: 20px;
         margin-bottom: 0px;
         color: red;
     }
