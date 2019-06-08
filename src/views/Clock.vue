@@ -25,7 +25,7 @@
                 <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="clock()"><span>Klokken</span></button>
+                    <button type="button" class="submitBtn" id='submitButton' v-on:click="clock()"><span>Klokken</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -80,9 +80,10 @@
         methods: {
             checkUsernumberValidity(){
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
-                    this.showErrorMessage("", false);
-                    document.getElementById("selectBranch").style.visibility="visible";
-                    document.getElementById("selectDepartment").style.visibility="visible";
+                    // this.showErrorMessage("", false);
+                    // document.getElementById("selectBranch").style.visibility="visible";
+                    // document.getElementById("selectDepartment").style.visibility="visible";
+                    this.checkConnection(this.checkClockingStatus(""));
                 }else{
                     if(this.userNumber != ""){
                         this.showErrorMessage("Medewerkersnummer ongeldig!", true);
@@ -102,6 +103,52 @@
                 for(var i = 0; i < users.length; i++) {
                     this.userNumbers.push(users[i].userNumber)
                 }
+            },
+            checkClockingStatus(status){
+                return (status) => {
+                    if(status == "online"){
+                        axios({
+                            method: 'get',
+                            url: 'http://127.0.0.1:3000/api/clockingStatus/' + this.userNumber,
+                            headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
+                            .then((response => {
+                                if(response.status === 200){
+                                    document.getElementById("submitButton").innerHTML="Uitklokken";
+                                }
+                            }))
+                            .catch((error) => {
+                                if (error.response.status == 404){
+                                    this.showErrorMessage("", false);
+                                    document.getElementById("selectBranch").style.visibility="visible";
+                                    document.getElementById("selectDepartment").style.visibility="visible";
+                                    document.getElementById("submitButton").innerHTML="Inklokken";
+                                }
+                            })
+
+                    }else if(status == "offline"){
+                        // Todo: check if user is clocked in offline
+                    }
+                }
+            },
+            checkConnection(callback){
+                axios({
+                    method: 'get',
+                    url: 'http://127.0.0.1:3000/api/status',
+                    data: { },
+                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
+                    .then((request => {
+                        callback("online");
+                    }))
+                    .catch((error) => {
+                        if(error.response){
+                            if(error.response.status == 401){
+                                // User is unauthorized
+                            }
+
+                        } else if (error.request.status == 0){
+                            callback("offline");
+                        }
+                    })
             },
             // Adds branches to options of selectBranch select element
             addBranchOptions(){

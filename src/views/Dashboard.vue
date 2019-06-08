@@ -73,7 +73,7 @@
                     })
             },
             synchronize(){
-                idbs.getUnsynchronizedData("clockingEntries", function (items) {
+                idbs.getUnsynchronizedData("clockingEntries", (items) => {
                     if(items.length > 0){
                         for(var i = 0; i < items.length; i++){
                             let id = items[i].id;
@@ -82,7 +82,7 @@
                             method: 'post',
                             url: 'http://127.0.0.1:3000/api/clocking',
                             data: { userNumber: items[i].userNumber, branchId: items[i].branchId, departmentId: items[i].departmentId, startTime: items[i].startTime, endTime: items[i].endTime },
-                            headers: {'Authorization': "bearer " + VueCookie.get('access-token')}})
+                            headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                             .then(request => {
                                 console.log("Dashboard: data synchronized!");
                                 idbs.deleteFromDatabase("clockingEntries", id);
