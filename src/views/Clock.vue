@@ -57,20 +57,14 @@
                 error: false,
                 errorMessage: "",
                 isModalVisible: false,
-                delay: 700,
-                disabled: true
+                delay: 500,
+                disabled: false,
+                userNumbers: []
             }
         },
         watch: {
             userNumber () {
                 this.checkUsernumberValidity();
-                if(this.userNumber != ""){
-                    document.getElementById("selectBranch").style.visibility="visible";
-                    document.getElementById("selectDepartment").style.visibility="visible" ;
-                }else{
-                    document.getElementById("selectBranch").style.visibility="hidden";
-                    document.getElementById("selectDepartment").style.visibility="hidden" ;
-                }
             }
         },
         directives: {
@@ -81,12 +75,33 @@
         },
         mounted(){
             this.addBranchOptions();
+            this.addUsersToArray();
         },
         methods: {
             checkUsernumberValidity(){
-                // Todo: check if userNumber is valid
-                // disabled: set dropdowns to disabled until userNumber is valid(exists in db)
-                this.disabled = false;
+                if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
+                    this.showErrorMessage("", false);
+                    document.getElementById("selectBranch").style.visibility="visible";
+                    document.getElementById("selectDepartment").style.visibility="visible";
+                }else{
+                    if(this.userNumber != ""){
+                        this.showErrorMessage("Medewerkersnummer ongeldig!", true);
+                    }else{
+                        this.showErrorMessage("", false);
+                    }
+                    document.getElementById("selectBranch").style.visibility="hidden";
+                    document.getElementById("selectDepartment").style.visibility="hidden";
+                }
+            },
+            addUsersToArray(){
+                this.userNumbers = [];
+
+                let jsonObj = JSON.parse(localStorage.getItem('users'));
+                let users = jsonObj.users;
+
+                for(var i = 0; i < users.length; i++) {
+                    this.userNumbers.push(users[i].userNumber)
+                }
             },
             // Adds branches to options of selectBranch select element
             addBranchOptions(){
@@ -150,7 +165,7 @@
                     .catch((error) => {
                         if(error.response){
                             if(error.response.status == 500){
-                                this.clockInFailed("Medewerkersnummer bestaat niet!");
+                                this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
                             }else{
                                 //console.log(error.response);
                             }
@@ -174,7 +189,7 @@
                         }
                     });
                 }else{
-                    this.clockInFailed("Invoer is nog niet compleet!");
+                    this.showErrorMessage("Invoer is nog niet compleet!", true);
                 }
             },
             cancel(){
@@ -194,9 +209,9 @@
                     this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: "+ time)
                 }
             },
-            clockInFailed(string){
+            showErrorMessage(string, status){
                 this.errorMessage = string;
-                this.error = true;
+                this.error = status;
             },
             showModal(string) {
                 $("#modalDescription").html(string);

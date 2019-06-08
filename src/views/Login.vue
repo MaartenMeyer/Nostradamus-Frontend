@@ -95,15 +95,29 @@
                     config: { headers: {"Authorization" : "Bearer "+ this.$cookie.get('access-token')+""}}})
                     .then(request => this.loadDataSuccessful(request))
                     .catch(() => this.loadDataFailed());
-
             },
             loadDataSuccessful(req){
                 localStorage.setItem('company', JSON.stringify(req.data));
-                this.$router.replace('/dashboard');
+                this.loadUsers();
             },
             loadDataFailed(){
 
             },
+            loadUsers(){
+                axios({
+                    method: 'get',
+                    url: 'http://127.0.0.1:3000/api/users/'+ this.$cookie.get('user-id'),
+                    config: { headers: {"Authorization" : "Bearer "+ this.$cookie.get('access-token')+""}}})
+                    .then(request => this.loadUsersSuccessful(request))
+                    .catch(() => this.loadUsersFailed());
+            },
+            loadUsersSuccessful(req){
+                localStorage.setItem('users', JSON.stringify(req.data));
+                this.$router.replace('/dashboard');
+            },
+            loadUsersFailed(){
+
+            }
         }
     }
 </script>

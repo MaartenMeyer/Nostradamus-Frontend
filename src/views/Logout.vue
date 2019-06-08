@@ -18,6 +18,7 @@ export default {
     this.$cookie.delete('access-token');
     this.$cookie.delete('user-id')
     localStorage.removeItem('company');
+    localStorage.removeItem('users');
     this.$store.dispatch('logout');
     setTimeout(() => this.close(), 1500);
   },

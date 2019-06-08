@@ -8,12 +8,12 @@
             <h2 class="welcome1">Voer je gegevens in:</h2>
 
             <div class="loginDiv">
-                <input class="clockInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
+                <input class="clockInput" type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
                 <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" v-on:click="clockBreak()"><span>Pauze</span></button>
+                    <button type="button" class="submitBtn" :disabled="disabled" v-on:click="clockBreak()"><span>Pauze</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -28,6 +28,7 @@
     import axios from "axios"
     import { mapGetters } from 'vuex'
     import modal from './Modal.vue';
+    import debounce from 'v-debounce'
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -38,31 +39,66 @@
         },
         data() {
             return {
-                input: {
-                    userNumber: "",
-                },
+                userNumber: "",
                 error: false,
                 errorMessage: "",
-                isModalVisible: false
+                isModalVisible: false,
+                delay: 500,
+                disabled: false,
+                userNumbers: []
             }
+        },
+        watch: {
+            userNumber () {
+                this.checkUsernumberValidity();
+            }
+        },
+        directives: {
+            debounce
         },
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
+        mounted(){
+            this.addUsersToArray();
+        },
         methods: {
+            checkUsernumberValidity(){
+                if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
+                    this.showErrorMessage("", false);
+                    this.disabled = false;
+                }else{
+                    if(this.userNumber != ""){
+                        this.disabled = true;
+                        this.showErrorMessage("Medewerkersnummer ongeldig!", true);
+                    }else{
+                        this.disabled = false;
+                        this.showErrorMessage("", false);
+                    }
+                }
+            },
+            addUsersToArray(){
+                this.userNumbers = [];
+
+                let jsonObj = JSON.parse(localStorage.getItem('users'));
+                let users = jsonObj.users;
+
+                for(var i = 0; i < users.length; i++) {
+                    this.userNumbers.push(users[i].userNumber)
+                }
+            },
             clockBreak(){
                 // Checks if default values have been changed / if user has entered userNumber
-                if(this.input.userNumber != ""){
+                if(this.userNumber != ""){
                     axios({
                     method: 'post',
                     url: 'http://127.0.0.1:3000/api/breaking',
-                    data: { userNumber: this.input.userNumber },
+                    data: { userNumber: this.userNumber },
                     headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                     .then(request => this.clockBreakSuccessful(request))
-                    .catch(() => this.clockBreakFailed());
+                    .catch(() => this.showErrorMessage("Pauze niet ingeklokt. Werknemersnummer niet correct of je bent nog niet ingeklokt!", true));
                 }else{
-                    this.errorMessage = "Voer een werknemersnummer in!";
-                    this.error = true;
+                    this.showErrorMessage("Voer een werknemersnummer in!", true)
                 }
             },
             cancel(){
@@ -73,14 +109,14 @@
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
                 if (object.data.message === "User break clocked in."){
-                    this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Begintijd: " + time + "<br>Fijne pauze!");
+                    this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Begintijd: " + time + "<br>Fijne pauze!");
                 } else if (object.data.message === "User break clocked off.") {
-                    this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.input.userNumber + "<br>Eindtijd: " + time)
+                    this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: " + time)
                 }
             },
-            clockBreakFailed(){
-                this.errorMessage = "Pauze niet ingeklokt. Werknemersnummer niet correct of je bent nog niet ingeklokt!";
-                this.error = true;
+            showErrorMessage(string, status){
+                this.errorMessage = string;
+                this.error = status;
             },
             showModal(string) {
                 console.log(string);
@@ -257,7 +293,7 @@
         font-family: Roboto;
         font-weight: bold;
         font-size: 11px;
-        margin-top: 10px;
+        margin-top: 20px;
         margin-bottom: 0px;
         color: red;
     }
