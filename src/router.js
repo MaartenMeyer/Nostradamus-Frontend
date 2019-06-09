@@ -5,6 +5,7 @@ import Login from '@/views/Login.vue';
 import Dashboard from '@/views/Dashboard.vue';
 import Clock from '@/views/Clock.vue';
 import Break from '@/views/Break.vue';
+import Overview from '@/views/Overview.vue';
 import Register from '@/views/Register.vue';
 import Logout from '@/views/Logout.vue'
 
@@ -42,6 +43,11 @@ const router = new Router ({
       path: '/break',
       name: 'Break',
       component: Break
+    },
+    {
+      path: '/overview',
+      name: 'Overview',
+      component: Overview
     },
     {
       path: '/register',

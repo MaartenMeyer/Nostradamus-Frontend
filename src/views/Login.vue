@@ -5,8 +5,8 @@
 
       <div class="formBox">
 
-          <h2 class="welcome1">Welkom bij</h2>
-          <h2 class="welcome2">Nostradamus</h2>
+          <h2 class="titleMain1">Welkom bij</h2>
+          <h2 class="titleMain2">Nostradamus</h2>
 
           <div class="loginDiv">
               <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
@@ -157,8 +157,8 @@
         vertical-align: middle;
     }
 
-    /* Welcome 1 and 2 */
-    .welcome1{
+    /* Main titles */
+    .titleMain1 {
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
@@ -166,7 +166,7 @@
         margin-top: 60px;
         color: #676A6C;
     }
-    .welcome2{
+    .titleMain2 {
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;

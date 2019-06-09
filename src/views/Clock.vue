@@ -5,7 +5,7 @@
 
         <div class="formBox">
 
-            <h2 class="welcome1">Voer je gegevens in:</h2>
+            <h2 class="titleMain">Voer je gegevens in:</h2>
 
             <div class="loginDiv">
                 <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
@@ -353,8 +353,8 @@
         vertical-align: middle;
     }
 
-    /* Welcome 1 and 2 */
-    .welcome1{
+    /* Main title */
+    .titleMain{
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;

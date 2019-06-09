@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
 
     <div class="box">
-      <h2 class="dashboardWelcome">Dashboard</h2>
-      <h2 class="dashboardWelcome2">Welkom {{currentUser.userName}}</h2>
+      <h2 class="titleMain1">Dashboard</h2>
+      <h2 class="titleMain2">Welkom {{currentUser.userName}}</h2>
 
       <div class="buttonsDiv">
         <button class="button" v-on:click="clock()">In/Uit Klokken</button>
@@ -21,11 +21,11 @@
       </div>
 
     <div class="buttons">
-      <button class="buttonOverview" v-on:click=""><i class="fas fa-list-ul"></i></button>
+      <button class="buttonOverview" v-on:click="overview()"><i class="fas fa-list-ul"></i></button>
     </div>
 
     <div class="buttons">
-      <button class="buttonRegister" v-on:click=""><i class="fas fa-user-plus"></i></button>
+      <button class="buttonRegister" v-on:click="registerUser()"><i class="fas fa-user-plus"></i></button>
     </div>
 
   </div>
@@ -52,6 +52,12 @@
             },
             takeBreak(){
                 this.$router.replace('/break');
+            },
+            overview(){
+              this.$router.replace('/overview');
+            },
+            registerUser(){
+              this.$router.replace('/register');
             },
             mounted () {
 
@@ -117,7 +123,7 @@
 }
 
 .box {
-  width: 500px;
+  width: 400px;
   height: 450px;
   background: #fff;
   border-radius: 15px;
@@ -128,7 +134,7 @@
     0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
-.dashboardWelcome {
+.titleMain1 {
   font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
   font-size: 28px;
   text-align: center;
@@ -137,7 +143,7 @@
   color: #676a6c;
 }
 
-.dashboardWelcome2 {
+.titleMain2 {
   font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
   font-size: 28px;
   text-align: center;

@@ -5,19 +5,10 @@
 
         <div class="formBox">
 
-            <h2 class="titleMain">Registreer nieuwe gebruiker</h2>
+            <h2 class="titleMain">Uren overzicht</h2>
 
-            <div class="loginDiv">
-                <input class="loginInput" type="text" placeholder="Voornaam" name="Voornaam"/><br>
-                <input class="loginInput" type="text"  placeholder="Achternaam" name="Achternaam"/><br>
-                <input class="loginInput" type="text"  placeholder="Gebruikersnaam" name="Gebruikersnaam"/><br>
-                <input class="loginInput" type="text"  placeholder="Email" name="email"/><br>
-                <input class="loginInput" type="password"  placeholder="Wachtwoord" name="password"/><br>
+            <p>Hier komt een overzicht van de gemaakte uren met daarbij de pauzes. Op basis van eventuele ingevoerde gegevens?</p>
 
-                <p class="errorMsg" v-if="error">Nog niet volledig ingevuld!</p>
-
-                <button type="button" class="submitBtn" v-on:click=""><span>Registreer</span></button>
-            </div>
         </div>
 
         <div class="buttons">
@@ -40,7 +31,7 @@
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
-        name: "Register",
+        name: "Overview",
 
 
         methods: {
@@ -73,8 +64,8 @@
 
     /* Form div */
     .formBox {
-        width: 450px;
-        height: 470px;
+        width: 800px;
+        height: 400px;
         background: #fff;
         border-radius: 15px;
         overflow: hidden;
@@ -95,8 +86,8 @@
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
-        margin-bottom: 3px;
-        margin-top: 40px;
+        margin-bottom: -15px;
+        margin-top: 60px;
         color: #676A6C;
     }
 
