@@ -59,7 +59,12 @@
                 isModalVisible: false,
                 delay: 500,
                 disabled: false,
-                userNumbers: []
+                userNumbers: [],
+                clockingEntry: {
+                    userNumber: "",
+                    branchId: "",
+                    departmentId: ""
+                }
             }
         },
         watch: {
@@ -80,9 +85,7 @@
         methods: {
             checkUsernumberValidity(){
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
-                    // this.showErrorMessage("", false);
-                    // document.getElementById("selectBranch").style.visibility="visible";
-                    // document.getElementById("selectDepartment").style.visibility="visible";
+                    this.showErrorMessage("", false);
                     this.checkConnection(this.checkClockingStatus(""));
                 }else{
                     if(this.userNumber != ""){
@@ -90,6 +93,7 @@
                     }else{
                         this.showErrorMessage("", false);
                     }
+                    document.getElementById("submitButton").innerHTML="Klokken";
                     document.getElementById("selectBranch").style.visibility="hidden";
                     document.getElementById("selectDepartment").style.visibility="hidden";
                 }
@@ -113,11 +117,18 @@
                             headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
                             .then((response => {
                                 if(response.status === 200){
+                                    console.log(response)
+                                    this.clockingEntry.userNumber = response.data.userNumber;
+                                    this.clockingEntry.branchId = response.data.branchId;
+                                    this.clockingEntry.departmentId = response.data.departmentId;
                                     document.getElementById("submitButton").innerHTML="Uitklokken";
                                 }
                             }))
                             .catch((error) => {
                                 if (error.response.status == 404){
+                                    this.clockingEntry.userNumber = "";
+                                    this.clockingEntry.branchId = "";
+                                    this.clockingEntry.departmentId = "";
                                     this.showErrorMessage("", false);
                                     document.getElementById("selectBranch").style.visibility="visible";
                                     document.getElementById("selectDepartment").style.visibility="visible";
@@ -195,48 +206,83 @@
                 $('#selectDepartment').append( optionsAsString );
             },
             clock(){
-                // Get values of selectBranch and selectDepartment components
-                let branch = document.getElementById("selectBranch");
-                let branchId = branch.options[branch.selectedIndex].value;
-                let department = document.getElementById("selectDepartment");
-                let departmentId = department.options[department.selectedIndex].value;
-
-                // Checks if default values have been changed / if user has selected options for both branch and department
-                if(branchId != "" && departmentId != "" && this.userNumber != ""){
+                if(this.clockingEntry.userNumber != ""){
                     axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:3000/api/clocking',
-                    data: { userNumber: this.userNumber, branchId: branchId, departmentId: departmentId },
-                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
-                    .then(request => this.clockInSuccessful(request))
-                    .catch((error) => {
-                        if(error.response){
-                            if(error.response.status == 500){
-                                this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
-                            }else{
-                                //console.log(error.response);
-                            }
-                        } else if (error.request.status == 0){
-                            // Switch to indexedDB storage
-                            let clockEntry = {
-                                userNumber: "",
-                                branchId: "",
-                                departmentId: "",
-                                startTime: null,
-                                endTime: null
-                            }
-                            clockEntry.userNumber = this.userNumber;
-                            clockEntry.branchId = branchId;
-                            clockEntry.departmentId = departmentId;
+                        method: 'post',
+                        url: 'http://127.0.0.1:3000/api/clocking',
+                        data: { userNumber: this.clockingEntry.userNumber, branchId: this.clockingEntry.branchId, departmentId: this.clockingEntry.departmentId },
+                        headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
+                        .then(request => this.clockInSuccessful(request))
+                        .catch((error) => {
+                            if(error.response){
+                                if(error.response.status == 500){
+                                    this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
+                                }else{
+                                    //console.log(error.response);
+                                }
+                            } else if (error.request.status == 0){
+                                // Switch to indexedDB storage
+                                let clockEntry = {
+                                    userNumber: "",
+                                    branchId: "",
+                                    departmentId: "",
+                                    startTime: null,
+                                    endTime: null
+                                }
+                                clockEntry.userNumber = this.userNumber;
+                                clockEntry.branchId = branchId;
+                                clockEntry.departmentId = departmentId;
 
-                            var object = JSON.parse(JSON.stringify(clockEntry));
+                                var object = JSON.parse(JSON.stringify(clockEntry));
 
-                            idbs.saveToDatabase("clockingEntries", object);
-                            this.showModal("Geklokt!")
-                        }
-                    });
+                                idbs.saveToDatabase("clockingEntries", object);
+                                this.showModal("Geklokt!")
+                            }
+                        });
                 }else{
-                    this.showErrorMessage("Invoer is nog niet compleet!", true);
+                    // Get values of selectBranch and selectDepartment components
+                    let branch = document.getElementById("selectBranch");
+                    let branchId = branch.options[branch.selectedIndex].value;
+                    let department = document.getElementById("selectDepartment");
+                    let departmentId = department.options[department.selectedIndex].value;
+
+                    // Checks if default values have been changed / if user has selected options for both branch and department
+                    if(branchId != "" && departmentId != "" && this.userNumber != ""){
+                        axios({
+                        method: 'post',
+                        url: 'http://127.0.0.1:3000/api/clocking',
+                        data: { userNumber: this.userNumber, branchId: branchId, departmentId: departmentId },
+                        headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
+                        .then(request => this.clockInSuccessful(request))
+                        .catch((error) => {
+                            if(error.response){
+                                if(error.response.status == 500){
+                                    this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
+                                }else{
+                                    //console.log(error.response);
+                                }
+                            } else if (error.request.status == 0){
+                                // Switch to indexedDB storage
+                                let clockEntry = {
+                                    userNumber: "",
+                                    branchId: "",
+                                    departmentId: "",
+                                    startTime: null,
+                                    endTime: null
+                                }
+                                clockEntry.userNumber = this.userNumber;
+                                clockEntry.branchId = branchId;
+                                clockEntry.departmentId = departmentId;
+
+                                var object = JSON.parse(JSON.stringify(clockEntry));
+
+                                idbs.saveToDatabase("clockingEntries", object);
+                                this.showModal("Geklokt!")
+                            }
+                        });
+                    }else{
+                        this.showErrorMessage("Invoer is nog niet compleet!", true);
+                    }
                 }
             },
             cancel(){
