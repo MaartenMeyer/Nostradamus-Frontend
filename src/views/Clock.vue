@@ -11,13 +11,13 @@
                 <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
                 <div class="optionsDiv">
-                    <select required id='selectBranch' :disabled="disabled" style='visibility:hidden' @change="addDepartmentOptions()">
+                    <select required id='selectBranch' style='visibility:hidden' @change="addDepartmentOptions()">
                         <option value="" disabled selected hidden>Selecteer je locatie</option>
                     </select>
                 </div>
 
                 <div class="optionsDiv">
-                    <select required id='selectDepartment' :disabled="disabled" style='visibility:hidden'>
+                    <select required id='selectDepartment' style='visibility:hidden'>
                         <option value="" hidden>Selecteer je afdeling</option>
                     </select>
                 </div>
@@ -25,7 +25,7 @@
                 <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" id='submitButton' v-on:click="clock()"><span>Klokken</span></button>
+                    <button type="button" class="submitBtn" id='submitButton' :disabled="disabled" v-on:click="clock()"><span>Klokken</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -38,7 +38,6 @@
 </template>
 
 <script>
-    import axios from "axios"
     import { mapGetters } from 'vuex'
     import modal from './Modal.vue';
     import idbs from '../api/indexedDBService'
@@ -69,6 +68,7 @@
             }
         },
         watch: {
+            // Watches for changes to the userNumber input field with delay declared in data()
             userNumber () {
                 this.checkUsernumberValidity();
             }
@@ -84,14 +84,17 @@
             this.addUsersToArray();
         },
         methods: {
+            // Gets userNumbers of company from storage and adds them to array userNumber for faster access
             addUsersToArray(){
-                this.userNumbers = [];
+                if(this.userNumbers.length == 0){
+                    this.userNumbers = [];
 
-                let jsonObj = JSON.parse(localStorage.getItem('users'));
-                let users = jsonObj.users;
+                    let jsonObj = JSON.parse(localStorage.getItem('users'));
+                    let users = jsonObj.users;
 
-                for(var i = 0; i < users.length; i++) {
-                    this.userNumbers.push(users[i].userNumber)
+                    for(var i = 0; i < users.length; i++) {
+                        this.userNumbers.push(users[i].userNumber)
+                    }
                 }
             },
             // Adds branches to options of selectBranch select element
@@ -148,6 +151,7 @@
                     }else{
                         this.showErrorMessage("", false);
                     }
+
                     this.clockingEntry.userNumber = "";
                     this.clockingEntry.branchId = "";
                     this.clockingEntry.departmentId = "";
@@ -160,27 +164,9 @@
                 return (status) => {
                     if(status == "online"){
                         let promise = rs.getClockingStatus(this.userNumber, this.$cookie.get('access-token'));
-                        promise.then(response => {
-                            if(response.status == 200){
-                                this.clockingEntry.userNumber = response.data.userNumber;
-                                this.clockingEntry.branchId = response.data.branchId;
-                                this.clockingEntry.departmentId = response.data.departmentId;
-                                document.getElementById("selectBranch").style.visibility="hidden";
-                                document.getElementById("selectDepartment").style.visibility="hidden";
-                                document.getElementById("submitButton").innerHTML="Uitklokken";
-                            }
-                        })
-                        .catch((error) => {
-                            if(error.response.status == 404){
-                                this.clockingEntry.userNumber = "";
-                                this.clockingEntry.branchId = "";
-                                this.clockingEntry.departmentId = "";
-                                this.showErrorMessage("", false);
-                                document.getElementById("selectBranch").style.visibility="visible";
-                                document.getElementById("selectDepartment").style.visibility="visible";
-                                document.getElementById("submitButton").innerHTML="Inklokken";
-                            }
-                        })
+                        promise.then(response => this.updateForm(response))
+                               .catch(error => this.updateForm(error.response));
+
                     }else if(status == "offline"){
                         // Todo: check if user is clocked in offline
                     }
@@ -188,10 +174,8 @@
             },
             checkConnection(callback){
                 let promise = rs.getConnectionStatus(this.$cookie.get('access-token'));
-                promise.then((response => {
-                            callback("online");
-                        }))
-                        .catch((error) => {
+                promise.then(response => callback("online"))
+                       .catch((error) => {
                             if(error.response){
                                 if(error.response.status == 401){
                                     // User is unauthorized
@@ -202,36 +186,35 @@
                         })
             },
             clock(){
-                if(this.clockingEntry.userNumber != ""){
-                    let promise = rs.postClockingEntry(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, this.$cookie.get('access-token'));
-                    promise.then((response => {
-                                this.clockInSuccessful(response);
-                            }))
-                            .catch((error) => {
-                                if(error.response){
-                                    if(error.response.status == 500){
-                                        this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
-                                    }else{
-                                    //console.log(error.response);
-                                    }
-                                } else if (error.request.status == 0){
-                                    // Switch to indexedDB storage
-                                    let clockEntry = {
-                                        userNumber: "",
-                                        branchId: "",
-                                        departmentId: "",
-                                        startTime: null,
-                                        endTime: null
-                                    }
-                                    clockEntry.userNumber = this.userNumber;
-                                    clockEntry.branchId = branchId;
-                                    clockEntry.departmentId = departmentId;
+                if(this.userNumber != ""){
+                    if(this.clockingEntry.userNumber != ""){
+                        let promise = rs.postClockingEntry(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, this.$cookie.get('access-token'));
+                        promise.then(response => this.clockInSuccessful(response))
+                               .catch((error) => {
+                                    if(error.response){
+                                        if(error.response.status == 500){
+                                            this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
+                                        }else{
+                                        //console.log(error.response);
+                                        }
+                                    }else if (error.request.status == 0){
+                                        // Switch to indexedDB storage
+                                        let clockEntry = {
+                                            userNumber: "",
+                                            branchId: "",
+                                            departmentId: "",
+                                            startTime: null,
+                                            endTime: null
+                                        }
+                                        clockEntry.userNumber = this.userNumber;
+                                        clockEntry.branchId = branchId;
+                                        clockEntry.departmentId = departmentId;
 
-                                    var object = JSON.parse(JSON.stringify(clockEntry));
+                                        var object = JSON.parse(JSON.stringify(clockEntry));
 
-                                    idbs.saveToDatabase("clockingEntries", object);
-                                    this.showModal("Geklokt!")
-                                }
+                                        idbs.saveToDatabase("clockingEntries", object);
+                                        this.showModal("Geklokt!")
+                                    }
                             })
                 }else{
                     // Get values of selectBranch and selectDepartment components
@@ -243,10 +226,8 @@
                     // Checks if default values have been changed / if user has selected options for both branch and department
                     if(branchId != "" && departmentId != "" && this.userNumber != ""){
                         let promise = rs.postClockingEntry(this.userNumber, branchId, departmentId, this.$cookie.get('access-token'));
-                        promise.then((response => {
-                                    this.clockInSuccessful(response);
-                                }))
-                                .catch((error) => {
+                        promise.then(response => this.clockInSuccessful(response))
+                               .catch((error) => {
                                     if(error.response){
                                         if(error.response.status == 500){
                                             this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
@@ -276,10 +257,12 @@
                         this.showErrorMessage("Invoer is nog niet compleet!", true);
                     }
                 }
+                }else{
+                    this.showErrorMessage("Voer een medewerkersnummer in!", true);
+                }
             },
-            cancel(){
-                this.$router.push('/dashboard');
-            },
+            // Called when clock-in/out is successful
+            // Parameter object is response from api call to api/clocking
             clockInSuccessful(object){
                 let branch = document.getElementById("selectBranch");
                 let branchId = branch.options[branch.selectedIndex].text;
@@ -294,14 +277,42 @@
                     this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: "+ time)
                 }
             },
+            // Changes to dashboard view
+            cancel(){
+                this.$router.push('/dashboard');
+            },
+            // Sets visibility of elements to hidden or visible based on status of response
+            // Updates current clockingEntry variables to response.data if status is 200
+            // Resets current clockingEntry variables if status is 4040
+            updateForm(response){
+                if(response.status == 200){
+                    this.clockingEntry.userNumber = response.data.userNumber;
+                    this.clockingEntry.branchId = response.data.branchId;
+                    this.clockingEntry.departmentId = response.data.departmentId;
+                    document.getElementById("selectBranch").style.visibility="hidden";
+                    document.getElementById("selectDepartment").style.visibility="hidden";
+                    document.getElementById("submitButton").innerHTML="Uitklokken";
+                }else if(response.status == 404){
+                    this.clockingEntry.userNumber = "";
+                    this.clockingEntry.branchId = "";
+                    this.clockingEntry.departmentId = "";
+                    this.showErrorMessage("", false);
+                    document.getElementById("selectBranch").style.visibility="visible";
+                    document.getElementById("selectDepartment").style.visibility="visible";
+                    document.getElementById("submitButton").innerHTML="Inklokken";
+                }
+            },
+            // Shows error message with text of parameter string if parameter status is true
             showErrorMessage(string, status){
                 this.errorMessage = string;
                 this.error = status;
             },
+            // Shows pop-up modal with text of parameter string
             showModal(string) {
                 $("#modalDescription").html(string);
                 this.isModalVisible = true;
             },
+            // Closes pop-up modal and changes to dashboard view
             closeModal() {
                 this.isModalVisible = false;
                 this.$router.push('/dashboard');

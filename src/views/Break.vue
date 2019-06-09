@@ -29,6 +29,7 @@
     import { mapGetters } from 'vuex'
     import modal from './Modal.vue';
     import debounce from 'v-debounce'
+    import rs from '../api/RequestService'
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -49,6 +50,7 @@
             }
         },
         watch: {
+            // Watches for changes to the userNumber input field with delay declared in data()
             userNumber () {
                 this.checkUsernumberValidity();
             }
@@ -63,6 +65,20 @@
             this.addUsersToArray();
         },
         methods: {
+            // Gets userNumbers of company from storage and adds them to array userNumber for faster access
+            addUsersToArray(){
+                if(this.userNumbers.length == 0){
+                    this.userNumbers = [];
+
+                    let jsonObj = JSON.parse(localStorage.getItem('users'));
+                    let users = jsonObj.users;
+
+                    for(var i = 0; i < users.length; i++) {
+                        this.userNumbers.push(users[i].userNumber)
+                    }
+                }
+            },
+            // Checks if userNumber entered into input field is present in the array userNumbers
             checkUsernumberValidity(){
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
                     this.showErrorMessage("", false);
@@ -77,33 +93,21 @@
                     }
                 }
             },
-            addUsersToArray(){
-                this.userNumbers = [];
-
-                let jsonObj = JSON.parse(localStorage.getItem('users'));
-                let users = jsonObj.users;
-
-                for(var i = 0; i < users.length; i++) {
-                    this.userNumbers.push(users[i].userNumber)
-                }
-            },
             clockBreak(){
-                // Checks if default values have been changed / if user has entered userNumber
                 if(this.userNumber != ""){
-                    axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:3000/api/breaking',
-                    data: { userNumber: this.userNumber },
-                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
-                    .then(request => this.clockBreakSuccessful(request))
-                    .catch(() => this.showErrorMessage("Pauze niet ingeklokt. Werknemersnummer niet correct of je bent nog niet ingeklokt!", true));
+                    let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
+                    promise.then(response => {
+                                this.clockBreakSuccessful(response);
+                            })
+                            .catch((error) => {
+                                this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
+                            })
                 }else{
                     this.showErrorMessage("Voer een werknemersnummer in!", true)
                 }
             },
-            cancel(){
-                this.$router.push('/dashboard');
-            },
+            // Called when clock break-in/out is successful
+            // Parameter object is response from api call to api/breaking
             clockBreakSuccessful(object) {
                 let date = new Date();
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
@@ -114,15 +118,22 @@
                     this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: " + time)
                 }
             },
+            // Changes to dashboard view
+            cancel(){
+                this.$router.push('/dashboard');
+            },
+            // Shows error message with text of parameter string if parameter status is true
             showErrorMessage(string, status){
                 this.errorMessage = string;
                 this.error = status;
             },
+            // Shows pop-up modal with text of parameter string
             showModal(string) {
                 console.log(string);
                 $("#modalDescription").html(string);
                 this.isModalVisible = true;
             },
+            // Closes pop-up modal and changes to dashboard view
             closeModal() {
                 this.isModalVisible = false;
                 this.$router.push('/dashboard');

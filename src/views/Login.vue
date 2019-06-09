@@ -21,9 +21,9 @@
 
 <script>
 
-    import axios from "axios/index"
     import { request } from 'http';
     import { mapGetters } from 'vuex'
+    import rs from '../api/RequestService'
 
     export default {
         name: 'Login',
@@ -55,64 +55,57 @@
                 }
             },
             login() {
-                axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:3000/api/login',
-                    data: { userName: this.input.username, password: this.input.password },
-                    config: { headers: {'Content-Type': 'application/json' }}
-                    })
-                    .then(request => this.loginSuccessful(request))
-                    .catch((error) => {
-                        if(error.response){
-                            if(error.response.status == 401){
-                                this.loginFailed("Gebruikersnaam of wachtwoord onjuist!");
-                            }
-
-                        } else if (error.request.status == 0){
-                            this.loginFailed("Inloggen niet mogelijk. Geen verbinding met server!");
-                        }
-                    });
+                if(this.input.username != "" && this.input.password != ""){
+                    let promise = rs.postLogin(this.input.username, this.input.password);
+                    promise.then(response => this.loginSuccessful(response))
+                           .catch((error) => {
+                                if(error.response){
+                                    if(error.response.status == 401){
+                                        this.showErrorMessage("Gebruikersnaam of wachtwoord onjuist!", true);
+                                    }
+                                }else if (error.request.status == 0){
+                                    this.showErrorMessage("Inloggen niet mogelijk. Geen verbinding met server!", true);
+                                }
+                            });
+                }else{
+                    this.showErrorMessage("Voer een gebruikersnaam en wachtwoord in!", true);
+                }
             },
-            loginSuccessful(req){
-                if(!req.data.token){
+            loginSuccessful(response){
+                if(!response.data.token){
                     this.loginFailed();
                     return;
                 }
 
                 this.error = false;
-                this.$cookie.set('access-token', req.data.token);
+                this.$cookie.set('access-token', response.data.token);
                 this.$store.dispatch('login');
                 this.loadData();
             },
-            loginFailed(error){
-                this.errorMessage = error;
-                this.error = true;
+            // Shows error message with text of parameter string if parameter status is true
+            showErrorMessage(string, status){
+                this.errorMessage = string;
+                this.error = status;
             },
             loadData(){
-                axios({
-                    method: 'get',
-                    url: 'http://127.0.0.1:3000/api/data/'+ this.$cookie.get('user-id'),
-                    config: { headers: {"Authorization" : "Bearer "+ this.$cookie.get('access-token')+""}}})
-                    .then(request => this.loadDataSuccessful(request))
-                    .catch(() => this.loadDataFailed());
+                let promise = rs.getData(this.$cookie.get('user-id'), this.$cookie.get('access-token'));
+                promise.then(response => this.loadDataSuccessful(response))
+                       .catch((error) => this.loadDataFailed());
             },
-            loadDataSuccessful(req){
-                localStorage.setItem('company', JSON.stringify(req.data));
+            loadDataSuccessful(response){
+                localStorage.setItem('company', JSON.stringify(response.data));
                 this.loadUsers();
             },
             loadDataFailed(){
 
             },
             loadUsers(){
-                axios({
-                    method: 'get',
-                    url: 'http://127.0.0.1:3000/api/users/'+ this.$cookie.get('user-id'),
-                    config: { headers: {"Authorization" : "Bearer "+ this.$cookie.get('access-token')+""}}})
-                    .then(request => this.loadUsersSuccessful(request))
-                    .catch(() => this.loadUsersFailed());
+                let promise = rs.getUsers(this.$cookie.get('user-id'), this.$cookie.get('access-token'));
+                promise.then(response => this.loadUsersSuccessful(response))
+                       .catch(error => this.loadUsersFailed());
             },
-            loadUsersSuccessful(req){
-                localStorage.setItem('users', JSON.stringify(req.data));
+            loadUsersSuccessful(response){
+                localStorage.setItem('users', JSON.stringify(response.data));
                 this.$router.replace('/dashboard');
             },
             loadUsersFailed(){

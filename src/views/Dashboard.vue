@@ -32,10 +32,10 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex';
     import VueCookie from 'vue-cookie';
-    import idbs from '../api/indexedDBService'
+	import idbs from '../api/indexedDBService';
+	import rs from '../api/RequestService';
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -66,36 +66,28 @@
                 this.$router.push('/logout');
             },
             checkConnection(){
-                axios({
-                    method: 'get',
-                    url: 'http://127.0.0.1:3000/api/status',
-                    data: { },
-                    headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
-                    .then((request => this.synchronize()))
-                    .catch((error) => {
-                        if (error.request.status == 0){
-                            console.log("Dashboard: no connection with server, using IndexedDB.")
-                        }
-                    })
+                let promise = rs.getConnectionStatus(this.$cookie.get('access-token'));
+                promise.then(response => this.synchronize())
+                       .catch((error) => {
+                            if (error.request.status == 0){
+                            	console.log("Dashboard: no connection with server, using IndexedDB.")
+                        	}
+                        });
             },
             synchronize(){
                 idbs.getUnsynchronizedData("clockingEntries", (items) => {
                     if(items.length > 0){
                         for(var i = 0; i < items.length; i++){
-                            let id = items[i].id;
+							let id = items[i].id;
 
-                            axios({
-                            method: 'post',
-                            url: 'http://127.0.0.1:3000/api/clocking',
-                            data: { userNumber: items[i].userNumber, branchId: items[i].branchId, departmentId: items[i].departmentId, startTime: items[i].startTime, endTime: items[i].endTime },
-                            headers: {'Authorization': "bearer " + this.$cookie.get('access-token')}})
-                            .then(request => {
-                                console.log("Dashboard: data synchronized!");
-                                idbs.deleteFromDatabase("clockingEntries", id);
-                            })
-                            .catch((error) => {
-                                console.log("Error in data, data skipped!");
-                            });
+							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, items[i].startTime, items[i].endTime, this.$cookie.get('access-token'));
+                			promise.then(response => {
+										console.log("Dashboard: data synchronized!");
+                                		idbs.deleteFromDatabase("clockingEntries", id);
+									})
+                       				.catch((error) => {
+                            			console.log("Error in data, data skipped!");
+                        			});
                         }
                     }else {
                         console.log("Dashboard: no data synchronization needed!");
