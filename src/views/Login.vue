@@ -9,10 +9,10 @@
           <h2 class="titleMain2">Nostradamus</h2>
 
           <div class="loginDiv">
-              <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" @focus="show" name="email"/><br>
-              <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" @focus="show" name="password"/><br>
+              <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" @focus="show" data-layout="normal" name="email"/><br>
+              <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" @focus="show" data-layout="normal" name="password"/><br>
 
-              <vue-touch-keyboard :options="options" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :username="input" />
+              <!-- <vue-touch-keyboard id="keyboard" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="inputField" :next="next" /> -->
 
               <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
               <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
@@ -28,6 +28,7 @@
     import { mapGetters } from 'vuex'
     import rs from '../api/RequestService'
     import VueTouchKeyboard from "vue-touch-keyboard";
+    import style from "../styles/vue-touch-keyboard.css";
 
     export default {
         name: 'Login',
@@ -38,9 +39,9 @@
             return {
                 visible: false,
                 layout: "normal",
+                inputField: null,
                 options: {
-                    useKbEvents: false,
-                    preventClickEvent: false
+                    useKbEvents: false
                 },
                 input: {
                     username: "",
@@ -64,12 +65,11 @@
         },
         methods: {
             accept(text) {
-                console.log("Input text: " + text);
                 this.hide();
             },
 
             show(e) {
-                this.input = e.target;
+                this.inputField = e.target;
                 this.layout = e.target.dataset.layout;
 
                 if (!this.visible)
@@ -78,6 +78,22 @@
             hide() {
                 this.visible = false;
             },
+            next() {
+				let inputs = document.querySelectorAll("input");
+				let found = false;
+				[].forEach.call(inputs, (item, i) => {
+					if (!found && item == this.input && i < inputs.length - 1) {
+						found = true;
+						this.$nextTick(() => {
+							inputs[i+1].focus();
+						});
+					}
+				});
+				if (!found) {
+					this.input.blur();
+					this.hide();
+				}
+			},
             checkLogin() {
                 if (this.currentUser) {
                     this.$router.replace(this.$route.query.redirect || '/dashboard');
@@ -277,5 +293,26 @@
         margin-bottom: 0px;
         color: red;
     }
+
+    #keyboard {
+	    position: fixed;
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+
+	    z-index: 1000;
+	    width: 100%;
+	    max-width: 1000px;
+	    margin: 0 auto;
+
+	    padding: 1em;
+
+	    background-color: #EEE;
+	    box-shadow: 0px -3px 10px rgba(black, 0.3);
+
+	    border-radius: 10px;
+    }
+
+
 
 </style>
