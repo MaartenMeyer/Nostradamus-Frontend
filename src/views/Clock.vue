@@ -63,7 +63,8 @@
                 clockingEntry: {
                     userNumber: "",
                     branchId: "",
-                    departmentId: ""
+                    departmentId: "",
+                    beginTime: ""
                 }
             }
         },
@@ -155,6 +156,7 @@
                     this.clockingEntry.userNumber = "";
                     this.clockingEntry.branchId = "";
                     this.clockingEntry.departmentId = "";
+                    this.clockingEntry.beginTime = "";
                     document.getElementById("submitButton").innerHTML="Klokken";
                     document.getElementById("selectBranch").style.visibility="hidden";
                     document.getElementById("selectDepartment").style.visibility="hidden";
@@ -269,12 +271,16 @@
                 let department = document.getElementById("selectDepartment");
                 let departmentId = department.options[department.selectedIndex].text;
                 let date = new Date();
+                // Formats beginTime to format hh:mm with leading zeros
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
                 if (object.data.message === "User is clocked in."){
                     this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!");
                 } else if (object.data.message === "User is clocked off."){
-                    this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: "+ time)
+                    let t = new Date(this.clockingEntry.beginTime);
+                    // Formats beginTime to format hh:mm with leading zeros
+                    let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
+                    this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Begintijd: "+ beginTime + "<br>Eindtijd: "+ time)
                 }
             },
             // Changes to dashboard view
@@ -289,6 +295,7 @@
                     this.clockingEntry.userNumber = response.data.userNumber;
                     this.clockingEntry.branchId = response.data.branchId;
                     this.clockingEntry.departmentId = response.data.departmentId;
+                    this.clockingEntry.beginTime = response.data.beginTime;
                     document.getElementById("selectBranch").style.visibility="hidden";
                     document.getElementById("selectDepartment").style.visibility="hidden";
                     document.getElementById("submitButton").innerHTML="Uitklokken";
@@ -296,6 +303,7 @@
                     this.clockingEntry.userNumber = "";
                     this.clockingEntry.branchId = "";
                     this.clockingEntry.departmentId = "";
+                    this.clockingEntry.beginTime = "";
                     this.showErrorMessage("", false);
                     document.getElementById("selectBranch").style.visibility="visible";
                     document.getElementById("selectDepartment").style.visibility="visible";
