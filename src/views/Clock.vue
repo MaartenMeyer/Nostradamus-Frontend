@@ -7,7 +7,7 @@
 
             <h2 class="titleMain">Voer je gegevens in:</h2>
 
-            <div class="loginDiv">
+            <div class="clockDiv">
                 <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
 
                 <div class="optionsDiv">
@@ -349,15 +349,15 @@
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     }
 
-    /* login Div */
-    .loginDiv{
+    /* clock Div */
+    .clockDiv {
         text-align: center;
         flex-grow: 2;
         vertical-align: middle;
     }
 
     /* Main title */
-    .titleMain{
+    .titleMain {
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
@@ -372,17 +372,17 @@
         font-family: "Roboto";
         font-size: 16px;
         color: #676A6C;
-        padding: 0px 5px;
+        padding: 6px 20px;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
         background: transparent;
     }
-    input:focus{
+    input:focus {
         outline: none;
     }
 
-    select{
+    select {
         font-family: "Roboto";
         color: #676A6C;
         width: 300px;
@@ -400,7 +400,7 @@
         border-bottom: 1px solid #00A0D1;
         cursor: pointer;
     }
-    select:hover{
+    select:hover {
         border: none;
         border-bottom: 1px solid #00A0D1;
         cursor: pointer;
@@ -412,7 +412,7 @@
         text-align: center;
     }
 
-    .buttonsDiv{
+    .buttonsDiv {
         text-align: center;
         flex-grow: 2;
         vertical-align: middle;
@@ -420,7 +420,7 @@
     }
 
     /* Login button style */
-    .submitBtn{
+    .submitBtn {
         font-family: "Roboto";
         font-size: 21px;
         background-color: #00A0D1;
@@ -450,7 +450,7 @@
         right: -20px;
         transition: 0.5s;
     }
-    .submitBtn:hover{
+    .submitBtn:hover {
         background-color: #00799e;
         border: 4px solid #00799e;
         padding-right: 24px;
@@ -494,7 +494,7 @@
         right: -20px;
         transition: 0.5s;
     }
-    .buttonCancel:hover{
+    .buttonCancel:hover {
         background-color: #4b4d4f;
         border: 4px solid #4b4d4f;
         padding-right: 24px;

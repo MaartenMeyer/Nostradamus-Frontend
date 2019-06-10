@@ -7,14 +7,15 @@
 
             <h2 class="titleMain">Registreer nieuwe gebruiker</h2>
 
-            <div class="loginDiv">
-                <input class="loginInput" type="text" placeholder="Voornaam" name="Voornaam"/><br>
-                <input class="loginInput" type="text"  placeholder="Achternaam" name="Achternaam"/><br>
-                <input class="loginInput" type="text"  placeholder="Gebruikersnaam" name="Gebruikersnaam"/><br>
-                <input class="loginInput" type="text"  placeholder="Email" name="email"/><br>
-                <input class="loginInput" type="password"  placeholder="Wachtwoord" name="password"/><br>
+            <div class="registerDiv">
+                <input class="registerInput" type="text" placeholder="Voornaam" name="Voornaam"/><br>
+                <input class="registerInput" type="text"  placeholder="Achternaam" name="Achternaam"/><br>
+                <input class="registerInput" type="text"  placeholder="Gebruikersnaam" name="Gebruikersnaam"/><br>
+                <input class="registerInput" type="email"  placeholder="Email" name="email"/><br>
+                <input class="registerInput" type="number"  placeholder="Werknemersnummer" name="Werknemersnummer"/><br>
+                <input class="registerInput" type="password"  placeholder="Wachtwoord" name="password"/><br>
 
-                <p class="errorMsg" v-if="error">Nog niet volledig ingevuld!</p>
+                <p class="errorMsg" v-if="error">Formulier nog niet volledig ingevuld!</p>
 
                 <button type="button" class="submitBtn" v-on:click=""><span>Registreer</span></button>
             </div>
@@ -83,8 +84,8 @@
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     }
 
-    /* login Div */
-    .loginDiv{
+    /* Register Div */
+    .registerDiv {
         text-align: center;
         flex-grow: 2;
         vertical-align: middle;
@@ -105,7 +106,7 @@
         width: 300px;
         font-family: "Roboto";
         font-size: 16px;
-        padding: 12px 20px;
+        padding: 6px 20px;
         margin: 8px 0;
         box-sizing: border-box;
         border: none;
@@ -116,7 +117,29 @@
         width: 300px;
         font-family: "Roboto";
         font-size: 16px;
-        padding: 12px 20px;
+        padding: 6px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        background: transparent;
+    }
+    input[type=email] {
+        width: 300px;
+        font-family: "Roboto";
+        font-size: 16px;
+        padding: 6px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        background: transparent;
+    }
+    input[type=number] {
+        width: 300px;
+        font-family: "Roboto";
+        font-size: 16px;
+        padding: 6px 20px;
         margin: 8px 0;
         box-sizing: border-box;
         border: none;
@@ -228,7 +251,9 @@
         z-index: 1;
     }
     .submitBtn:after {
-        content: '»';
+        font-family: "Font Awesome 5 Free";
+        content: "\f4fc";
+        font-weight: 900;
         position: absolute;
         opacity: 0;
         right: -20px;
@@ -243,7 +268,7 @@
     }
     .submitBtn:hover:after {
         opacity: 1;
-        right: 10px;
+        right: 1px;
     }
     .submitBtn:active {
         transform: scale(.95);

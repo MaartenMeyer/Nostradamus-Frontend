@@ -116,7 +116,7 @@
 
 .box {
   width: 400px;
-  height: 450px;
+  height: 400px;
   background: #fff;
   border-radius: 15px;
   overflow: hidden;
@@ -159,7 +159,7 @@
   border-radius: 5px;
   display: inline-block;
   width: 200px;
-  margin-top: 60px;
+  margin-top: 40px;
   margin-bottom: 10px;
   color: white;
   text-align: center;

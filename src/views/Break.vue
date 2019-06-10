@@ -193,7 +193,7 @@
         font-family: "Roboto";
         font-size: 16px;
         color: #676A6C;
-        padding: 12px 20px;
+        padding: 6px 20px;
         margin: 8px 0;
         box-sizing: border-box;
         border: none;

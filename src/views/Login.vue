@@ -9,8 +9,11 @@
           <h2 class="titleMain2">Nostradamus</h2>
 
           <div class="loginDiv">
-              <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" name="email"/><br>
-              <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
+              <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" @focus="show" name="email"/><br>
+              <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" @focus="show" name="password"/><br>
+
+              <vue-touch-keyboard :options="options" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :username="input" />
+
               <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
               <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
           </div>
@@ -24,11 +27,21 @@
     import { request } from 'http';
     import { mapGetters } from 'vuex'
     import rs from '../api/RequestService'
+    import VueTouchKeyboard from "vue-touch-keyboard";
 
     export default {
         name: 'Login',
+        components: {
+            "vue-touch-keyboard": VueTouchKeyboard.component
+        },
         data() {
             return {
+                visible: false,
+                layout: "normal",
+                options: {
+                    useKbEvents: false,
+                    preventClickEvent: false
+                },
                 input: {
                     username: "",
                     password: ""
@@ -37,42 +50,58 @@
                 errorMessage: ""
             }
         },
+
         computed: {
-        ...mapGetters({ currentUser: 'currentUser' })
+            ...mapGetters({currentUser: 'currentUser'})
         },
         // Checks if user is already logged in when loading site
-        created(){
+        created() {
             this.checkLogin();
         },
         // Checks if user is already logged in when refreshing site
-        updated(){
+        updated() {
             this.checkLogin();
         },
         methods: {
-            checkLogin(){
-                if(this.currentUser){
+            accept(text) {
+                console.log("Input text: " + text);
+                this.hide();
+            },
+
+            show(e) {
+                this.input = e.target;
+                this.layout = e.target.dataset.layout;
+
+                if (!this.visible)
+                    this.visible = true
+            },
+            hide() {
+                this.visible = false;
+            },
+            checkLogin() {
+                if (this.currentUser) {
                     this.$router.replace(this.$route.query.redirect || '/dashboard');
                 }
             },
             login() {
-                if(this.input.username != "" && this.input.password != ""){
+                if (this.input.username != "" && this.input.password != "") {
                     let promise = rs.postLogin(this.input.username, this.input.password);
                     promise.then(response => this.loginSuccessful(response))
-                           .catch((error) => {
-                                if(error.response){
-                                    if(error.response.status == 401){
-                                        this.showErrorMessage("Gebruikersnaam of wachtwoord onjuist!", true);
-                                    }
-                                }else if (error.request.status == 0){
-                                    this.showErrorMessage("Inloggen niet mogelijk. Geen verbinding met server!", true);
+                        .catch((error) => {
+                            if (error.response) {
+                                if (error.response.status == 401) {
+                                    this.showErrorMessage("Gebruikersnaam of wachtwoord onjuist!", true);
                                 }
-                            });
-                }else{
+                            } else if (error.request.status == 0) {
+                                this.showErrorMessage("Inloggen niet mogelijk. Geen verbinding met server!", true);
+                            }
+                        });
+                } else {
                     this.showErrorMessage("Voer een gebruikersnaam en wachtwoord in!", true);
                 }
             },
-            loginSuccessful(response){
-                if(!response.data.token){
+            loginSuccessful(response) {
+                if (!response.data.token) {
                     this.loginFailed();
                     return;
                 }
@@ -83,32 +112,32 @@
                 this.loadData();
             },
             // Shows error message with text of parameter string if parameter status is true
-            showErrorMessage(string, status){
+            showErrorMessage(string, status) {
                 this.errorMessage = string;
                 this.error = status;
             },
-            loadData(){
+            loadData() {
                 let promise = rs.getData(this.$cookie.get('user-id'), this.$cookie.get('access-token'));
                 promise.then(response => this.loadDataSuccessful(response))
-                       .catch((error) => this.loadDataFailed());
+                    .catch((error) => this.loadDataFailed());
             },
-            loadDataSuccessful(response){
+            loadDataSuccessful(response) {
                 localStorage.setItem('company', JSON.stringify(response.data));
                 this.loadUsers();
             },
-            loadDataFailed(){
+            loadDataFailed() {
 
             },
-            loadUsers(){
+            loadUsers() {
                 let promise = rs.getUsers(this.$cookie.get('user-id'), this.$cookie.get('access-token'));
                 promise.then(response => this.loadUsersSuccessful(response))
-                       .catch(error => this.loadUsersFailed());
+                    .catch(error => this.loadUsersFailed());
             },
-            loadUsersSuccessful(response){
+            loadUsersSuccessful(response) {
                 localStorage.setItem('users', JSON.stringify(response.data));
                 this.$router.replace('/dashboard');
             },
-            loadUsersFailed(){
+            loadUsersFailed() {
 
             }
         }
