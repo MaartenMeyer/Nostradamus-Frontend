@@ -13,7 +13,7 @@
                 <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                 <div class="buttonsDiv">
-                    <button type="button" class="submitBtn" :disabled="disabled" v-on:click="clockBreak()"><span>Pauze</span></button>
+                    <button type="button" class="submitBtn" id='submitButton' :disabled="disabled" v-on:click="clockBreak()"><span>Pauze</span></button>
                 </div>
                 <div class="buttonsDiv">
                     <button type="button" class="buttonCancel" v-on:click="cancel()"><span>Annuleer</span></button>
@@ -25,7 +25,6 @@
 </template>
 
 <script>
-    import axios from "axios"
     import { mapGetters } from 'vuex'
     import modal from './Modal.vue';
     import debounce from 'v-debounce'
@@ -46,7 +45,12 @@
                 isModalVisible: false,
                 delay: 500,
                 disabled: false,
-                userNumbers: []
+                userNumbers: [],
+                breakEntry: {
+                    userNumber: "",
+                    beginTime: "",
+                    endTime: ""
+                }
             }
         },
         watch: {
@@ -82,6 +86,7 @@
             checkUsernumberValidity(){
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
                     this.showErrorMessage("", false);
+                    this.checkConnection(this.checkBreakStatus(""));
                     this.disabled = false;
                 }else{
                     if(this.userNumber != ""){
@@ -91,17 +96,61 @@
                         this.disabled = false;
                         this.showErrorMessage("", false);
                     }
+
+                    this.breakEntry.userNumber = "";
+                    this.breakEntry.beginTime = "";
+                    this.breakEntry.endTime = "";
+                    document.getElementById("submitButton").innerHTML="Pauze";
                 }
+            },
+            checkBreakStatus(status){
+                return (status) => {
+                    if(status == "online"){
+                        let promise = rs.getBreakStatus(this.userNumber, this.$cookie.get('access-token'));
+                        promise.then(response => this.updateForm(response))
+                               .catch(error => this.updateForm(error.response));
+
+                    }else if(status == "offline"){
+                        // Todo: check if user is clocked in offline
+                    }
+                }
+            },
+            checkConnection(callback){
+                let promise = rs.getConnectionStatus(this.$cookie.get('access-token'));
+                promise.then(response => callback("online"))
+                       .catch((error) => {
+                            if(error.response){
+                                if(error.response.status == 401){
+                                    // User is unauthorized
+                                }
+                            }else if (error.request.status == 0){
+                                callback("offline");
+                            }
+                        })
             },
             clockBreak(){
                 if(this.userNumber != ""){
-                    let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
-                    promise.then(response => {
-                                this.clockBreakSuccessful(response);
-                            })
-                            .catch((error) => {
-                                this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
-                            })
+                    if(this.error != true){
+                        let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
+                        promise.then(response => {
+                                    this.clockBreakSuccessful(response);
+                                })
+                               .catch((error) => {
+                                    if(error.response){
+                                        if(error.response.status == 500){
+                                            this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
+                                        }else{
+                                            //console.log(error.response);
+                                            //this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
+                                        }
+                                    } else if (error.request.status == 0){
+                                        // Todo: offline pauze inklokken
+                                    }
+                                })
+                    }else{
+                        this.showErrorMessage("Medewerkersnummer ongeldig!", true)
+                    }
+
                 }else{
                     this.showErrorMessage("Voer een werknemersnummer in!", true)
                 }
@@ -115,12 +164,29 @@
                 if (object.data.message === "User break clocked in."){
                     this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Begintijd: " + time + "<br>Fijne pauze!");
                 } else if (object.data.message === "User break clocked off.") {
-                    this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Eindtijd: " + time)
+                    let t = new Date(this.breakEntry.beginTime);
+                    // Formats beginTime to format hh:mm with leading zeros
+                    let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
+                    this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Begintijd: " + beginTime + "<br>Eindtijd: " + time)
                 }
             },
             // Changes to dashboard view
             cancel(){
                 this.$router.push('/dashboard');
+            },
+            updateForm(response){
+                if(response.status == 200){
+                    this.breakEntry.userNumber = response.data.userNumber;
+                    this.breakEntry.beginTime = response.data.beginTime;
+                    this.breakEntry.endTime = response.data.endTime;
+                    document.getElementById("submitButton").innerHTML="Pauze uitklokken";
+                }else if(response.status == 404){
+                    this.breakEntry.userNumber = "";
+                    this.breakEntry.beginTime = "";
+                    this.breakEntry.endTime = "";
+                    this.showErrorMessage("", false);
+                    document.getElementById("submitButton").innerHTML="Pauze inklokken";
+                }
             },
             // Shows error message with text of parameter string if parameter status is true
             showErrorMessage(string, status){
@@ -129,7 +195,6 @@
             },
             // Shows pop-up modal with text of parameter string
             showModal(string) {
-                console.log(string);
                 $("#modalDescription").html(string);
                 this.isModalVisible = true;
             },

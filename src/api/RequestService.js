@@ -33,6 +33,14 @@ function getClockingStatus(userNumber, accessToken) {
     })
 }
 
+function getBreakStatus(userNumber, accessToken) {
+    return axios({
+        method: 'get',
+        url: 'http://127.0.0.1:3000/api/breakStatus/' + userNumber,
+        headers: { 'Authorization': "bearer " + accessToken }
+    })
+}
+
 function getConnectionStatus(accessToken){
     return axios({
         method: 'get',
@@ -73,6 +81,7 @@ export default {
     getData,
     getUsers,
     getClockingStatus,
+    getBreakStatus,
     getConnectionStatus,
     postClockingEntry,
     synchronizeClockingEntry,
