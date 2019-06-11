@@ -218,47 +218,47 @@
                                         this.showModal("Geklokt!")
                                     }
                             })
-                }else{
-                    // Get values of selectBranch and selectDepartment components
-                    let branch = document.getElementById("selectBranch");
-                    let branchId = branch.options[branch.selectedIndex].value;
-                    let department = document.getElementById("selectDepartment");
-                    let departmentId = department.options[department.selectedIndex].value;
+                    }else{
+                        // Get values of selectBranch and selectDepartment components
+                        let branch = document.getElementById("selectBranch");
+                        let branchId = branch.options[branch.selectedIndex].value;
+                        let department = document.getElementById("selectDepartment");
+                        let departmentId = department.options[department.selectedIndex].value;
 
-                    // Checks if default values have been changed / if user has selected options for both branch and department
-                    if(branchId != "" && departmentId != "" && this.userNumber != ""){
-                        let promise = rs.postClockingEntry(this.userNumber, branchId, departmentId, this.$cookie.get('access-token'));
-                        promise.then(response => this.clockInSuccessful(response))
-                               .catch((error) => {
-                                    if(error.response){
-                                        if(error.response.status == 500){
-                                            this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
-                                    }else {
-                                        //console.log(error.response);
-                                    }
-                                    }else if(error.request.status == 0){
-                                        // Switch to indexedDB storage
-                                        let clockEntry = {
-                                            userNumber: "",
-                                            branchId: "",
-                                            departmentId: "",
-                                            startTime: null,
-                                            endTime: null
+                        // Checks if default values have been changed / if user has selected options for both branch and department
+                        if(branchId != "" && departmentId != "" && this.userNumber != ""){
+                            let promise = rs.postClockingEntry(this.userNumber, branchId, departmentId, this.$cookie.get('access-token'));
+                            promise.then(response => this.clockInSuccessful(response))
+                                   .catch((error) => {
+                                        if(error.response){
+                                            if(error.response.status == 500){
+                                                this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
+                                            }else {
+                                                //console.log(error.response);
+                                            }
+                                        }else if(error.request.status == 0){
+                                            // Switch to indexedDB storage
+                                            let clockEntry = {
+                                                userNumber: "",
+                                                branchId: "",
+                                                departmentId: "",
+                                                startTime: null,
+                                                endTime: null
+                                            }
+                                            clockEntry.userNumber = this.userNumber;
+                                            clockEntry.branchId = branchId;
+                                            clockEntry.departmentId = departmentId;
+
+                                            var object = JSON.parse(JSON.stringify(clockEntry));
+
+                                            idbs.saveToDatabase("clockingEntries", object);
+                                            this.showModal("Geklokt!")
                                         }
-                                        clockEntry.userNumber = this.userNumber;
-                                        clockEntry.branchId = branchId;
-                                        clockEntry.departmentId = departmentId;
-
-                                        var object = JSON.parse(JSON.stringify(clockEntry));
-
-                                        idbs.saveToDatabase("clockingEntries", object);
-                                        this.showModal("Geklokt!")
-                                    }
-                                })
-                    }else {
-                        this.showErrorMessage("Invoer is nog niet compleet!", true);
+                                    })
+                        }else {
+                            this.showErrorMessage("Invoer is nog niet compleet!", true);
+                        }
                     }
-                }
                 }else{
                     this.showErrorMessage("Voer een medewerkersnummer in!", true);
                 }
