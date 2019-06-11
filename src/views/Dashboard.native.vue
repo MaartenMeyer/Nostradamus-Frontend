@@ -14,8 +14,7 @@
 
 <script>
     import axios from "axios/index"
-    import LoginPage from "./Login.native.vue";
-    import ClockingPage from "./Clock.native.vue";
+
     import PausePage from "./Break.native.vue";
     import { request } from 'http';
     import { mapGetters } from 'vuex';
@@ -27,52 +26,21 @@
         name: "Dashboard",
         data () {
             return {
-                props:[currentUser]
+                //props:[currentUser]
             };
         },
         computed: {
-        ...mapGetters({ currentUser: 'currentUser' })
+            ...mapGetters({ currentUser: 'currentUser' })
         },
         methods: {
             clickLogout() {
-                this.$navigateTo(LoginPage, {
-                    props: {
-                        currentUser
-                    },
-                    animated: true,
-                    transition: {
-                        name: "slideBottom",
-                        duration: 380,
-                        curve: "easeOut"
-                    },
-                    clearHistory: true
-                });
+                this.$goto('login')
             },
             clickPause() {
-                this.$navigateTo(PausePage, {
-                    props: {
-                        currentUser
-                    },
-                    animated: true,
-                    transition: {
-                        name: "slideTop",
-                        duration: 380,
-                        curve: "easeIn"
-                    }
-                });
+                this.$goto('break');
             },
             clickClocking() {
-                this.$navigateTo(ClockingPage, {
-                    props: {
-                        currentUser
-                    },
-                    animated: true,
-                    transition: {
-                        name: "slideTop",
-                        duration: 380,
-                        curve: "easeIn"
-                    }
-                });
+                this.$goto('clock');
             },
             alert(message) {
                 return alert({

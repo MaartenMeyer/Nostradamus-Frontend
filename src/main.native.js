@@ -1,7 +1,6 @@
 import Vue from 'nativescript-vue';
 import router from './router.native';
 
-import Login from '@/views/Login.native.vue';
 import store from './store';
 
 
@@ -11,8 +10,12 @@ Vue.config.silent = false;
 // disabled in template due to typing issue for Typescript projects....NEEDS TO BE FIXED
 // Vue.config.debug = true;
 
+Vue.prototype.$router = router
+Vue.prototype.$goto = function (to, options) {
+  this.$navigateTo(this.$router[to], options)
+}
+
 new Vue({
-  router,
   store,
-  render: h => h('frame', [h(Login)]),
+  render: h => h('frame', [h(router['login'])]),
 }).$start();

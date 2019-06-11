@@ -45,7 +45,7 @@
     const userService = {
         login(user) {
             return new Promise(resolve => {
-                resolve(user);   
+                resolve(user);
             })
         }
     };
@@ -66,7 +66,7 @@
         //throws error; undefined mapGetters
 
         computed: {
-        ...mapGetters({ currentUser: 'currentUser' })
+            ...mapGetters({ currentUser: 'currentUser' })
         },
         // //Checks if user is already logged in when loading site
         // created(){
@@ -75,7 +75,7 @@
         // //Checks if user is already logged in when refreshing site
         // updated(){
         //     this.checkLogin();
-        // },        
+        // },
 
 
         methods: {
@@ -87,22 +87,23 @@
             focusPassword() {
                 this.$refs.password.nativeView.focus();
             },
- 
+
             submit() {
-                console.log("submit");
-                router.go("/dashboard");
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
+                    this.$goto('dashboard');
+
                     // this.alert(
                     //     "Email en/of wachtwoord vergeten in te voeren.");
-                    return;
+                    //return;
+                }else{
+                    this.validate();
                 }
-                this.validate();
             },
 
             validate() {
-                
+
                 // CHECK DATA
                 //
                 //url needs to be changed to server IP
@@ -111,24 +112,22 @@
                 //check local IP of device running back-end before testing yourself
                 //https://www.whatismybrowser.com/detect/what-is-my-local-ip-address
                 //
-                
+
                 var self = this;
 
-                console.log("async")
-                //let promise = post()
                 axios({
                     method: 'post',
-                    url: 'http://145.49.8.169:3000/api/login',
+                    url: 'http://192.168.178.35:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
                     .then(response => {
-                        console.log("resp")
-                        this.login(response);
+                        console.log(response)
+                        this.login(response.data);
                     })
                     .catch(() => this.loginFailed());
-                
-                
+
+
 
                 // postLogin().then(request => userService.login(request).then(request => this.login(request)));
                 // console.log("post-async");
@@ -139,7 +138,7 @@
                 // function (response){
                 //     return Promise.resolve(response);
                 // })
-                
+
                 // axios({
                 // method: 'post',
                 // url: 'http://145.49.8.169:3000/api/login',
@@ -152,26 +151,23 @@
                 // })
                 // .catch(() => this.loginFailed());
                 // console.log(request.status);
-                
+
                 // axios.interceptors.response.use(function(response){
                 //     return response;
-                // })            
+                // })
             },
             login(req) {
                 console.log("Request bla: "+req.status);
                 //console.log("Log redata: "+req.data);
                 if(!req.data.token){
-                    console.log("token-fail")
                     this.loginFailed();
                     return;
                 }
 
-                console.log("token-get");
                 this.error = false;
                 localStorage.token = req.data.token;
                 //this.$store.dispatch('login');
                 this.loadData();
-                console.log("login-end");
             },
             alert(message) {
                 //console.log("fired");
@@ -186,13 +182,13 @@
                 this.alert(
                     "Er ging iets mis met het verbinden van de applicatie."
                 );
-                console.log("failed");
+
                 delete localStorage.token;
             },
             loadData(){
                 axios({
                     method: 'get',
-                    url: 'http://145.49.8.169:3000/api/data/20'//+localStorage.userId
+                    url: 'http://192.168.178.35:3000/api/data/1'//+localStorage.userId
                     ,
                     config: { headers: {'Content-Type': 'application/json' }}})
                     .then((request) => {
@@ -207,10 +203,10 @@
                         //console.log(err);
                         this.loadDataFailed()
                     });
-            },   
+            },
             loadDataSuccessful(req){
                 console.log("Load succes");
-                this.$router.push({ name: "Dashboard"});
+                this.$goto('dashboard');
                 // localStorage.setItem('company', JSON.stringify(req.data));
                 //console.log("user service");
                 // userService
@@ -218,7 +214,7 @@
                 //     .then(() => {
                 //         console.log("navigate");
                 //         this.$navigateTo(Dashboard, {
-                //             props: { 
+                //             props: {
                 //                 currentUser
                 //             },
                 //             animated: true,
@@ -231,7 +227,7 @@
 
                 //console.log("navigate");
                 // this.$navigateTo(Dashboard, {
-                //             props: { 
+                //             props: {
                 //                 currentUser
                 //             },
                 //             animated: true,
@@ -242,8 +238,8 @@
                 //             }
                 // });
                 //console.log("push-error")
-                    
-                
+
+
                     // })
                     // .catch(() => {
                     //     this.alert(
@@ -254,9 +250,9 @@
             loadDataFailed(){
                 console.log("Load-data Failed");
                 //Needs to be filled with something
-            } 
+            }
     }
-};    
+};
 </script>
 
 <style scoped>
