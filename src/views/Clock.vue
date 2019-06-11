@@ -169,12 +169,36 @@
             checkClockingStatus(status){
                 return (status) => {
                     if(status == "online"){
+                        // Checks if user is clocked in online
                         let promise = rs.getClockingStatus(this.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => this.updateForm(response))
                                .catch(error => this.updateForm(error.response));
 
                     }else if(status == "offline"){
-                        // Todo: check if user is clocked in offline
+                        // Checks if user is clocked in offline
+                        idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("clockingEntries", this.userNumber, (items) =>{
+                            // Creates an object in the same format as the response  required in updateForm()
+                            let object = {
+                                status: null,
+                                data: {
+                                    userNumber: "",
+                                    branchId: "",
+                                    departmentId: "",
+                                    beginTime: null,
+                                    endTime: null
+                                }
+                            }
+                            if(items.length > 0){
+                                object.status = 200;
+                                object.data.userNumber = items[0].userNumber;
+                                object.data.branchId = items[0].branchId;
+                                object.data.departmentId = items[0].departmentId;
+                                object.data.beginTime = items[0].startTime;
+                            }else{
+                                object.status = 404;
+                            }
+                            this.updateForm(object);
+                        });
                     }
                 }
             },
@@ -201,7 +225,7 @@
                                         if(error.response.status == 500){
                                             this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
                                         }else{
-                                        //console.log(error.response);
+
                                         }
                                     }else if (error.request.status == 0){
                                         // Switch to indexedDB storage
@@ -212,14 +236,15 @@
                                             startTime: null,
                                             endTime: null
                                         }
-                                        clockEntry.userNumber = this.userNumber;
-                                        clockEntry.branchId = branchId;
-                                        clockEntry.departmentId = departmentId;
+                                        clockEntry.userNumber = this.clockingEntry.userNumber;
+                                        clockEntry.branchId = this.clockingEntry.branchId;
+                                        clockEntry.departmentId = this.clockingEntry.departmentId;
 
                                         var object = JSON.parse(JSON.stringify(clockEntry));
 
                                         idbs.saveToDatabase("clockingEntries", object);
                                         this.showModal("Geklokt!")
+                                        // Function call needed to show user that he/she is clocked in offline
                                     }
                             })
                     }else{
@@ -238,7 +263,7 @@
                                             if(error.response.status == 500){
                                                 this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
                                             }else {
-                                                //console.log(error.response);
+
                                             }
                                         }else if(error.request.status == 0){
                                             // Switch to indexedDB storage
