@@ -24,7 +24,7 @@
     //const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
-        name: "Login",
+        name: "Dashboard",
         data () {
             return {
                 props:[currentUser]
@@ -83,7 +83,7 @@
             }
         },
         mounted () {
-            this.getUserData()
+            //this.getUserData()
         }
     }
 </script>

@@ -77,6 +77,7 @@
         //     this.checkLogin();
         // },        
 
+
         methods: {
             // checkLogin(){
             //     if(this.currentUser){
@@ -88,7 +89,8 @@
             },
  
             submit() {
-                console.log("here");
+                console.log("submit");
+                router.go("/dashboard");
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
@@ -96,11 +98,10 @@
                     //     "Email en/of wachtwoord vergeten in te voeren.");
                     return;
                 }
-                await this.validate();
-                this.login(loginRequest);
+                this.validate();
             },
 
-            async validate() {
+            validate() {
                 
                 // CHECK DATA
                 //
@@ -114,16 +115,16 @@
                 var self = this;
 
                 console.log("async")
+                //let promise = post()
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
-                    .then(request => {
+                    .then(response => {
                         console.log("resp")
-                        loginRequest = this.request;
-                        return loginRequest;
+                        this.login(response);
                     })
                     .catch(() => this.loginFailed());
                 
@@ -168,10 +169,9 @@
                 console.log("token-get");
                 this.error = false;
                 localStorage.token = req.data.token;
-                this.$store.dispatch('login');
-                await this.loadData();
+                //this.$store.dispatch('login');
+                this.loadData();
                 console.log("login-end");
-                this.$router.push('/dashboard');
             },
             alert(message) {
                 //console.log("fired");
@@ -189,18 +189,30 @@
                 console.log("failed");
                 delete localStorage.token;
             },
-            async loadData(){
+            loadData(){
                 axios({
                     method: 'get',
-                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
-                    config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
-                    .then(request => this.loadDataSuccessful(request))
-                    .catch(() => this.loadDataFailed());
+                    url: 'http://145.49.8.169:3000/api/data/20'//+localStorage.userId
+                    ,
+                    config: { headers: {'Content-Type': 'application/json' }}})
+                    .then((request) => {
+                        this.loadDataSuccessful(request)
+                    })
+                    .catch((err) => {
+                        if(err.response){
+                            console.log("res "+ err.response)
+                        }else{
+                            console.log("req " + err.request.status)
+                        }
+                        //console.log(err);
+                        this.loadDataFailed()
+                    });
             },   
             loadDataSuccessful(req){
                 console.log("Load succes");
+                this.$router.push({ name: "Dashboard"});
                 // localStorage.setItem('company', JSON.stringify(req.data));
-                console.log("user service");
+                //console.log("user service");
                 // userService
                 //     .login(this.user)
                 //     .then(() => {
@@ -216,7 +228,22 @@
                 //                 curve: "easeIn"
                 //             }
                 //         });
-                this.$router.push('/dashboard');
+
+                //console.log("navigate");
+                // this.$navigateTo(Dashboard, {
+                //             props: { 
+                //                 currentUser
+                //             },
+                //             animated: true,
+                //             transition: {
+                //                 name: "slideTop",
+                //                 duration: 380,
+                //                 curve: "easeIn"
+                //             }
+                // });
+                //console.log("push-error")
+                    
+                
                     // })
                     // .catch(() => {
                     //     this.alert(
@@ -225,7 +252,7 @@
                     //});
             },
             loadDataFailed(){
-                console.log("yikes");
+                console.log("Load-data Failed");
                 //Needs to be filled with something
             } 
     }

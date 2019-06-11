@@ -45,5 +45,5 @@ const router = new Router ({
   ]
 });
 
-export default router.native;
+export default router;
 
