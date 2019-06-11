@@ -12,7 +12,7 @@
               <input class="loginInput" type="text" v-model="input.username" placeholder="Gebruikersnaam" @focus="show" data-layout="normal" name="email"/><br>
               <input class="loginInput" type="password" v-model="input.password" placeholder="Wachtwoord" @focus="show" data-layout="normal" name="password"/><br>
 
-              <!-- <vue-touch-keyboard id="keyboard" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="inputField" :next="next" /> -->
+<!--               <vue-touch-keyboard id="keyboard" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="inputField" :next="next" />-->
 
               <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
               <button type="button" class="submitBtn" v-on:click="login()"><span>Login</span></button>
@@ -33,7 +33,7 @@
     export default {
         name: 'Login',
         components: {
-            "vue-touch-keyboard": VueTouchKeyboard.component
+            "vue-touch-keyboard": VueTouchKeyboard.component,
         },
         data() {
             return {
@@ -64,6 +64,7 @@
             this.checkLogin();
         },
         methods: {
+            // script for keyboard:
             accept(text) {
                 this.hide();
             },

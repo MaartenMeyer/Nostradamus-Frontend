@@ -17,6 +17,8 @@
 
                 <p class="errorMsg" v-if="error">Formulier nog niet volledig ingevuld!</p>
 
+<!--                <vue-touch-keyboard id="keyboard" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="inputField" :next="next" />-->
+
                 <button type="button" class="submitBtn" v-on:click=""><span>Registreer</span></button>
             </div>
         </div>

@@ -4,11 +4,51 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
 
         <div class="formBox">
-
             <h2 class="titleMain">Uren overzicht</h2>
 
-            <p>Hier komt een overzicht van de gemaakte uren met daarbij de pauzes. Op basis van eventuele ingevoerde gegevens?</p>
+            <div class="overviewDiv">
+            <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr" /><br>
 
+                <table border="1" class="overviewTable">
+                    <tr>
+                        <th>ID</th>
+                        <th>Werknemersnummer</th>
+                        <th>Naam</th>
+                        <th>Datum</th>
+                        <th>Starttijd</th>
+                        <th>Eindtijd</th>
+                        <th>Pauze</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>Admin</td>
+                        <td>01-01-1900</td>
+                        <td>18:00</td>
+                        <td>23:00</td>
+                        <td>0:15</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>Admin</td>
+                        <td>01-01-1900</td>
+                        <td>18:00</td>
+                        <td>23:00</td>
+                        <td>0:15</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>Admin</td>
+                        <td>01-01-1900</td>
+                        <td>18:00</td>
+                        <td>23:00</td>
+                        <td>0:15</td>
+                    </tr>
+                </table>
+
+            </div>
         </div>
 
         <div class="buttons">
@@ -62,6 +102,13 @@
         z-index: 1;
     }
 
+    /* overview Div */
+    .overviewDiv {
+        text-align: center;
+        flex-grow: 2;
+        vertical-align: middle;
+    }
+
     /* Form div */
     .formBox {
         width: 800px;
@@ -74,41 +121,24 @@
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     }
 
-    /* login Div */
-    .loginDiv{
-        text-align: center;
-        flex-grow: 2;
-        vertical-align: middle;
-    }
-
     /* Main title */
     .titleMain{
         font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-size: 28px;
         text-align: center;
-        margin-bottom: -15px;
-        margin-top: 60px;
+        margin-bottom: 5px;
+        margin-top: 30px;
         color: #676A6C;
     }
 
     /* Input fields */
     input[type=text] {
-        width: 300px;
+        width: 200px;
         font-family: "Roboto";
         font-size: 16px;
-        padding: 12px 20px;
+        padding: 6px 20px;
         margin: 8px 0;
-        box-sizing: border-box;
-        border: none;
-        border-bottom: 1px solid #00A0D1;
-        background: transparent;
-    }
-    input[type=password] {
-        width: 300px;
-        font-family: "Roboto";
-        font-size: 16px;
-        padding: 12px 20px;
-        margin: 8px 0;
+
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -116,6 +146,37 @@
     }
     input:focus{
         outline: none;
+    }
+
+    /* Overview table styling */
+    .overviewTable {
+        font-family: "Roboto";
+        margin-top: 10px;
+        border-collapse: collapse;
+        width: 101%;
+        border-top: none;
+    }
+    th {
+        background-color: #00A0D1;
+        color: white;
+        text-align: left;
+        height: 40px;
+        padding-left: 5px;
+        border-bottom: 1px solid #ddd;
+        border-left: none;
+        border-right: none;
+    }
+    td {
+        text-align: left;
+        padding-left: 5px;
+        height: 40px;
+        border-bottom: 1px solid #ddd;
+        border-left: none;
+        border-right: none;
+    }
+    tr:hover {
+        background-color: #676a6c;
+        color: white;
     }
 
     /* Log out button */

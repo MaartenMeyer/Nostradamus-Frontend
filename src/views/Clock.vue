@@ -8,7 +8,7 @@
             <h2 class="titleMain">Voer je gegevens in:</h2>
 
             <div class="clockDiv">
-                <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr"/><br>
+                <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr" /><br>
 
                 <div class="optionsDiv">
                     <select required id='selectBranch' style='visibility:hidden' @change="addDepartmentOptions()">
@@ -34,6 +34,7 @@
             </div>
             <modal id="modal" v-show="isModalVisible" @close="closeModal()"/>
         </div>
+
     </div>
 </template>
 
@@ -43,6 +44,8 @@
     import idbs from '../api/indexedDBService'
     import debounce from 'v-debounce'
     import rs from '../api/RequestService'
+    import VueTouchKeyboard from "vue-touch-keyboard";
+    import style from "../styles/vue-touch-keyboard.css";
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -50,6 +53,7 @@
         name: 'Clock',
         components: {
             modal,
+            "vue-touch-keyboard": VueTouchKeyboard.component,
         },
         data() {
             return {
