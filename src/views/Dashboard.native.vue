@@ -13,12 +13,15 @@
 </template>
 
 <script>
-    import axios from "axios"
-    import LoginPage from "../Login.native";
-    import ClockingPage from "./Clock.native";
-    import PausePage from "./Break.native";
+    import axios from "axios/index"
+    import LoginPage from "./Login.native.vue";
+    import ClockingPage from "./Clock.native.vue";
+    import PausePage from "./Break.native.vue";
+    import { request } from 'http';
+    import { mapGetters } from 'vuex';
+    import 'nativescript-localstorage';
 
-    const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
+    //const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
         name: "Login",
@@ -27,20 +30,11 @@
                 props:[currentUser]
             };
         },
+        computed: {
+        ...mapGetters({ currentUser: 'currentUser' })
+        },
         methods: {
-            // getUserData: function () {
-            //     let self = this;
-            //     axios.get("/api/user")
-            //         .then((response) => {
-            //             console.log(response);
-            //             self.$set(this, "user", response.data.user)
-            //         })
-            //         .catch((errors) => {
-            //             console.log(errors);
-            //             router.push("/")
-            //         })
-            // },
-                clickLogout() {
+            clickLogout() {
                 this.$navigateTo(LoginPage, {
                     props: {
                         currentUser
@@ -80,7 +74,6 @@
                     }
                 });
             },
-
             alert(message) {
                 return alert({
                     title: "Oops",

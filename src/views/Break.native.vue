@@ -12,8 +12,11 @@
 </template>
 
 <script>
-    import axios from "axios";
+    import axios from "axios/index"
     import HomePage from "./Dashboard";
+    import { request } from 'http';
+    import { mapGetters } from 'vuex';
+    import 'nativescript-localstorage';    
 
     export default {
         name: "Break.native",
@@ -31,6 +34,7 @@
             }
         },
         clickStartPause() {
+                console.log("pause");
                 this.alert(this.personNumber + " is het personeels nummer.");
                 axios({
                     method: 'post',
@@ -41,6 +45,7 @@
                 this.toHome();
             },
         toHome(){
+            console.log("going home");
             this.$navigateTo(HomePage, {
                 props: {
                     currentUser

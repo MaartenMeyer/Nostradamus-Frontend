@@ -1,7 +1,8 @@
 import Vue from 'nativescript-vue';
-import Navigator from 'nativescript-vue-navigator'
+import router from './router.native';
 
 import Login from '@/views/Login.native.vue';
+import store from './store';
 
 
 // Set the following to `true` to hide the logs created by nativescript-vue
@@ -11,6 +12,7 @@ Vue.config.silent = false;
 // Vue.config.debug = true;
 
 new Vue({
-  //store,
+  router,
+  store,
   render: h => h('frame', [h(Login)]),
 }).$start();

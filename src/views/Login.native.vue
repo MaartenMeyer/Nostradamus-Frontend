@@ -20,7 +20,7 @@
                     <StackLayout class="hr-light" />
                 </StackLayout>
 
-                <Button :text="'Log In'" @tap="submit" class="btn btn-primary m-t-20" />
+                <Button :text="'Log In'" @tap="submit()" class="btn btn-primary m-t-20" />
             </StackLayout>
 
 
@@ -29,20 +29,26 @@
 </template>
 
 <script>
-    const userService = {
-        login(user) {
-            return Promise.resolve(user);
-        }
-    };
+    import axios from "axios"
+    import Dashboard from "./Dashboard.native.vue";
+    import { request } from 'http';
+    import { mapGetters } from 'vuex';
+    import 'nativescript-localstorage';
 
-    // import axios from "axios/index"
-    // import Dashboard from "./Dashboard.native.vue";
-    // import { request } from 'http';
-    // import { mapGetters } from 'vuex'
+    // Deprecated consts, remove during cleanup
+    // const Toast = require('nativescript-toast');
     // const axios = require('axios/index');
     // const Dashboard = require('./Dashboard.native.vue');
     // const { request } = require('http');
     // const { mapGetters } = require('vuex');
+
+    const userService = {
+        login(user) {
+            return new Promise(resolve => {
+                resolve(user);   
+            })
+        }
+    };
 
     export default {
         name: 'Login',
@@ -54,13 +60,14 @@
                 }
             };
         },
+        //TODO; dunk deprecated data, remove console.log()
         //checking for current user does not work at this time
         //using similar methods to web version
         //throws error; undefined mapGetters
 
-        // computed: {
-        // ...mapGetters({ currentUser: 'currentUser' })
-        // },
+        computed: {
+        ...mapGetters({ currentUser: 'currentUser' })
+        },
         // //Checks if user is already logged in when loading site
         // created(){
         //     this.checkLogin();
@@ -69,10 +76,6 @@
         // updated(){
         //     this.checkLogin();
         // },        
-
-        // computed: {
-        //     currentUser = this.user
-        // },
 
         methods: {
             // checkLogin(){
@@ -85,58 +88,93 @@
             },
  
             submit() {
+                console.log("here");
+                //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
-                    this.alert(
-                        "Email en/of wachtwoord vergeten in te voeren.");
+                    console.log("invoer niet goed");
+                    // this.alert(
+                    //     "Email en/of wachtwoord vergeten in te voeren.");
                     return;
                 }
-                this.validate();
+                await this.validate();
+                this.login(loginRequest);
             },
-            validate() {
+
+            async validate() {
                 
                 // CHECK DATA
+                //
+                //url needs to be changed to server IP
+                //local IP does not work with emulator/phys. device
+                //Using 145.49.8.169:3000/api for testing
+                //check local IP of device running back-end before testing yourself
+                //https://www.whatismybrowser.com/detect/what-is-my-local-ip-address
+                //
+                
+                var self = this;
+
+                console.log("async")
+                axios({
+                    method: 'post',
+                    url: 'http://145.49.8.169:3000/api/login',
+                    data: { userName: this.user.username, password: this.user.password },
+                    config: { headers: {'Content-Type': 'application/json' }}
+                    })
+                    .then(request => {
+                        console.log("resp")
+                        loginRequest = this.request;
+                        return loginRequest;
+                    })
+                    .catch(() => this.loginFailed());
+                
+                
+
+                // postLogin().then(request => userService.login(request).then(request => this.login(request)));
+                // console.log("post-async");
+
+                // axios.interceptors.request.use(function (config){
+                //     let token = localStorage.token;
+                // },
+                // function (response){
+                //     return Promise.resolve(response);
+                // })
+                
                 // axios({
                 // method: 'post',
-                // //this needs to be changed to server IP
-                // //currently local IP, does not work with emulator/phys. device
-                // //Using 192.168.2.146:3000/api for testing
-                // //check local IP before testing yourself
                 // url: 'http://145.49.8.169:3000/api/login',
                 // data: { userName: this.user.username, password: this.user.password },
                 // config: { headers: {'Content-Type': 'application/json' }}
                 // })
-                // .then(request => this.login(request))
+                // .then(request => {
+                //     console.log(request.status);
+                //     this.login(request);
+                // })
                 // .catch(() => this.loginFailed());
+                // console.log(request.status);
+                
+                // axios.interceptors.response.use(function(response){
+                //     return response;
+                // })            
             },
             login(req) {
+                console.log("Request bla: "+req.status);
+                //console.log("Log redata: "+req.data);
                 if(!req.data.token){
+                    console.log("token-fail")
                     this.loginFailed();
                     return;
                 }
+
+                console.log("token-get");
                 this.error = false;
-                //localStorage.token = req.data.token;
-                userService
-                    .login(this.user)
-                    .then(() => {
-                        this.$navigateTo(Dashboard, {
-                            props: { 
-                                currentUser
-                            },
-                            animated: true,
-                            transition: {
-                                name: "slideTop",
-                                duration: 380,
-                                curve: "easeIn"
-                            }
-                        });
-                    })
-                    .catch(() => {
-                        this.alert(
-                            "Er ging iets mis met het verbinden van de applicatie."
-                        );
-                    });
+                localStorage.token = req.data.token;
+                this.$store.dispatch('login');
+                await this.loadData();
+                console.log("login-end");
+                this.$router.push('/dashboard');
             },
             alert(message) {
+                //console.log("fired");
                 return alert({
                     title: "Oops",
                     okButtonText: "OK",
@@ -148,34 +186,48 @@
                 this.alert(
                     "Er ging iets mis met het verbinden van de applicatie."
                 );
-                //delete localStorage.token;
-            }
-            //Uncommented chunk of code, no idea what it means
-            //
-
-            // login: (e) => {
-            //           e.preventDefault();
-            //           let email = e.target.elements.email.value;
-            //           let password = e.target.elements.password.value;
-
-            //           let login = () => {
-            //               let data = {
-            //                   email: email,
-            //                   password: password
-            //               };
-
-            //               axios.post("/api/login", data)
-            //                   .then((response) => {
-            //                       console.log("Logged in");
-            //                       this.$router.push("/dashboard")
-            //                   })
-            //                   .catch((errors) => {
-            //                       console.log("Cannot log in")
-            //                   })
-            //           };
-            //           login();
-            //     }
-            //    }
+                console.log("failed");
+                delete localStorage.token;
+            },
+            async loadData(){
+                axios({
+                    method: 'get',
+                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
+                    config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
+                    .then(request => this.loadDataSuccessful(request))
+                    .catch(() => this.loadDataFailed());
+            },   
+            loadDataSuccessful(req){
+                console.log("Load succes");
+                // localStorage.setItem('company', JSON.stringify(req.data));
+                console.log("user service");
+                // userService
+                //     .login(this.user)
+                //     .then(() => {
+                //         console.log("navigate");
+                //         this.$navigateTo(Dashboard, {
+                //             props: { 
+                //                 currentUser
+                //             },
+                //             animated: true,
+                //             transition: {
+                //                 name: "slideTop",
+                //                 duration: 380,
+                //                 curve: "easeIn"
+                //             }
+                //         });
+                this.$router.push('/dashboard');
+                    // })
+                    // .catch(() => {
+                    //     this.alert(
+                    //         "Er ging iets mis met het verbinden van de applicatie."
+                    //     );
+                    //});
+            },
+            loadDataFailed(){
+                console.log("yikes");
+                //Needs to be filled with something
+            } 
     }
 };    
 </script>

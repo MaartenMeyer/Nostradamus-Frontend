@@ -21,6 +21,11 @@
 </template>
 
 <script>
+    import axios from "axios/index"
+    import { request } from 'http';
+    import { mapGetters } from 'vuex';
+    import 'nativescript-localstorage';
+
     export default {
         name: "Clock.native",
         data() {
@@ -88,6 +93,7 @@
                 this.toHome();
             },
             toHome(){
+            console.log("going home");
             this.$navigateTo(HomePage, {
                 props: {
                     currentUser
