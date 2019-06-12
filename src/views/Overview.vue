@@ -10,51 +10,22 @@
 
                 <select id="overviewFilter" >
                     <option value="">Werknemersnummer</option>
-                    <option value="">Voornaam</option>
                     <option value="">Achternaam</option>
                     <option value="">Datum</option>
                 </select>
 
                 <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Filter op..." name="filterInput" /><br>
 
-                <button class="submitBtn" v-on:click="">Filter</button>
+                <button class="submitBtn" v-on:click="filter()">Filter</button>
 
                     <table border="1" class="overviewTable">
                         <tr>
-                            <th>ID</th>
-                            <th>Werknemersnummer</th>
-                            <th>Naam</th>
-                            <th>Datum</th>
+                            <th>Werknemersnr.</th>
+                            <th>Achternaam</th>
                             <th>Starttijd</th>
                             <th>Eindtijd</th>
-                            <th>Pauze</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>Admin</td>
-                            <td>01-01-1900</td>
-                            <td>18:00</td>
-                            <td>23:00</td>
-                            <td>0:15</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>Admin</td>
-                            <td>01-01-1900</td>
-                            <td>18:00</td>
-                            <td>23:00</td>
-                            <td>0:15</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>Admin</td>
-                            <td>01-01-1900</td>
-                            <td>18:00</td>
-                            <td>23:00</td>
-                            <td>0:15</td>
+<!--                            <th>Start pauze</th>-->
+<!--                            <th>Eind pauze</th>-->
                         </tr>
                     </table>
 
@@ -85,6 +56,11 @@
 
 
         methods: {
+            filter() {
+
+
+
+            },
             logout() {
                 this.$router.push('/logout');
             },
@@ -149,7 +125,7 @@
         font-size: 16px;
         margin-top: 20px;
         margin-right: 5px;
-        margin-left: 50px;
+        margin-left: 70px;
         outline: none;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -194,7 +170,7 @@
         width: 70px;
         margin-top: 10px;
         margin-bottom: 10px;
-        margin-left: 5px;
+        margin-left: 15px;
         float: left;
         color: white;
         text-align: center;

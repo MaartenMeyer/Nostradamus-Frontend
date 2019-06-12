@@ -85,6 +85,14 @@ function postNewUser(firstName, lastName, userName, dateOfBirth, emailAddress, u
     })
 }
 
+function getUserClockOverview(userNumber){
+    return axios({
+        method: 'get',
+        url: 'http://127.0.0.1:3000/api/overview/usernumber/' + userNumber,
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
 export default {
     postLogin,
     getData,
@@ -95,5 +103,6 @@ export default {
     postClockingEntry,
     synchronizeClockingEntry,
     postBreakEntry,
-    postNewUser
+    postNewUser,
+    getUserClockOverview
 }
