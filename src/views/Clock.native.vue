@@ -21,7 +21,8 @@
 </template>
 
 <script>
-    import axios from "axios/index"
+    import axios from "axios/index";
+    import Dashboard from "./Dashboard.native.vue";
     import { request } from 'http';
     import { mapGetters } from 'vuex';
     import 'nativescript-localstorage';
@@ -30,20 +31,20 @@
         name: "Clock.native",
         data() {
             return {
-                listBranch: [
-                    "Locatie",
-                    "Breda",
-                    "Amsterdam",
-                    "Rotterdam",
-                    "Bergen op Zoom"
-                ],
-                listDepartment: ["Afdeling", "DKW", "Kassa", "Magazijn", "AGF"],
+                listBranch: [],
+                listDepartment: [],
                 selectedItemBranch: 0,
                 selectedItemDepartment: 0,
                 personNumber: null,
                 displayDepartment: 0,
                 displayBranch: 0,
-                displayButton: 0
+                displayButton: 0,
+                clockingEntry: {
+                    userNumber: "",
+                    branchId: "",
+                    departmentId: "",
+                    beginTime: ""
+                }
             };
     },
 
@@ -52,8 +53,19 @@
     },    
     
     methods: {
+            getBranchData(){
+                let jsonObject = JSON.parse(localStorage.getItem('company').branches);
+                let branchList = this.listBranch;
+                for(var i in jsonObject){
+                    branchList.push([i, jsonObject[i]])
+                }
+            },
+            getDepartmentData(){
+
+            },
             changeBranch() {
                 if (this.selectedItemBranch != 0) {
+                    //this.getDepartmentData();
                     this.displayDepartment = 1;
                 }
             },
@@ -64,6 +76,7 @@
             },
             changeNumber() {
                 if (this.personNumber != null) {
+                    this.getBranchData();
                     this.displayBranch = 1;
                 }
             },
@@ -79,25 +92,24 @@
                 }
             },
             clickStartClocking() {
-                this.alert(
-                    "U bent ingeklokt" +
-                    "\n" +
-                    this.personNumber +
-                    " is het personeels nummer." +
-                    "\n" +
-                    this.listBranch[this.selectedItemBranch] +
-                    " is de locatie." +
-                    "\n" +
-                    this.listDepartment[this.selectedItemDepartment] +
-                    " is de afdeling."
-                );
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/clocking',
                     data: { userNumber: this.currentUser.userNumber },
                     config: { headers: {'Authorization': "bearer " + localStorage.token}}     
-                });
+                })
+                .then((response) => 
+                this.clockingSuccesful(response)
+                )
+                .catch(
+                    this.clockingFailed()
+                )
+            },
+            clockingSuccesful(response){
                 this.toHome();
+            },
+            clockingFailed(){
+                this.alert("Er is een probleem met ");
             },
             toHome(){
             console.log("going home");

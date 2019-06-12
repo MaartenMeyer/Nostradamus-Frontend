@@ -36,12 +36,17 @@
                 //props:[currentUser]
             };
         },
+        created(){
+            if(!localStorage.token){
+                this.$goto('login');
+            }
+        },
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
         methods: {
             clickLogout() {
-                this.$goto('login')
+                this.$goto('logout');
             },
             clickPause() {
                 this.$goto('break');
