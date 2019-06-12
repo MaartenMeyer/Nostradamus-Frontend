@@ -80,7 +80,9 @@
                         for(var i = 0; i < items.length; i++){
 							let id = items[i].id;
 
-							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, items[i].startTime, items[i].endTime, this.$cookie.get('access-token'));
+							console.log(items[i]);
+
+							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, items[i].beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {
 										console.log("Dashboard: data synchronized!");
                                 		idbs.deleteFromDatabase("clockingEntries", id);

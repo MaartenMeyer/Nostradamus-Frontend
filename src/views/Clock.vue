@@ -169,12 +169,14 @@
             checkClockingStatus(status){
                 return (status) => {
                     if(status == "online"){
+                        console.log("online");
                         // Checks if user is clocked in online
                         let promise = rs.getClockingStatus(this.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => this.updateForm(response))
                                .catch(error => this.updateForm(error.response));
 
                     }else if(status == "offline"){
+                        console.log("offline");
                         // Checks if user is clocked in offline
                         idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("clockingEntries", this.userNumber, (items) =>{
                             // Creates an object in the same format as the response  required in updateForm()
@@ -193,7 +195,8 @@
                                 object.data.userNumber = items[0].userNumber;
                                 object.data.branchId = items[0].branchId;
                                 object.data.departmentId = items[0].departmentId;
-                                object.data.beginTime = items[0].startTime;
+                                object.data.beginTime = items[0].beginTime;
+
                             }else{
                                 object.status = 404;
                             }
@@ -233,7 +236,7 @@
                                             userNumber: "",
                                             branchId: "",
                                             departmentId: "",
-                                            startTime: null,
+                                            beginTime: null,
                                             endTime: null
                                         }
                                         clockEntry.userNumber = this.clockingEntry.userNumber;
@@ -243,8 +246,13 @@
                                         var object = JSON.parse(JSON.stringify(clockEntry));
 
                                         idbs.saveToDatabase("clockingEntries", object);
-                                        this.showModal("Geklokt!")
-                                        // Function call needed to show user that he/she is clocked in offline
+                                        let date = new Date();
+                                        // Formats beginTime to format hh:mm with leading zeros
+                                        let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+                                        let t = new Date(this.clockingEntry.beginTime);
+                                        // Formats beginTime to format hh:mm with leading zeros
+                                        let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
+                                        this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.clockingEntry.userNumber + "<br>Begintijd: "+ beginTime + "<br>Eindtijd: "+ time + "<br><br><i>Je bent offline uitgeklokt</i>")
                                     }
                             })
                     }else{
@@ -271,7 +279,7 @@
                                                 userNumber: "",
                                                 branchId: "",
                                                 departmentId: "",
-                                                startTime: null,
+                                                beginTime: null,
                                                 endTime: null
                                             }
                                             clockEntry.userNumber = this.userNumber;
@@ -281,7 +289,12 @@
                                             var object = JSON.parse(JSON.stringify(clockEntry));
 
                                             idbs.saveToDatabase("clockingEntries", object);
-                                            this.showModal("Geklokt!")
+
+                                            let date = new Date();
+                                            // Formats beginTime to format hh:mm with leading zeros
+                                            let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
+                                            this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + clockEntry.userNumber + "<br>Locatie: " + clockEntry.branchId + "<br>Afdeling: " + clockEntry.departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!<br><br><i>Je bent offline ingeklokt</i>");
                                         }
                                     })
                         }else {

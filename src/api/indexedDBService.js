@@ -40,9 +40,9 @@ async function saveToDatabase(storeName, object){
             let time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
             let dateTime = date + ' ' + time;
 
-            object.startTime = dateTime;
+            object.beginTime = dateTime;
 
-            db.add('clockingEntries', object);
+            db.add(storeName, object);
         }
     });
 }
@@ -104,7 +104,7 @@ async function getUnsynchronizedData(storeName, callback) {
     // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
     a.then(function (result) {
         for (var i = 0; i < result.length; i++) {
-            if (result[i].startTime != null && result[i].endTime != null) {
+            if (result[i].beginTime != null && result[i].endTime != null) {
                 items.push(result[i]);
             }
         }
