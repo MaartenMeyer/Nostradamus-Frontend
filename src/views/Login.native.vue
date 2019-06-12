@@ -18,7 +18,7 @@
                                secure="true" v-model="user.password" :returnKeyType="'done'"
                                fontSize="18" />
                     <StackLayout class="hr-light" />
-                    <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
+<!--                    <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>-->
                 </StackLayout>
 
                 <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
@@ -93,6 +93,7 @@
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
+                    this.$goto('dashboard')
 
                     this.alert(
                         "Email en/of wachtwoord vergeten in te voeren.");
@@ -124,7 +125,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://145.49.25.66:3000/api/login',
+                    url: 'http://145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
@@ -195,7 +196,7 @@
                 // console.log(localStorage.userId);
                 axios({
                     method: 'get',
-                    url: 'http://145.49.25.66:3000/api/data/'+localStorage.userId,
+                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
                         this.loadDataSuccessful(request)
