@@ -350,17 +350,7 @@ __webpack_require__.r(__webpack_exports__);
 
     toHome() {
       console.log("going home");
-      this.$navigateTo(HomePage, {
-        props: {
-          currentUser
-        },
-        animated: true,
-        transition: {
-          name: "slideTop",
-          duration: 380,
-          curve: "easeIn"
-        }
-      });
+      this.$goto('dashboard');
     },
 
     alert(message) {
@@ -561,9 +551,9 @@ const userService = {
       //this.alert("pressed");
       if (!this.user.username || !this.user.password) {
         console.log("invoer niet goed");
-        this.$goto('dashboard'); // this.alert(
-        //     "Email en/of wachtwoord vergeten in te voeren.");
-        //return;
+        this.$goto('dashboard');
+        this.alert("Email en/of wachtwoord vergeten in te voeren.");
+        return;
       } else {
         this.validate();
       }
@@ -578,10 +568,16 @@ const userService = {
       //check local IP of device running back-end before testing yourself
       //https://www.whatismybrowser.com/detect/what-is-my-local-ip-address
       //
+      // axios.interceptors.request.use(function (config){
+      //     let token = localStorage.token;
+      // },
+      // function (response){
+      //     return Promise.resolve(response);
+      // })
       var self = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
-        url: 'http://192.168.178.35:3000/api/login',
+        url: 'http://145.49.8.169:3000/api/login',
         data: {
           userName: this.user.username,
           password: this.user.password
@@ -592,16 +588,13 @@ const userService = {
           }
         }
       }).then(response => {
-        console.log(response);
-        this.login(response.data);
-      }).catch(() => this.loginFailed()); // postLogin().then(request => userService.login(request).then(request => this.login(request)));
+        //console.log(response)
+        this.login(response);
+      }).catch(() => this.loginFailed());
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.response.use(function (response) {
+        return response;
+      }); // postLogin().then(request => userService.login(request).then(request => this.login(request)));
       // console.log("post-async");
-      // axios.interceptors.request.use(function (config){
-      //     let token = localStorage.token;
-      // },
-      // function (response){
-      //     return Promise.resolve(response);
-      // })
       // axios({
       // method: 'post',
       // url: 'http://145.49.8.169:3000/api/login',
@@ -614,21 +607,20 @@ const userService = {
       // })
       // .catch(() => this.loginFailed());
       // console.log(request.status);
-      // axios.interceptors.response.use(function(response){
-      //     return response;
-      // })
     },
 
-    login(req) {
-      console.log("Request bla: " + req.status); //console.log("Log redata: "+req.data);
-
-      if (!req.data.token) {
+    login(response) {
+      //console.log("Request : "+response.status);
+      //console.log("Log redata: "+req.data);
+      if (!response.data.token) {
         this.loginFailed();
         return;
       }
 
       this.error = false;
-      localStorage.token = req.data.token; //this.$store.dispatch('login');
+      localStorage.token = response.data.token; //console.log('token ' + localStorage.token);
+
+      this.$store.dispatch('login'); //this.$goto('dashboard');
 
       this.loadData();
     },
@@ -649,18 +641,16 @@ const userService = {
     },
 
     loadData() {
+      // console.log(localStorage.userId);
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: 'http://192.168.178.35:3000/api/data/1' //+localStorage.userId
-        ,
+        url: 'http://145.49.8.169:3000/api/data/' + localStorage.userId,
         config: {
           headers: {
-            'Content-Type': 'application/json'
+            "Authorization": "Bearer " + localStorage.token + ""
           }
         }
-      }).then(request => {
-        this.loadDataSuccessful(request);
-      }).catch(err => {
+      }).then(request => this.loadDataSuccessful(request)).catch(err => {
         if (err.response) {
           console.log("res " + err.response);
         } else {
@@ -673,7 +663,8 @@ const userService = {
     },
 
     loadDataSuccessful(req) {
-      console.log("Load succes");
+      console.log("Load succes"); // this.$router.push('dasboard');
+
       this.$goto('dashboard'); // localStorage.setItem('company', JSON.stringify(req.data));
       //console.log("user service");
       // userService

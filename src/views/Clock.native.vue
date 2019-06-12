@@ -94,17 +94,7 @@
             },
             toHome(){
             console.log("going home");
-            this.$navigateTo(HomePage, {
-                props: {
-                    currentUser
-                },
-                animated: true,
-                transition: {
-                    name: "slideTop",
-                    duration: 380,
-                    curve: "easeIn"
-                }
-            });
+            this.$goto('dashboard');
         },
             alert(message) {
                 return alert({
