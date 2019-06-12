@@ -1,10 +1,10 @@
 <template>
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <ActionBar class="action-bar">
-            <Label class="action-bar-title" text="In / Uit klokken"></Label>
+            <Label class="action-bar-title" text="In/Uit Klokken"></Label>
         </ActionBar>
         <FlexboxLayout class="page" verticalAlignment="center">
-            <TextField :class="input" @textChange="changeNumber" hint="Personeels nummer"
+            <TextField :class="input" @textChange="changeNumber" hint="Werknemersnummer"
                 keyboardType="number" style="width:75%;" fontSize="18"
                 v-model="personNumber" />
             <ListPicker v-if="displayBranch" :items="listBranch"
@@ -127,6 +127,10 @@
 </script>
 
 <style scoped>
+    .action-bar-title{
+        font-size: 25px;
+    }
+
     .page {
         align-items: center;
         flex-direction: column;

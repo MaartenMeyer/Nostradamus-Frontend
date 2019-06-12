@@ -6,14 +6,11 @@
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
-<!--                <Label class="box" text= "Welkom " {{currentUser.userId}} />-->
+                <Label class="box" text= "Welkom Persoonnnn" />
 <!--                <Label class="box" text=" Welkom {{currentUser.userId}}"/>-->
-
                 <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
-                <Button class="button" @tap="clickPause()"> Pauze </Button>
-<!--                    :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />-->
-                <Button class="lbutton" @tap="clickLogout"> Logout </Button>
-<!--                    text="Log out" @tap="clickLogout" class="btn btn-secondary" />-->
+                <Button class="button" @tap="clickPause()"> Pauze </Button> <!--                    :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />-->
+                <Button class="lbutton" @tap="clickLogout"> Logout </Button> <!--                    text="Log out" @tap="clickLogout" class="btn btn-secondary" />-->
             </StackLayout>
         </FlexboxLayout>
     </Page>
@@ -69,6 +66,10 @@
 </script>
 
 <style scoped>
+    .action-bar-title{
+        font-size: 25px;
+    }
+
     .page {
         align-items: center;
         flex-direction: column;
@@ -89,18 +90,14 @@
         color: #00A0D1;
     }
 
-    .input-field .input {
-        font-size: 54;
-    }
-
     .button {
         height: 50;
         margin: 30 5 15 5;
         background-color: #00A0D1;
         border-radius: 10px;
         font-size: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
+        /*margin-left: 10px;*/
+        /*margin-right: 10px;*/
         color: white;
     }
 

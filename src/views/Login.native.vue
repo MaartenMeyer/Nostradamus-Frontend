@@ -125,7 +125,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://145.49.8.169:3000/api/login',
+                    url: 'http://192.168.2.6:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
@@ -196,7 +196,7 @@
                 // console.log(localStorage.userId);
                 axios({
                     method: 'get',
-                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
+                    url: 'http://192.168.2.6:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
                         this.loadDataSuccessful(request)
