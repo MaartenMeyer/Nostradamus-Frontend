@@ -7,46 +7,27 @@
             <h2 class="titleMain">Uren overzicht</h2>
 
             <div class="overviewDiv">
-            <input class="clockInput" id='clockInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Werknemersnummer" name="Werknemersnr" /><br>
 
-                <table border="1" class="overviewTable">
-                    <tr>
-                        <th>ID</th>
-                        <th>Werknemersnummer</th>
-                        <th>Naam</th>
-                        <th>Datum</th>
-                        <th>Starttijd</th>
-                        <th>Eindtijd</th>
-                        <th>Pauze</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Admin</td>
-                        <td>01-01-1900</td>
-                        <td>18:00</td>
-                        <td>23:00</td>
-                        <td>0:15</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Admin</td>
-                        <td>01-01-1900</td>
-                        <td>18:00</td>
-                        <td>23:00</td>
-                        <td>0:15</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Admin</td>
-                        <td>01-01-1900</td>
-                        <td>18:00</td>
-                        <td>23:00</td>
-                        <td>0:15</td>
-                    </tr>
-                </table>
+                <select id="overviewFilter" >
+                    <option value="">Werknemersnummer</option>
+                    <option value="">Achternaam</option>
+                    <option value="">Datum</option>
+                </select>
+
+                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Filter op..." name="filterInput" /><br>
+
+                <button class="submitBtn" v-on:click="filter()">Filter</button>
+
+                    <table border="1" class="overviewTable">
+                        <tr>
+                            <th>Werknemersnr.</th>
+                            <th>Achternaam</th>
+                            <th>Starttijd</th>
+                            <th>Eindtijd</th>
+<!--                            <th>Start pauze</th>-->
+<!--                            <th>Eind pauze</th>-->
+                        </tr>
+                    </table>
 
             </div>
         </div>
@@ -75,6 +56,11 @@
 
 
         methods: {
+            filter() {
+
+
+
+            },
             logout() {
                 this.$router.push('/logout');
             },
@@ -131,14 +117,39 @@
         color: #676A6C;
     }
 
+    /* Select options styling */
+    select {
+        font-family: "Roboto";
+        color: #676A6C;
+        width: 300px;
+        font-size: 16px;
+        margin-top: 20px;
+        margin-right: 5px;
+        margin-left: 70px;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        cursor: pointer;
+        float: left;
+    }
+    select:focus {
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        cursor: pointer;
+    }
+    select:hover {
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        cursor: pointer;
+    }
+
     /* Input fields */
     input[type=text] {
         width: 200px;
         font-family: "Roboto";
         font-size: 16px;
-        padding: 6px 20px;
-        margin: 8px 0;
-
+        margin-top: 20px;
+        float: left;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -146,6 +157,37 @@
     }
     input:focus{
         outline: none;
+    }
+
+    /* Filter button style */
+    .submitBtn{
+        font-family: "Roboto";
+        font-size: 13px;
+        background-color: #00A0D1;
+        border: 4px solid #00A0D1;
+        border-radius: 5px;
+        display: inline-block;
+        width: 70px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 15px;
+        float: left;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        outline: none;
+        position: relative;
+        transition: transform 0.25s;
+        transition: 0.5s;
+        z-index: 1;
+    }
+    .submitBtn:hover {
+        background-color: #00799e;
+        border: 4px solid #00799e;
+    }
+    .submitBtn:active {
+        transform: scale(.95);
     }
 
     /* Overview table styling */
@@ -255,50 +297,6 @@
     }
     .buttonBack:active {
         transform: scale(0.95);
-    }
-
-    /* Login button style */
-    .submitBtn{
-        font-family: "Roboto";
-        font-size: 21px;
-        background-color: #00A0D1;
-        padding: 20px;
-        border: 4px solid #00A0D1;
-        border-radius: 5px;
-        display: inline-block;
-        width: 150px;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        outline: none;
-        position: relative;
-        transition: transform 0.25s;
-        transition: 0.5s;
-        z-index: 1;
-    }
-    .submitBtn:after {
-        content: '»';
-        position: absolute;
-        opacity: 0;
-        right: -20px;
-        transition: 0.5s;
-        z-index: -1;
-    }
-    .submitBtn:hover {
-        background-color: #00799e;
-        border: 4px solid #00799e;
-        padding-right: 24px;
-        padding-left:8px;
-    }
-    .submitBtn:hover:after {
-        opacity: 1;
-        right: 10px;
-    }
-    .submitBtn:active {
-        transform: scale(.95);
     }
 
     .errorMsg {
