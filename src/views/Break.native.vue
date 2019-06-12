@@ -22,9 +22,16 @@
         name: "Break.native",
         data(){
             return {
-                props:[currentUser]
+                user: {
+                    username: "",
+                    password: ""
+                }
             };
         },
+    computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
+        },
+
     methods: {
         clickValidatePause() {
             if (this.personNumber == null) {
@@ -35,28 +42,27 @@
         },
         clickStartPause() {
                 console.log("pause");
-                this.alert(this.personNumber + " is het personeels nummer.");
                 axios({
                     method: 'post',
-                    url: 'http://145.49.8.169:3000/api/clocking',
+                    url: 'http://145.49.8.169:3000/api/breaking',
                     data: { userNumber: this.currentUser.userNumber },
                     config: { headers: {'Authorization': "bearer " + localStorage.token}}
                 })
+                .then(request => this.breakSuccessful(request))
+                .catch(() => this.breakFailed());
+                //this.alert(this.personNumber + " is het personeels nummer.");
+                //this.toHome();
+            },
+            breakSuccessful(){
+                this.alert("Pauze gestart, uw personeelsnummer is " +localStorage.user.personNumber);
                 this.toHome();
             },
-        toHome(){
+            breakFailed(){
+                this.alert("Er ging iets fout met het pauzeren")
+            },            
+            toHome(){
             console.log("going home");
-            this.$navigateTo(HomePage, {
-                props: {
-                    currentUser
-                },
-                animated: true,
-                transition: {
-                    name: "slideTop",
-                    duration: 380,
-                    curve: "easeIn"
-                }
-            });
+            this.$goto('dashboard');
         },
         alert(message) {
             return confirm({

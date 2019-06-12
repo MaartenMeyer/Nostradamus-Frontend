@@ -256,6 +256,7 @@
             },
             loadDataFailed(){
                 console.log("Load-data Failed");
+                this.alert("Er ging iets mis met het verbinden van de applicatie.");
                 //Needs to be filled with something
             }
     }
