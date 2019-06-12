@@ -27,6 +27,7 @@ async function saveToDatabase(storeName, object){
 
             // Sets the endtime of obj to the current time in the right format
             obj.endTime = dateTime;
+            obj.synced = object.synced;
 
             // Overwrites object in store by obj
             db.put(storeName, obj);
@@ -103,8 +104,9 @@ async function getUnsynchronizedData(storeName, callback) {
     var a = objectStore.getAll();
     // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
     a.then(function (result) {
+        console.log(result)
         for (var i = 0; i < result.length; i++) {
-            if (result[i].beginTime != null && result[i].endTime != null) {
+            if (result[i].synced == false) {
                 items.push(result[i]);
             }
         }
@@ -139,11 +141,23 @@ async function deleteFromDatabase(storeName, id){
     objectStore.delete(id);
 }
 
+async function updateSync(storeName, id, status){
+    const db = await openDB('ClockingDB', 1);
+
+    var transaction = db.transaction(storeName, 'readonly');
+    var objectStore = transaction.objectStore(storeName);
+
+    let value = await db.get(storeName, id);
+    value.synced = status;
+    await db.put(storeName, value);
+}
+
 export default {
     saveToDatabase,
     getAllFromDatabase,
     getAllFromDatabaseWithUserNumber,
     getAllFromDatabaseWithUserNumberWithoutEndtime,
     getUnsynchronizedData,
-    deleteFromDatabase
+    deleteFromDatabase,
+    updateSync
 }

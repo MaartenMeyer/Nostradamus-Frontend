@@ -166,18 +166,17 @@
                     document.getElementById("selectDepartment").style.visibility="hidden";
                 }
             },
+            // Checks if user is clocked in
             checkClockingStatus(status){
                 return (status) => {
+                    console.info(status)
                     if(status == "online"){
-                        console.log("online");
                         // Checks if user is clocked in online
                         let promise = rs.getClockingStatus(this.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => this.updateForm(response))
                                .catch(error => this.updateForm(error.response));
 
                     }else if(status == "offline"){
-                        console.log("offline");
-                        // Checks if user is clocked in offline
                         idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("clockingEntries", this.userNumber, (items) =>{
                             // Creates an object in the same format as the response  required in updateForm()
                             let object = {
@@ -187,7 +186,8 @@
                                     branchId: "",
                                     departmentId: "",
                                     beginTime: null,
-                                    endTime: null
+                                    endTime: null,
+                                    synced: null
                                 }
                             }
                             if(items.length > 0){
@@ -196,6 +196,7 @@
                                 object.data.branchId = items[0].branchId;
                                 object.data.departmentId = items[0].departmentId;
                                 object.data.beginTime = items[0].beginTime;
+                                object.data.synced = items[0].synced;
 
                             }else{
                                 object.status = 404;
@@ -220,81 +221,59 @@
             },
             clock(){
                 if(this.userNumber != ""){
+                    // If userNumber is already clocked in, do this
                     if(this.clockingEntry.userNumber != ""){
                         let promise = rs.postClockingEntry(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, this.$cookie.get('access-token'));
-                        promise.then(response => this.clockInSuccessful(response))
+                        promise.then((response) => {
+                                    this.saveClockEntryOffline(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, true)
+                                    this.clockInSuccessful(response);
+                                })
                                .catch((error) => {
                                     if(error.response){
                                         if(error.response.status == 500){
                                             this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
-                                        }else{
-
                                         }
+                                    // If the server is unreachable, a network request error is returned
                                     }else if (error.request.status == 0){
-                                        // Switch to indexedDB storage
-                                        let clockEntry = {
-                                            userNumber: "",
-                                            branchId: "",
-                                            departmentId: "",
-                                            beginTime: null,
-                                            endTime: null
-                                        }
-                                        clockEntry.userNumber = this.clockingEntry.userNumber;
-                                        clockEntry.branchId = this.clockingEntry.branchId;
-                                        clockEntry.departmentId = this.clockingEntry.departmentId;
+                                        this.saveClockEntryOffline(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, false);
 
-                                        var object = JSON.parse(JSON.stringify(clockEntry));
-
-                                        idbs.saveToDatabase("clockingEntries", object);
                                         let date = new Date();
-                                        // Formats beginTime to format hh:mm with leading zeros
                                         let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
                                         let t = new Date(this.clockingEntry.beginTime);
-                                        // Formats beginTime to format hh:mm with leading zeros
                                         let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
+
                                         this.showModal("<b>Uitgeklokt!</b><br><br>Werknemersnummer: " + this.clockingEntry.userNumber + "<br>Begintijd: "+ beginTime + "<br>Eindtijd: "+ time + "<br><br><i>Je bent offline uitgeklokt</i>")
                                     }
                             })
+                    // If user is not clocked in already, do this
                     }else{
-                        // Get values of selectBranch and selectDepartment components
-                        let branch = document.getElementById("selectBranch");
+                        let branch = document.getElementById("selectBranch")
                         let branchId = branch.options[branch.selectedIndex].value;
-                        let department = document.getElementById("selectDepartment");
+                        let department = document.getElementById("selectDepartment")
                         let departmentId = department.options[department.selectedIndex].value;
 
                         // Checks if default values have been changed / if user has selected options for both branch and department
                         if(branchId != "" && departmentId != "" && this.userNumber != ""){
                             let promise = rs.postClockingEntry(this.userNumber, branchId, departmentId, this.$cookie.get('access-token'));
-                            promise.then(response => this.clockInSuccessful(response))
+                            promise.then((response) => {
+                                        this.saveClockEntryOffline(this.userNumber, branchId, departmentId, true)
+                                        this.clockInSuccessful(response);
+                                    })
                                    .catch((error) => {
+                                        // If the server returns an error response
+                                        // Server returns 500 when userNumber is invalid after previous checks
                                         if(error.response){
                                             if(error.response.status == 500){
                                                 this.showErrorMessage("Medewerkersnummer bestaat niet!", true);
-                                            }else {
-
                                             }
+                                        // If the server is unreachable, a network request error is returned
                                         }else if(error.request.status == 0){
-                                            // Switch to indexedDB storage
-                                            let clockEntry = {
-                                                userNumber: "",
-                                                branchId: "",
-                                                departmentId: "",
-                                                beginTime: null,
-                                                endTime: null
-                                            }
-                                            clockEntry.userNumber = this.userNumber;
-                                            clockEntry.branchId = branchId;
-                                            clockEntry.departmentId = departmentId;
-
-                                            var object = JSON.parse(JSON.stringify(clockEntry));
-
-                                            idbs.saveToDatabase("clockingEntries", object);
+                                            this.saveClockEntryOffline(this.userNumber, branchId, departmentId, false);
 
                                             let date = new Date();
-                                            // Formats beginTime to format hh:mm with leading zeros
                                             let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
-                                            this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + clockEntry.userNumber + "<br>Locatie: " + clockEntry.branchId + "<br>Afdeling: " + clockEntry.departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!<br><br><i>Je bent offline ingeklokt</i>");
+                                            this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!<br><br><i>Je bent offline ingeklokt</i>");
                                         }
                                     })
                         }else {
@@ -304,6 +283,24 @@
                 }else{
                     this.showErrorMessage("Voer een medewerkersnummer in!", true);
                 }
+            },
+            saveClockEntryOffline(userNumber, branchId, departmentId, synced){
+                let clockEntry = {
+                    userNumber: "",
+                    branchId: "",
+                    departmentId: "",
+                    beginTime: null,
+                    endTime: null,
+                    synced: null
+                }
+                clockEntry.userNumber = userNumber;
+                clockEntry.branchId = branchId;
+                clockEntry.departmentId = departmentId;
+                clockEntry.synced = synced;
+
+                var object = JSON.parse(JSON.stringify(clockEntry));
+
+                idbs.saveToDatabase("clockingEntries", object);
             },
             // Called when clock-in/out is successful
             // Parameter object is response from api call to api/clocking

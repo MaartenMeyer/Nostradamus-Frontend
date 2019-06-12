@@ -79,15 +79,24 @@
                     if(items.length > 0){
                         for(var i = 0; i < items.length; i++){
 							let id = items[i].id;
+							let beginTime = items[i].beginTime;
+							let endTime = items[i].endTime;
 
-							console.log(items[i]);
+							if(beginTime != null && endTime != null){
+								beginTime = null;
+							}
 
-							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, items[i].beginTime, items[i].endTime, this.$cookie.get('access-token'));
+							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {
 										console.log("Dashboard: data synchronized!");
-                                		idbs.deleteFromDatabase("clockingEntries", id);
+										if(beginTime == null && endTime != null){
+											idbs.deleteFromDatabase("clockingEntries", id);
+										}else {
+											idbs.updateSync("clockingEntries", id, true);
+										}
 									})
                        				.catch((error) => {
+										   console.log(error)
                             			console.log("Error in data, data skipped!");
                         			});
                         }
