@@ -3,7 +3,7 @@
         <FlexboxLayout class="page">
             <StackLayout class="form">
                 <Image class="logo" src="~/assets/logos.png" />
-                <Label class="header" text="ClockSystem" />
+                <Label class="header" text="Welkom" />
 
                 <StackLayout class="input-field" marginBottom="25">
                     <TextField class="input" hint="Gebruikersnaam" keyboardType="text"
@@ -18,9 +18,10 @@
                                secure="true" v-model="user.password" :returnKeyType="'done'"
                                fontSize="18" />
                     <StackLayout class="hr-light" />
+                    <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
                 </StackLayout>
 
-                <Button :text="'Log In'" @tap="submit()" class="btn btn-primary m-t-20" />
+                <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
             </StackLayout>
 
 
@@ -92,7 +93,6 @@
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
-                    this.$goto('dashboard');
 
                     this.alert(
                         "Email en/of wachtwoord vergeten in te voeren.");
@@ -124,7 +124,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://145.49.8.169:3000/api/login',
+                    url: 'http://145.49.25.66:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
@@ -195,7 +195,7 @@
                 // console.log(localStorage.userId);
                 axios({
                     method: 'get',
-                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
+                    url: 'http://145.49.25.66:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
                         this.loadDataSuccessful(request)
@@ -276,18 +276,16 @@
     }
 
     .logo {
-        margin-bottom: 12;
         height: 90;
         font-weight: bold;
     }
 
     .header {
         horizontal-align: center;
-        font-size: 25;
-        font-weight: 600;
+        font-size: 35;
         margin-bottom: 70;
         text-align: center;
-        color: #00A2D3;
+        color: #00A0D1;
     }
 
     .input-field {
@@ -306,11 +304,20 @@
     .btn-primary {
         height: 50;
         margin: 30 5 15 5;
-        background-color: #00A2D3;
+        background-color: #00A0D1;
+        color: white;
         border-radius: 5;
         font-size: 20;
-        font-weight: 600;
     }
+
+    /*.errorMsg{*/
+    /*    font-family: Roboto;*/
+    /*    font-weight: bold;*/
+    /*    font-size: 11px;*/
+    /*    margin-top: 10px;*/
+    /*    margin-bottom: 0px;*/
+    /*    color: red;*/
+    /*}*/
 
     .login-label {
         horizontal-align: center;
