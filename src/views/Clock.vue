@@ -545,6 +545,7 @@
         transform: scale(.95);
     }
 
+    /* Error message styling */
     .errorMsg{
         font-family: Roboto;
         font-weight: bold;

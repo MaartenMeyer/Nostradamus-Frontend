@@ -8,18 +8,20 @@
             <h2 class="titleMain">Registreer nieuwe gebruiker</h2>
 
             <div class="registerDiv">
-                <input class="registerInput" type="text" placeholder="Voornaam" name="Voornaam"/><br>
-                <input class="registerInput" type="text"  placeholder="Achternaam" name="Achternaam"/><br>
-                <input class="registerInput" type="text"  placeholder="Gebruikersnaam" name="Gebruikersnaam"/><br>
-                <input class="registerInput" type="email"  placeholder="Email" name="email"/><br>
-                <input class="registerInput" type="number"  placeholder="Werknemersnummer" name="Werknemersnummer"/><br>
-                <input class="registerInput" type="password"  placeholder="Wachtwoord" name="password"/><br>
+                <input class="registerInput" type="text" v-model="input.firstName" placeholder="Voornaam" name="Voornaam"/><br>
+                <input class="registerInput" type="text" v-model="input.lastName" placeholder="Achternaam" name="Achternaam"/><br>
+                <input class="registerInput" type="date" v-model="input.dateOfBirth" placeholder="Geboortedatum" name="Geboortedatum"/><br>
+                <input class="registerInput" type="email" v-model="input.emailAddress" placeholder="Email" name="email"/><br>
+                <input class="registerInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnummer"/><br>
+                <input class="registerInput" type="number" v-model="input.accountType" placeholder="Accounttype" name="Account type"/><br>
+                <input class="registerInput" type="text" v-model="input.userName" placeholder="Gebruikersnaam" name="Gebruikersnaam"/><br>
+                <input class="registerInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
 
-                <p class="errorMsg" v-if="error">Formulier nog niet volledig ingevuld!</p>
+                <p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
 <!--                <vue-touch-keyboard id="keyboard" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="inputField" :next="next" />-->
 
-                <button type="button" class="submitBtn" v-on:click=""><span>Registreer</span></button>
+                <button type="button" class="submitBtn" v-on:click="register()"><span>Registreer</span></button>
             </div>
         </div>
 
@@ -31,22 +33,111 @@
             <button class="buttonBack" v-on:click="back()"><i class="fas fa-arrow-alt-circle-left"></i></button>
         </div>
 
+        <modal id="modal" v-show="isModalVisible" @close="closeModal()"/>
     </div>
 </template>
 
 <script>
     import axios from 'axios';
-    import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex';
+    import modal from './Modal.vue';
+    import rs from '../api/RequestService';
     import VueCookie from 'vue-cookie';
-    import idbs from '../api/indexedDBService'
+    import idbs from '../api/indexedDBService';
+    import VueTouchKeyboard from "vue-touch-keyboard";
+    import style from "../styles/vue-touch-keyboard.css";
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
         name: "Register",
-
+        components: {
+            modal,
+            "vue-touch-keyboard": VueTouchKeyboard.component,
+        },
+        data() {
+            return {
+                visible: false,
+                layout: "normal",
+                inputField: null,
+                options: {
+                    useKbEvents: false
+                },
+                input: {
+                    firstName: "",
+                    lastName: "",
+                    userName: "",
+                    dateOfBirth: null,
+                    emailAddress: "",
+                    userNumber: null,
+                    accountType: null,
+                    password: "",
+                },
+                userNumbers: [],
+                error: false,
+                errorMessage: "",
+                isModalVisible: false,
+            }
+        },
+        mounted(){
+            this.addUsersToArray();
+        },
 
         methods: {
+            // Gets userNumbers of company from storage and adds them to array userNumber for faster access
+            addUsersToArray(){
+                if(this.userNumbers.length == 0){
+                    this.userNumbers = [];
+
+                    let jsonObj = JSON.parse(localStorage.getItem('users'));
+                    let users = jsonObj.users;
+
+                    for(var i = 0; i < users.length; i++) {
+                        this.userNumbers.push(users[i].userNumber)
+                    }
+                }
+            },
+            register() {
+                if(this.userNumbers.includes(parseInt(this.input.userNumber, 10))){
+                    this.showErrorMessage("Werknemmersnummer al in gebruik.", true);
+                    console.log(this.userNumbers)
+
+                } else if (this.input.firstName != "" && this.input.lastName != "" && this.input.userName != "" && this.input.dateOfBirth != null && this.input.emailAddress != "" && this.input.userNumber != null && this.input.accountType != null && this.input.password != "") {
+                    let promise = rs.postNewUser(this.input.firstName, this.input.lastName, this.input.userName, this.input.dateOfBirth, this.input.emailAddress, parseInt(this.input.userNumber, 10), parseInt(this.input.accountType, 10), this.input.password);
+                    promise.then(response => this.registerSuccessful(response))
+                        .catch((error) => {
+                            if (error.response) {
+                                if (error.response.status == 401) {
+                                    this.showErrorMessage("Invoer niet compleet!", true);
+                                }
+                            } else if (error.request.status == 0) {
+                                this.showErrorMessage("Registeren niet mogelijk. Geen verbinding met server!", true);
+                            }
+                        });
+                } else {
+                    this.showErrorMessage("Invoer niet compleet of correct!", true);
+                }
+            },
+            registerSuccessful(object) {
+                if (object.data.message === "User is registered.") {
+                    this.showModal("Nieuwe werknemer geregistreerd!");
+                }
+            },
+            // Shows error message with text of parameter string if parameter status is true
+            showErrorMessage(string, status){
+                this.errorMessage = string;
+                this.error = status;
+            },
+            // Shows pop-up modal with text of parameter string
+            showModal(string) {
+                $("#modalDescription").html(string);
+                this.isModalVisible = true;
+            },
+            // Closes pop-up modal and changes to dashboard view
+            closeModal() {
+                this.isModalVisible = false;
+                this.$router.push('/dashboard');
+            },
             logout() {
                 this.$router.push('/logout');
             },
@@ -99,7 +190,7 @@
         font-size: 28px;
         text-align: center;
         margin-bottom: 3px;
-        margin-top: 40px;
+        margin-top: 30px;
         color: #676A6C;
     }
 
@@ -109,7 +200,7 @@
         font-family: "Roboto";
         font-size: 16px;
         padding: 6px 20px;
-        margin: 8px 0;
+        margin: 3px 0;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -120,7 +211,7 @@
         font-family: "Roboto";
         font-size: 16px;
         padding: 6px 20px;
-        margin: 8px 0;
+        margin: 3px 0;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -131,7 +222,7 @@
         font-family: "Roboto";
         font-size: 16px;
         padding: 6px 20px;
-        margin: 8px 0;
+        margin: 3px 0;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -142,7 +233,19 @@
         font-family: "Roboto";
         font-size: 16px;
         padding: 6px 20px;
-        margin: 8px 0;
+        margin: 3px 0;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        background: transparent;
+    }
+    input[type=date] {
+        width: 300px;
+        font-family: "Roboto";
+        color: #676a6c;
+        font-size: 16px;
+        padding: 6px 20px;
+        margin: 3px 0;
         box-sizing: border-box;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -276,12 +379,13 @@
         transform: scale(.95);
     }
 
+    /* Error message styling */
     .errorMsg {
         font-family: Roboto;
         font-weight: bold;
         font-size: 11px;
-        margin-top: 10px;
-        margin-bottom: 0px;
+        margin-top: 5px;
+        margin-bottom: -5px;
         color: red;
     }
 </style>

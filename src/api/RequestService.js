@@ -76,6 +76,15 @@ function postBreakEntry(userNumber, accessToken){
     })
 }
 
+function postNewUser(firstName, lastName, userName, dateOfBirth, emailAddress, userNumber, accountType, password) {
+    return axios({
+        method: 'post',
+        url: 'http://127.0.0.1:3000/api/register',
+        data: { firstName: firstName, lastName: lastName, userName: userName, dateOfBirth: dateOfBirth, emailAddress: emailAddress, accountType: accountType, password: password, userNumber: userNumber},
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
 export default {
     postLogin,
     getData,
@@ -85,5 +94,6 @@ export default {
     getConnectionStatus,
     postClockingEntry,
     synchronizeClockingEntry,
-    postBreakEntry
+    postBreakEntry,
+    postNewUser
 }
