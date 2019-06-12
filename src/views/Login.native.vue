@@ -18,7 +18,7 @@
                                secure="true" v-model="user.password" :returnKeyType="'done'"
                                fontSize="18" />
                     <StackLayout class="hr-light" />
-                    <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>
+                    <!-- <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p> -->
                 </StackLayout>
 
                 <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
@@ -48,7 +48,8 @@
             return new Promise(resolve => {
                 resolve(user);
             })
-        }
+        },
+        error: false
     };
 
     export default {
@@ -62,9 +63,6 @@
             };
         },
         //TODO; dunk deprecated data, remove console.log()
-        //checking for current user does not work at this time
-        //using similar methods to web version
-        //throws error; undefined mapGetters
 
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
@@ -124,7 +122,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://145.49.25.66:3000/api/login',
+                    url: 'http://145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
@@ -195,7 +193,7 @@
                 // console.log(localStorage.userId);
                 axios({
                     method: 'get',
-                    url: 'http://145.49.25.66:3000/api/data/'+localStorage.userId,
+                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
                         this.loadDataSuccessful(request)
