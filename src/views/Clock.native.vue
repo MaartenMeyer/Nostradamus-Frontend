@@ -46,6 +46,11 @@
                 displayButton: 0
             };
     },
+
+    computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
+    },    
+    
     methods: {
             changeBranch() {
                 if (this.selectedItemBranch != 0) {
@@ -75,6 +80,8 @@
             },
             clickStartClocking() {
                 this.alert(
+                    "U bent ingeklokt" +
+                    "\n" +
                     this.personNumber +
                     " is het personeels nummer." +
                     "\n" +
