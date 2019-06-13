@@ -36,13 +36,6 @@
     import { mapGetters } from 'vuex';
     import 'nativescript-localstorage';
 
-    // Deprecated consts, remove during cleanup
-    // const Toast = require('nativescript-toast');
-    // const axios = require('axios/index');
-    // const Dashboard = require('./Dashboard.native.vue');
-    // const { request } = require('http');
-    // const { mapGetters } = require('vuex');
-
     const userService = {
         login(user) {
             return new Promise(resolve => {
@@ -62,27 +55,12 @@
                 }
             };
         },
-        //TODO; dunk deprecated data, remove console.log()
 
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
-        // //Checks if user is already logged in when loading site
-        // created(){
-        //     this.checkLogin();
-        // },
-        // //Checks if user is already logged in when refreshing site
-        // updated(){
-        //     this.checkLogin();
-        // },
-
 
         methods: {
-            // checkLogin(){
-            //     if(this.currentUser){
-            //         this.$navigateTo(Dashboard);
-            //     }
-            //},
             focusPassword() {
                 this.$refs.password.nativeView.focus();
             },
@@ -101,7 +79,6 @@
             },
 
             validate() {
-
                 // CHECK DATA
                 //
                 //url needs to be changed to server IP
@@ -110,14 +87,6 @@
                 //check local IP of device running back-end before testing yourself
                 //https://www.whatismybrowser.com/detect/what-is-my-local-ip-address
                 //
-
-                // axios.interceptors.request.use(function (config){
-                //     let token = localStorage.token;
-                // },
-                // function (response){
-                //     return Promise.resolve(response);
-                // })
-
                 var self = this;
 
                 axios({
@@ -125,41 +94,18 @@
                     url: 'http://145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
-                    })
-                    .then(response => {
-                        //console.log(response)
-                        this.login(response);
-                    })
-                    .catch(() => this.loginFailed());
-
+                })
+                .then(response => {
+                    //console.log(response)
+                    this.login(response);
+                })
+                .catch(() => this.loginFailed());
 
                 axios.interceptors.response.use(function(response){
                     return response;
                 })
-
-                // postLogin().then(request => userService.login(request).then(request => this.login(request)));
-                // console.log("post-async");
-
-
-
-                // axios({
-                // method: 'post',
-                // url: 'http://145.49.8.169:3000/api/login',
-                // data: { userName: this.user.username, password: this.user.password },
-                // config: { headers: {'Content-Type': 'application/json' }}
-                // })
-                // .then(request => {
-                //     console.log(request.status);
-                //     this.login(request);
-                // })
-                // .catch(() => this.loginFailed());
-                // console.log(request.status);
-
-
             },
             login(response) {
-                //console.log("Request : "+response.status);
-                //console.log("Log redata: "+req.data);
                 if(!response.data.token){
                     this.loginFailed();
                     return;
@@ -167,14 +113,10 @@
 
                 this.error = false;
                 localStorage.token = response.data.token;
-                //console.log('token ' + localStorage.token);
                 this.$store.dispatch('login');
-                
-                //this.$goto('dashboard');
                 this.loadData();
             },
             alert(message) {
-                //console.log("fired");
                 return alert({
                     title: "Oops",
                     okButtonText: "OK",
@@ -190,7 +132,7 @@
                 delete localStorage.token;
             },
             loadData(){
-                // console.log(localStorage.userId);
+
                 axios({
                     method: 'get',
                     url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
@@ -204,58 +146,17 @@
                         }else{
                             console.log("req " + err.request.status)
                         }
-                        //console.log(err);
                         this.loadDataFailed()
                     });
             },
             loadDataSuccessful(req){
                 console.log("Load succes");
-                // this.$router.push('dasboard');
+                localStorage.setItem('company', JSON.stringify(req.data));
                 this.$goto('dashboard');
-                // localStorage.setItem('company', JSON.stringify(req.data));
-                //console.log("user service");
-                // userService
-                //     .login(this.user)
-                //     .then(() => {
-                //         console.log("navigate");
-                //         this.$navigateTo(Dashboard, {
-                //             props: {
-                //                 currentUser
-                //             },
-                //             animated: true,
-                //             transition: {
-                //                 name: "slideTop",
-                //                 duration: 380,
-                //                 curve: "easeIn"
-                //             }
-                //         });
-
-                //console.log("navigate");
-                // this.$navigateTo(Dashboard, {
-                //             props: {
-                //                 currentUser
-                //             },
-                //             animated: true,
-                //             transition: {
-                //                 name: "slideTop",
-                //                 duration: 380,
-                //                 curve: "easeIn"
-                //             }
-                // });
-                //console.log("push-error")
-
-
-                    // })
-                    // .catch(() => {
-                    //     this.alert(
-                    //         "Er ging iets mis met het verbinden van de applicatie."
-                    //     );
-                    //});
             },
             loadDataFailed(){
                 console.log("Load-data Failed");
                 this.alert("Er ging iets mis met het verbinden van de applicatie.");
-                //Needs to be filled with something
             }
     }
 };
