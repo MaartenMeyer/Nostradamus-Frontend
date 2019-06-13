@@ -54,13 +54,6 @@
                 }
             };
         },
-<<<<<<< HEAD
-=======
-        //TODO; dunk deprecated data, remove console.log()
-        //checking for current user does not work at this time
-        //using similar methods to web version
-        //throws error; undefined mapGetters
->>>>>>> f16c294efd8fe7a22b6a8940a5e44f5ebf72e4d7
 
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
