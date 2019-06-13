@@ -49,11 +49,11 @@ function getConnectionStatus(accessToken){
     })
 }
 
-function postClockingEntry(userNumber, branchId, departmentId, beginTime, endTime, accessToken){
+function postClockingEntry(userNumber, branchId, departmentId, accessToken){
     return axios({
         method: 'post',
         url: 'http://127.0.0.1:3000/api/clocking',
-        data: { userNumber: userNumber, branchId: branchId, departmentId: departmentId, beginTime: beginTime, endTime: endTime },
+        data: { userNumber: userNumber, branchId: branchId, departmentId: departmentId },
         headers: { 'Authorization': "bearer " + accessToken }
     })
 }
