@@ -18,7 +18,6 @@
                                secure="true" v-model="user.password" :returnKeyType="'done'"
                                fontSize="18" />
                     <StackLayout class="hr-light" />
-<!--                    <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>-->
                 </StackLayout>
 
                 <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
@@ -125,7 +124,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://192.168.2.6:3000/api/login',
+                    url: 'http://145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
@@ -196,7 +195,7 @@
                 // console.log(localStorage.userId);
                 axios({
                     method: 'get',
-                    url: 'http://192.168.2.6:3000/api/data/'+localStorage.userId,
+                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
                         this.loadDataSuccessful(request)
@@ -311,15 +310,6 @@
         border-radius: 5;
         font-size: 20;
     }
-
-    /*.errorMsg{*/
-    /*    font-family: Roboto;*/
-    /*    font-weight: bold;*/
-    /*    font-size: 11px;*/
-    /*    margin-top: 10px;*/
-    /*    margin-bottom: 0px;*/
-    /*    color: red;*/
-    /*}*/
 
     .login-label {
         horizontal-align: center;
