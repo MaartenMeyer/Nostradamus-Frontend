@@ -67,6 +67,15 @@ function synchronizeClockingEntry(userNumber, branchId, departmentId, beginTime,
     })
 }
 
+function synchronizeBreakEntry(userNumber, beginTime, endTime, accessToken){
+    return axios({
+        method: 'post',
+        url: 'http://127.0.0.1:3000/api/breaking',
+        data: { userNumber: userNumber, beginTime: beginTime, endTime: endTime },
+        headers: { 'Authorization': "bearer " + accessToken }
+    })
+}
+
 function postBreakEntry(userNumber, accessToken){
     return axios({
         method: 'post',
@@ -104,5 +113,6 @@ export default {
     synchronizeClockingEntry,
     postBreakEntry,
     postNewUser,
-    getUserClockOverview
+    getUserClockOverview,
+    synchronizeBreakEntry
 }

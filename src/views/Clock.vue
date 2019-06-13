@@ -148,9 +148,9 @@
             },
             checkUsernumberValidity(){
                 this.clockingEntry.userNumber = "";
-                    this.clockingEntry.branchId = "";
-                    this.clockingEntry.departmentId = "";
-                    this.clockingEntry.beginTime = "";
+                this.clockingEntry.branchId = "";
+                this.clockingEntry.departmentId = "";
+                this.clockingEntry.beginTime = "";
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
                     this.showErrorMessage("", false);
                     this.checkConnection(this.checkClockingStatus(""));
