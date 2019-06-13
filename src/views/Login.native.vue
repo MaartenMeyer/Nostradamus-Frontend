@@ -68,8 +68,9 @@
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
-                    this.$goto('dashboard')
-
+                    //quick test $goto, uncomment for faster
+                    //testing in case of styling edits.
+                    //this.$goto('dashboard')
                     this.alert(
                         "Email en/of wachtwoord vergeten in te voeren.");
                     return;
@@ -91,7 +92,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http:/145.49.8.169:3000/api/login',
+                    url: 'http://145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                 })
@@ -157,7 +158,7 @@
             loadDataFailed(){
                 console.log("Load-data Failed");
                 this.alert("Er ging iets mis met het verbinden van de applicatie.");
-            }
+            },
     }
 };
 </script>

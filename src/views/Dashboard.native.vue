@@ -6,7 +6,7 @@
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
-                <Label class="box" text= "Welkom Persoonnnn" />
+                <Label class="box" text= "Welkom Persoon" />
 <!--                <Label class="box" text=" Welkom {{currentUser.userId}}"/>-->
                 <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
                 <Button class="button" @tap="clickPause()"> Pauze </Button> <!--                    :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />-->
@@ -34,9 +34,10 @@
             };
         },
         created(){
-            if(!localStorage.token){
-                this.$goto('login');
-            }
+            this.checkToken();
+        },
+        updated(){
+            this.checkToken();
         },
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
@@ -50,6 +51,12 @@
             },
             clickClocking() {
                 this.$goto('clock');
+            },
+            checkToken(){
+                if(!localStorage.token){
+                    this.alert("Er is iets fout gegaan met de applicatie")
+                    this.$goto('login');
+                }
             },
             alert(message) {
                 return alert({

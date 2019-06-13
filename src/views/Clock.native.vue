@@ -4,13 +4,13 @@
             <Label class="action-bar-title" text="In/Uit Klokken"></Label>
         </ActionBar>
         <FlexboxLayout class="page" verticalAlignment="center">
-            <TextField :class="input" @textChange="changeNumber" hint="Werknemersnummer"
+            <TextField :class= "input" @textChange="changeNumber" hint="Werknemersnummer"
                 keyboardType="number" style="width:75%;" fontSize="18"
                 v-model="personNumber" />
-            <ListPicker v-if="displayBranch" :items="listBranch"
+            <ListPicker required id='branchPicker' v-if="displayBranch" :items="listBranch"
                 @selectedIndexChange="changeBranch" v-model="selectedItemBranch"
                 style="width:75%;" />
-            <ListPicker v-if="displayDepartment" :items="listDepartment"
+            <ListPicker required id='departmentPicker' v-if="displayDepartment" :items="listDepartment"
                 @selectedIndexChange="changeDepartment" v-model="selectedItemDepartment"
                 style="width:75%;" disabled="true" />
             <Button v-if="displayButton" :text="'Klokken'" @tap="clickClockingValidate"
@@ -54,28 +54,66 @@
     
     methods: {
             getBranchData(){
-                let jsonObject = JSON.parse(localStorage.getItem('company').branches);
-                let branchList = this.listBranch;
-                for(var i in jsonObject){
-                    branchList.push([i, jsonObject[i]])
+                //fills listBranch
+                this.listBranch = [];
+                let jsonObject = JSON.parse(localStorage.getItem('company'));
+                let branches = jsonObject.branches;
+                this.listBranch.push("Locatie");
+
+                for(var i = 0; i < branches.length; i++){
+                    this.listBranch.push(branches[i].branchName)
                 }
             },
+            dunkDepartmentData(){
+                //empties listDepartment
+                this.listDepartment = [];
+                for(var i = this.listDepartment.length -1; i >= 1 ; i--){
+                    this.listDepartment.remove(i);
+                }
+                this.selectedItemDepartment = 0;
+                this.getDepartmentData();
+            },
             getDepartmentData(){
+                //Fills listDepartment
+                this.listDepartment = [];
+                this.listDepartment.push("Afdeling");
+
+                //Function to find an element in an array
+                //Called to find department in branch array
+                function findElement(arr, propName, propValue) {
+                    for (var i=0; i < arr.length; i++)
+                        if (arr[i][propName] == propValue){
+                            return arr[i];
+                    }
+                }
+
+                let jsonObject = JSON.parse(localStorage.getItem('company'));
+                let branches = jsonObject.branches;
+                let branchId = this.selectedItemBranch;
+                let branch = findElement(branches, "branchId", branchId);
+                let departments = branch.departments;
+
+                for(var i = 0; i < departments.length; i++){
+                    this.listDepartment.push(departments[i].departmentName)
+                }
 
             },
             changeBranch() {
                 if (this.selectedItemBranch != 0) {
-                    //this.getDepartmentData();
+                    this.clockingEntry.branchId = this.selectedItemBranch;
+                    this.dunkDepartmentData();
                     this.displayDepartment = 1;
                 }
             },
             changeDepartment() {
                 if (this.selectedItemDepartment != 0) {
+                    this.clockingEntry.departmentId = this.selectedItemDepartment;
                     this.displayButton = 1;
                 }
             },
             changeNumber() {
                 if (this.personNumber != null) {
+                    this.clockingEntry.personNumber = this.personNumber;
                     this.getBranchData();
                     this.displayBranch = 1;
                 }
@@ -95,7 +133,10 @@
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/clocking',
-                    data: { userNumber: this.currentUser.userNumber },
+                    data: { 
+                        userNumber: this.currentUser.userNumber,
+                        branchId: this.clockingEntry.branchId ,
+                        departmentId: this.clockingEntry.departmentId},
                     config: { headers: {'Authorization': "bearer " + localStorage.token}}     
                 })
                 .then((response) => 
