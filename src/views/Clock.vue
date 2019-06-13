@@ -183,6 +183,7 @@
                     }else if(status == "offline"){
                         idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("clockingEntries", this.userNumber, (items) =>{
                             // Creates an object in the same format as the response  required in updateForm()
+                            console.log("Usernumber before object: " +this.userNumber);
                             let object = {
                                 status: null,
                                 data: {
@@ -206,6 +207,7 @@
                             }else{
                                 object.status = 404;
                             }
+                            console.log("Usernumber after object: " +object.data.userNumber);
                             this.updateForm(object);
                         });
                     }
@@ -335,6 +337,7 @@
             // Updates current clockingEntry variables to response.data if status is 200
             // Resets current clockingEntry variables if status is 4040
             updateForm(response){
+                console.log(response)
                 if(response.status == 200){
                     this.clockingEntry.userNumber = response.data.userNumber;
                     this.clockingEntry.branchId = response.data.branchId;

@@ -30,42 +30,64 @@ async function openDatabase(storeName, callback){
 }
 
 async function saveToDatabase(storeName, object){
-    openDatabase(storeName, function(db){
-        getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, object.userNumber, function (items) {
-            // If there are entries in the database with the usernumber and without endtime, do this
-            // This means the user is currently clocked in offline
-            if (items.length > 0) {
-
-                let obj = items[0];
-
-                // Lines to get the current time in the format the database requires
-                let today = new Date();
-                let date = today.getFullYear() + '-' + (("0" + (today.getMonth() + 1)).slice(-2)) + '-' + ("0" + today.getDate()).slice(-2);
-                let time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
-                let dateTime = date + ' ' + time;
-
-                // Sets the endtime of obj to the current time in the right format
-                obj.endTime = dateTime;
-                obj.synced = object.synced;
-
-                // Overwrites object in store by obj
-                db.put(storeName, obj);
-
-                // If there are no entries in the database with the usernumber and without endtime, do this
-                // This means the user is not currently clocked in offline
-            } else {
-                // Lines to get the current time in the format the database requires
-                let today = new Date();
-                let date = today.getFullYear() + '-' + (("0" + (today.getMonth() + 1)).slice(-2)) + '-' + ("0" + today.getDate()).slice(-2);
-                let time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
-                let dateTime = date + ' ' + time;
-
-                object.beginTime = dateTime;
-
-                db.add(storeName, object);
+    let db = null;
+    if (storeName == "clockingEntries") {
+        db = await openDB('ClockingDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
             }
         });
+    } else if (storeName == "breakEntries") {
+        db = await openDB('BreakDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    }
 
+    await getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, object.userNumber, function (items) {
+        // If there are entries in the database with the usernumber and without endtime, do this
+        // This means the user is currently clocked in offline
+        if (items.length > 0) {
+
+            let obj = items[0];
+
+            // Lines to get the current time in the format the database requires
+            let today = new Date();
+            let date = today.getFullYear() + '-' + (("0" + (today.getMonth() + 1)).slice(-2)) + '-' + ("0" + today.getDate()).slice(-2);
+            let time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+            let dateTime = date + ' ' + time;
+
+            // Sets the endtime of obj to the current time in the right format
+            obj.endTime = dateTime;
+            obj.synced = object.synced;
+
+            // Overwrites object in store by obj
+            db.put(storeName, obj);
+
+            // If there are no entries in the database with the usernumber and without endtime, do this
+            // This means the user is not currently clocked in offline
+        } else {
+            // Lines to get the current time in the format the database requires
+            let today = new Date();
+            let date = today.getFullYear() + '-' + (("0" + (today.getMonth() + 1)).slice(-2)) + '-' + ("0" + today.getDate()).slice(-2);
+            let time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+            let dateTime = date + ' ' + time;
+
+            object.beginTime = dateTime;
+
+            db.add(storeName, object);
+        }
     });
 }
 
@@ -130,7 +152,7 @@ async function getUnsynchronizedData(storeName, callback) {
 }
 
 async function getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, callback) {
-    openDatabase(storeName, function (db) {
+    await openDatabase(storeName, function (db) {
         var transaction = db.transaction(storeName, 'readonly');
         var objectStore = transaction.objectStore(storeName);
         var items = [];
@@ -142,6 +164,7 @@ async function getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNum
                     items.push(result[i]);
                 }
             }
+            console.log(items)
             callback(items);
         });
     });
@@ -157,14 +180,40 @@ async function deleteFromDatabase(storeName, id){
 }
 
 async function updateSync(storeName, id, status){
-    openDatabase(storeName, function (db) {
-        var transaction = db.transaction(storeName, 'readonly');
-        var objectStore = transaction.objectStore(storeName);
+    let db = null;
+    if (storeName == "clockingEntries") {
+        db = await openDB('ClockingDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    } else if (storeName == "breakEntries") {
+        db = await openDB('BreakDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    }
 
-        let value = db.get(storeName, id);
-        value.synced = status;
-        db.put(storeName, value);
-    });
+    var transaction = db.transaction(storeName, 'readonly');
+    var objectStore = transaction.objectStore(storeName);
+
+    let value = await db.get(storeName, id);
+    value.synced = status;
+
+    await db.put(storeName, value);
+    db.close();
+
 }
 
 export default {

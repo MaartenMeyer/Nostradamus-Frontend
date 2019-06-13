@@ -92,7 +92,7 @@
                 			promise.then(response => {
 										console.log("Dashboard: clock data synchronized!");
 										idbs.updateSync("clockingEntries", id, true);
-										console.log(items[i])
+										console.log("Synchronized: " + items[i])
 									})
                        				.catch((error) => {
                             			console.log("Error in clock data, data skipped!");
@@ -127,8 +127,11 @@
                     }else {
                         console.log("Dashboard: no data synchronization needed!");
                     }
-                });
-            }
+				});
+			},
+			synchronizeBreak(){
+
+			}
         }
     }
 </script>

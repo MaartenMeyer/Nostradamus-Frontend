@@ -87,7 +87,6 @@
                 this.breakEntry.userNumber = "";
                 this.breakEntry.beginTime = "";
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
-                    console.log("Usernumber " + this.userNumber + " exists in usernumbers: " + this.userNumbers);
                     this.showErrorMessage("", false);
                     this.checkConnection(this.checkBreakStatus(""));
                 }else{
@@ -104,16 +103,15 @@
             },
             checkBreakStatus(status){
                 return (status) => {
-                    //console.info("Connection status: " +status);
+                    console.info("Connection status: " +status);
                     if(status == "online"){
-                        console.log("online");
                         let promise = rs.getBreakStatus(this.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => this.updateForm(response))
                                .catch(error => this.updateForm(error.response));
 
                     }else if(status == "offline"){
-                        console.log("offline");
                         idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("breakEntries", this.userNumber, (items) => {
+                            console.log("Usernumber before object: " +this.userNumber);
                             let object = {
                                 status: null,
                                 data: {
@@ -132,6 +130,7 @@
                             }else {
                                 object.status = 404;
                             }
+                            console.log("Usernumber after object: " +object.data.userNumber);
                             this.updateForm(object);
                         });
 
@@ -153,7 +152,6 @@
             },
             clockBreak(){
                 if(this.userNumber != ""){
-                    console.log(this.breakEntry);
                     // If userNumber is already clocked in on break, do this
                     if(this.breakEntry.userNumber != ""){
                         let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
@@ -241,6 +239,7 @@
                 this.$router.push('/dashboard');
             },
             updateForm(response){
+                console.log(response)
                 if(response.status == 200){
                     this.breakEntry.userNumber = response.data.userNumber;
                     this.breakEntry.beginTime = response.data.beginTime;
