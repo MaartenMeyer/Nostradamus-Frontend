@@ -4,10 +4,14 @@
             <Label class="action-bar-title" text="Dashboard"></Label>
             <NavigationButton visibility="collapsed" />
         </ActionBar>
-        <FlexboxLayout class="page" verticalAlignment="center">
-            <Button :text="'In/Uit Klokken'" @tap="clickClocking" class="btn btn-primary m-t-20" />
-            <Button :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />
-            <Button text="Log out" @tap="clickLogout" class="btn btn-secondary" />
+        <FlexboxLayout class="page">
+            <StackLayout class="form" verticalAlignment="center">
+                <Label class="box" text= "Welkom Persoonnnn" />
+<!--                <Label class="box" text=" Welkom {{currentUser.userId}}"/>-->
+                <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
+                <Button class="button" @tap="clickPause()"> Pauze </Button> <!--                    :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />-->
+                <Button class="lbutton" @tap="clickLogout"> Logout </Button> <!--                    text="Log out" @tap="clickLogout" class="btn btn-secondary" />-->
+            </StackLayout>
         </FlexboxLayout>
     </Page>
 </template>
@@ -62,6 +66,10 @@
 </script>
 
 <style scoped>
+    .action-bar-title{
+        font-size: 25px;
+    }
+
     .page {
         align-items: center;
         flex-direction: column;
@@ -74,64 +82,32 @@
         vertical-align: middle;
     }
 
-    .logo {
-        margin-bottom: 12;
-        height: 90;
-        font-weight: bold;
-    }
-
-    .header {
+    .box {
         horizontal-align: center;
-        font-size: 25;
-        font-weight: 600;
+        font-size: 35;
         margin-bottom: 70;
         text-align: center;
-        color: #00A2D3;
+        color: #00A0D1;
     }
 
-    .input-field {
-        margin-bottom: 25;
-    }
-
-    .input {
-        font-size: 18;
-        placeholder-color: #A8A8A8;
-    }
-
-    .input-field .input {
-        font-size: 54;
-    }
-
-    .btn-primary {
+    .button {
         height: 50;
         margin: 30 5 15 5;
-        background-color: #00A2D3;
-        border-radius: 5;
-        font-size: 20;
-        font-weight: 600;
+        background-color: #00A0D1;
+        border-radius: 10px;
+        font-size: 20px;
+        /*margin-left: 10px;*/
+        /*margin-right: 10px;*/
+        color: white;
     }
 
-    .btn-secondary {
+    .lbutton {
         height: 50;
         margin: 30 5 15 5;
-        background-color: #eaeaea;
+        background-color: gray;
         border-radius: 5;
-        color: #00A2D3;
+        color: white;
         font-size: 20;
-        font-weight: 600;
     }
 
-    .login-label {
-        horizontal-align: center;
-        color: #A8A8A8;
-        font-size: 16;
-    }
-
-    .sign-up-label {
-        margin-bottom: 20;
-    }
-
-    .bold {
-        color: #000000;
-    }
 </style>

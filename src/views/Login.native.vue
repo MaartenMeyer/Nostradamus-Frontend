@@ -18,7 +18,7 @@
                                secure="true" v-model="user.password" :returnKeyType="'done'"
                                fontSize="18" />
                     <StackLayout class="hr-light" />
-                    <!-- <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p> -->
+<!--                    <p class="errorMsg" v-if="error">Gebruikersnaam of wachtwoord onjuist!</p>-->
                 </StackLayout>
 
                 <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
@@ -41,8 +41,7 @@
             return new Promise(resolve => {
                 resolve(user);
             })
-        },
-        error: false
+        }
     };
 
     export default {
@@ -55,6 +54,13 @@
                 }
             };
         },
+<<<<<<< HEAD
+=======
+        //TODO; dunk deprecated data, remove console.log()
+        //checking for current user does not work at this time
+        //using similar methods to web version
+        //throws error; undefined mapGetters
+>>>>>>> f16c294efd8fe7a22b6a8940a5e44f5ebf72e4d7
 
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
@@ -69,6 +75,7 @@
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
+                    this.$goto('dashboard')
 
                     this.alert(
                         "Email en/of wachtwoord vergeten in te voeren.");
@@ -91,7 +98,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://145.49.8.169:3000/api/login',
+                    url: 'http:/145.49.8.169:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                 })
