@@ -48,6 +48,7 @@
         },
         methods: {
             clock(){
+				this.checkConnection();
                 this.$router.replace('/clock');
             },
             takeBreak(){
@@ -81,22 +82,21 @@
 							let id = items[i].id;
 							let beginTime = items[i].beginTime;
 							let endTime = items[i].endTime;
+							let synced = items[i].synced;
 
-							if(beginTime != null && endTime != null){
+							if(beginTime != null && endTime != null && synced != false){
 								beginTime = null;
 							}
+							//console.log(items[i]);
+							console.log(beginTime)
 
 							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {
 										console.log("Dashboard: data synchronized!");
-										if(beginTime == null && endTime != null){
-											idbs.deleteFromDatabase("clockingEntries", id);
-										}else {
-											idbs.updateSync("clockingEntries", id, true);
-										}
+										idbs.updateSync("clockingEntries", id, true);
+										console.log(items[i])
 									})
                        				.catch((error) => {
-										   console.log(error)
                             			console.log("Error in data, data skipped!");
                         			});
                         }

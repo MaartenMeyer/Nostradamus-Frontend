@@ -68,7 +68,8 @@
                     userNumber: "",
                     branchId: "",
                     departmentId: "",
-                    beginTime: ""
+                    beginTime: "",
+                    endTime: ""
                 }
             }
         },
@@ -147,6 +148,11 @@
                 $('#selectDepartment').append( optionsAsString );
             },
             checkUsernumberValidity(){
+                this.clockingEntry.userNumber = "";
+                    this.clockingEntry.branchId = "";
+                    this.clockingEntry.departmentId = "";
+                    this.clockingEntry.beginTime = "";
+                    this.clockingEntry.endTime = "";
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
                     this.showErrorMessage("", false);
                     this.checkConnection(this.checkClockingStatus(""));
@@ -161,6 +167,7 @@
                     this.clockingEntry.branchId = "";
                     this.clockingEntry.departmentId = "";
                     this.clockingEntry.beginTime = "";
+                    this.clockingEntry.endTime = "";
                     document.getElementById("submitButton").innerHTML="Klokken";
                     document.getElementById("selectBranch").style.visibility="hidden";
                     document.getElementById("selectDepartment").style.visibility="hidden";
@@ -169,7 +176,7 @@
             // Checks if user is clocked in
             checkClockingStatus(status){
                 return (status) => {
-                    console.info(status)
+                    console.info("Connection status: " +status);
                     if(status == "online"){
                         // Checks if user is clocked in online
                         let promise = rs.getClockingStatus(this.userNumber, this.$cookie.get('access-token'));
@@ -191,6 +198,7 @@
                                 }
                             }
                             if(items.length > 0){
+
                                 object.status = 200;
                                 object.data.userNumber = items[0].userNumber;
                                 object.data.branchId = items[0].branchId;
@@ -223,7 +231,7 @@
                 if(this.userNumber != ""){
                     // If userNumber is already clocked in, do this
                     if(this.clockingEntry.userNumber != ""){
-                        let promise = rs.postClockingEntry(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, this.$cookie.get('access-token'));
+                        let promise = rs.postClockingEntry(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, this.clockingEntry.beginTime, this.clockingEntry.endTime, this.$cookie.get('access-token'));
                         promise.then((response) => {
                                     this.saveClockEntryOffline(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, true)
                                     this.clockInSuccessful(response);
@@ -254,7 +262,7 @@
 
                         // Checks if default values have been changed / if user has selected options for both branch and department
                         if(branchId != "" && departmentId != "" && this.userNumber != ""){
-                            let promise = rs.postClockingEntry(this.userNumber, branchId, departmentId, this.$cookie.get('access-token'));
+                            let promise = rs.postClockingEntry(this.userNumber, branchId, departmentId, null, this.$cookie.get('access-token'));
                             promise.then((response) => {
                                         this.saveClockEntryOffline(this.userNumber, branchId, departmentId, true)
                                         this.clockInSuccessful(response);
@@ -335,6 +343,7 @@
                     this.clockingEntry.branchId = response.data.branchId;
                     this.clockingEntry.departmentId = response.data.departmentId;
                     this.clockingEntry.beginTime = response.data.beginTime;
+                    this.clockingEntry.endTime = response.data.endTime;
                     document.getElementById("selectBranch").style.visibility="hidden";
                     document.getElementById("selectDepartment").style.visibility="hidden";
                     document.getElementById("submitButton").innerHTML="Uitklokken";
@@ -343,6 +352,7 @@
                     this.clockingEntry.branchId = "";
                     this.clockingEntry.departmentId = "";
                     this.clockingEntry.beginTime = "";
+                    this.clockingEntry.endTime = "";
                     this.showErrorMessage("", false);
                     document.getElementById("selectBranch").style.visibility="visible";
                     document.getElementById("selectDepartment").style.visibility="visible";

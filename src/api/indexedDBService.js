@@ -104,10 +104,12 @@ async function getUnsynchronizedData(storeName, callback) {
     var a = objectStore.getAll();
     // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
     a.then(function (result) {
-        console.log(result)
         for (var i = 0; i < result.length; i++) {
             if (result[i].synced == false) {
                 items.push(result[i]);
+            }
+            if(result[i].synced == true && result[i].beginTime != null && result[i].endTime != null){
+                deleteFromDatabase("clockingEntries", result[i].id);
             }
         }
         callback(items);
