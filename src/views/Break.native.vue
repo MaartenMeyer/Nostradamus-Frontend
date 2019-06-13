@@ -3,10 +3,16 @@
         <ActionBar class="action-bar">
             <Label class="action-bar-title" text="Pauze"></Label>
         </ActionBar>
+
         <FlexboxLayout class="page" verticalAlignment="center">
-            <TextField class="input" hint="Personeels nummer" keyboardType="number"
-                style="width:75%;" fontSize="18" v-model="personNumber" />
-            <Button :text="'Pauze'" @tap="clickValidatePause" class="btn btn-primary m-t-20" />
+            <StackLayout class="invoer">
+                <Label class="action" text="Voer je gegevens in:"></Label>
+            </StackLayout>
+
+            <StackLayout class="form">
+                <TextField class="input" hint="Werknemersnummer" keyboardType="number" v-model="personNumber" />
+                <Button :text="'Pauze'" @tap="clickValidatePause" class="button" />
+            </StackLayout>
         </FlexboxLayout>
     </Page>    
 </template>
@@ -35,7 +41,7 @@
     methods: {
         clickValidatePause() {
             if (this.personNumber == null) {
-                this.alert("Er is geen personeelsnummer ingevoerd.");
+                this.alert("Er is geen werknemersnummer ingevoerd.");
             } else {
                 this.clickStartPause();
             }
@@ -54,7 +60,7 @@
                 //this.toHome();
             },
             breakSuccessful(){
-                this.alert("Pauze gestart, uw personeelsnummer is " +localStorage.user.personNumber);
+                this.alert("Pauze gestart, uw werknemersnummer is " +localStorage.user.personNumber);
                 this.toHome();
             },
             breakFailed(){
@@ -77,9 +83,20 @@
 </script>
 
 <style scoped>
+    .action-bar-title{
+        font-size: 25px;
+    }
+
     .page {
         align-items: center;
         flex-direction: column;
+    }
+
+    .invoer {
+        margin-left: 30;
+        margin-right: 30;
+        margin-bottom: 100;
+        flex-grow: 2;
     }
 
     .form {
@@ -89,54 +106,35 @@
         vertical-align: middle;
     }
 
-    .logo {
-        margin-bottom: 12;
-        height: 90;
+    .action{
+        font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-weight: bold;
-    }
-
-    .header {
-        horizontal-align: center;
-        font-size: 25;
-        font-weight: 600;
-        margin-bottom: 70;
+        font-size: 28px;
         text-align: center;
-        color: #00A2D3;
-    }
-
-    .input-field {
-        margin-bottom: 25;
+        margin-top: 30px;
+        margin-bottom: 80px;
+        color: #676A6C;
     }
 
     .input {
-        font-size: 18;
+        font-size: 20px;
+        margin-top: 30px;
         placeholder-color: #A8A8A8;
     }
 
     .input-field .input {
-        font-size: 54;
+        font-size: 20px;
     }
 
-    .btn-primary {
+    .button {
         height: 50;
         margin: 30 5 15 5;
-        background-color: #00A2D3;
-        border-radius: 5;
-        font-size: 20;
-        font-weight: 600;
+        background-color: #00A0D1;
+        border-radius: 10px;
+        font-size: 20px;
+        margin-top: 60;
+        margin-bottom: 30px;
+        color: white;
     }
 
-    .login-label {
-        horizontal-align: center;
-        color: #A8A8A8;
-        font-size: 16;
-    }
-
-    .sign-up-label {
-        margin-bottom: 20;
-    }
-
-    .bold {
-        color: #000000;
-    }
 </style>

@@ -1,6 +1,7 @@
 <template native>
     <Page actionBarHidden="true">
         <FlexboxLayout class="page">
+
             <StackLayout class="form">
                 <Image class="logo" src="~/assets/logos.png" />
                 <Label class="header" text="Welkom" />
@@ -124,7 +125,7 @@
 
                 axios({
                     method: 'post',
-                    url: 'http://145.49.8.169:3000/api/login',
+                    url: 'http://192.168.2.6:3000/api/login',
                     data: { userName: this.user.username, password: this.user.password },
                     config: { headers: {'Content-Type': 'application/json' }}
                     })
@@ -195,7 +196,7 @@
                 // console.log(localStorage.userId);
                 axios({
                     method: 'get',
-                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
+                    url: 'http://192.168.2.6:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
                         this.loadDataSuccessful(request)
@@ -267,6 +268,7 @@
     .page {
         align-items: center;
         flex-direction: column;
+        background-color: #F9F9F9;
     }
 
     .form {
@@ -284,7 +286,8 @@
     .header {
         horizontal-align: center;
         font-size: 35;
-        margin-bottom: 70;
+        margin-bottom: 50;
+        margin-top: 20;
         text-align: center;
         color: #00A0D1;
     }
