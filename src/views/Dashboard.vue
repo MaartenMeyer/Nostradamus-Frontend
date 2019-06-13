@@ -87,8 +87,6 @@
 							if(beginTime != null && endTime != null && synced != false){
 								beginTime = null;
 							}
-							//console.log(items[i]);
-							console.log(beginTime)
 
 							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {

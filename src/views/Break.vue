@@ -25,10 +25,11 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex';
     import modal from './Modal.vue';
-    import debounce from 'v-debounce'
-    import rs from '../api/RequestService'
+    import debounce from 'v-debounce';
+    import rs from '../api/RequestService';
+    import idbs from '../api/indexedDBService';
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -48,8 +49,7 @@
                 userNumbers: [],
                 breakEntry: {
                     userNumber: "",
-                    beginTime: "",
-                    endTime: ""
+                    beginTime: ""
                 }
             }
         },
@@ -133,6 +133,7 @@
                     if(this.error != true){
                         let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => {
+                                    this.saveBreakEntryOffline(this.userNumber, true);
                                     this.clockBreakSuccessful(response);
                                 })
                                .catch((error) => {
@@ -154,6 +155,20 @@
                 }else{
                     this.showErrorMessage("Voer een werknemersnummer in!", true)
                 }
+            },
+            saveBreakEntryOffline(userNumber, synced){
+                let breakEntry = {
+                    userNumber: "",
+                    beginTime: null,
+                    endTime: null,
+                    synced: null
+                }
+                breakEntry.userNumber = userNumber;
+                breakEntry.synced = synced;
+
+                var object = JSON.parse(JSON.stringify(breakEntry));
+
+                idbs.saveToDatabase("breakEntries", object);
             },
             // Called when clock break-in/out is successful
             // Parameter object is response from api call to api/breaking
