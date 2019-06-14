@@ -184,7 +184,6 @@
     .page {
         align-items: center;
         flex-direction: column;
-        background-color: #EAA6A5;
     }
 
     .form {
@@ -197,7 +196,6 @@
     .invoer {
         margin-left: 30;
         margin-right: 30;
-        margin-bottom: 100;
         flex-grow: 2;
     }
 
@@ -225,7 +223,7 @@
         background-color: #00A0D1;
         border-radius: 10px;
         font-size: 20px;
-        margin-top: 60;
+        margin-top: 10;
         margin-bottom: 30px;
         color: white;
     }
