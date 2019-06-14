@@ -28,11 +28,10 @@
         name: "Break.native",
         data(){
             return {
-                user: {
-                    username: "",
-                    password: ""
-                },
-                userNumber: null
+                userNumber: null,
+                breakEntry: {
+                    userNumber: ""
+                }
             };
         },
     computed: {
@@ -44,17 +43,23 @@
             if (this.userNumber == null) {
                 this.alert("Er is geen werknemersnummer ingevoerd.");
             } else {
+                console.log("Clicked ValidatePause")
+                console.log("local token: " + localStorage.token);
                 this.clickStartPause();
             }
         },
         clickStartPause() {
-                console.log("pause");
+                console.log("Pause");
                 var self = this;
-                let token = this.localStorage.token;
+                let token = localStorage.token;
+                this.breakEntry.userNumber = this.userNumber;
+                console.log("local userNumber " + this.breakEntry.userNumber);
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/breaking',
-                    data: { userNumber: this.userNumber},
+                    data: {
+                         userNumber: this.breakEntry.userNumber
+                         },
                     headers: {'Authorization': "bearer " + token}
                 })
                 .then((response) =>
@@ -63,12 +68,13 @@
                 .catch(
                     this.breakFailed()
                 )
-                axios.interceptors.response.use(function(response) {
-                    return response;
-                })
+
+                // axios.interceptors.response.use(function(response) {
+                //     return response;
+                // })
 
             },
-            breakSuccessful(){
+            breakSuccessful(response){
                 this.alert("Pauze gestart, uw werknemersnummer is " + this.userNumber);
                 this.toHome();
             },
