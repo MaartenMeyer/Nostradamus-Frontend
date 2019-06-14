@@ -48,11 +48,13 @@
         },
         clickStartPause() {
                 console.log("pause");
+                var self = this;
+                var token = this.localStorage.token;
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/breaking',
                     data: { userNumber: this.currentUser.userNumber },
-                    config: { headers: {'Authorization': "bearer " + localStorage.token}}
+                    headers: {'Authorization': "bearer " + localStorage.token}
                 })
                 .then(request => this.breakSuccessful(request))
                 .catch(() => this.breakFailed());
