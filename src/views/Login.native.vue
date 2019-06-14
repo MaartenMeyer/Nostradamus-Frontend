@@ -213,17 +213,4 @@
         font-size: 20;
     }
 
-    .login-label {
-        horizontal-align: center;
-        color: #A8A8A8;
-        font-size: 16;
-    }
-
-    .sign-up-label {
-        margin-bottom: 20;
-    }
-
-    .bold {
-        color: #000000;
-    }
 </style>

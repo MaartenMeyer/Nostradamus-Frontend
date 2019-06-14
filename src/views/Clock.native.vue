@@ -4,17 +4,21 @@
             <Label class="action-bar-title" text="In/Uit Klokken"></Label>
         </ActionBar>
         <FlexboxLayout class="page" verticalAlignment="center">
-            <TextField :class= "input" @textChange="changeNumber" hint="Werknemersnummer"
-                keyboardType="number" style="width:75%;" fontSize="18"
-                v-model="personNumber" />
-            <ListPicker required id='branchPicker' v-if="displayBranch" :items="listBranch"
-                @selectedIndexChange="changeBranch" v-model="selectedItemBranch"
-                style="width:75%;" />
-            <ListPicker required id='departmentPicker' v-if="displayDepartment" :items="listDepartment"
-                @selectedIndexChange="changeDepartment" v-model="selectedItemDepartment"
-                style="width:75%;" disabled="true" />
-            <Button v-if="displayButton" :text="'Klokken'" @tap="clickClockingValidate"
-                class="btn btn-primary m-t-20" />
+            <StackLayout class="invoer">
+                <Label class="action" text="Voer je gegevens in:"></Label>
+            </StackLayout>
+
+            <StackLayout class="form">
+                <TextField class="input" @textChange="changeNumber" hint="Werknemersnummer"
+                           keyboardType="number" v-model="personNumber" />
+                <ListPicker required id='branchPicker' v-if="displayBranch" :items="listBranch"
+                    @selectedIndexChange="changeBranch" v-model="selectedItemBranch"
+                    style="width:75%;" />
+                <ListPicker required id='departmentPicker' v-if="displayDepartment" :items="listDepartment"
+                    @selectedIndexChange="changeDepartment" v-model="selectedItemDepartment"
+                    style="width:75%;" disabled="true" />
+                <Button v-if="displayButton" :text="'Klokken'" @tap="clickClockingValidate" class="button" />
+            </StackLayout>
         </FlexboxLayout>
     </Page>
     
@@ -120,7 +124,7 @@
             },
             clickClockingValidate() {
                 if (this.personNumber == "") {
-                    this.alert("Er is geen personeelsnummer ingevoerd.");
+                    this.alert("Er is geen werknemersnummer ingevoerd.");
                 } else if (this.selectedItemDepartment == 0) {
                     this.alert("Er is geen afdeling ingevoerd.");
                 } else if (this.selectedItemBranch == 0) {
@@ -175,6 +179,7 @@
     .page {
         align-items: center;
         flex-direction: column;
+        background-color: #EAA6A5;
     }
 
     .form {
@@ -184,54 +189,39 @@
         vertical-align: middle;
     }
 
-    .logo {
-        margin-bottom: 12;
-        height: 90;
+    .invoer {
+        margin-left: 30;
+        margin-right: 30;
+        margin-bottom: 100;
+        flex-grow: 2;
+    }
+
+    .action{
+        font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica;
         font-weight: bold;
-    }
-
-    .header {
-        horizontal-align: center;
-        font-size: 25;
-        font-weight: 600;
-        margin-bottom: 70;
+        font-size: 28px;
         text-align: center;
-        color: #00A2D3;
+        margin-top: 30px;
+        margin-bottom: 80px;
+        color: #676A6C;
     }
 
-    .input-field {
-        margin-bottom: 25;
-    }
 
     .input {
-        font-size: 18;
+        font-size: 20px;
         placeholder-color: #A8A8A8;
     }
 
     .input-field .input {
-        font-size: 54;
+        font-size: 20px;
     }
 
-    .btn-primary {
-        height: 50;
-        margin: 30 5 15 5;
-        background-color: #00A2D3;
-        border-radius: 5;
-        font-size: 20;
-        font-weight: 600;
-    }
-
-    .login-label {
-        horizontal-align: center;
-        color: #A8A8A8;
-        font-size: 16;
-    }
-
-    .sign-up-label {
-        margin-bottom: 20;
-    }
-
-    .bold {
-        color: #000000;
+    .button {
+        background-color: #00A0D1;
+        border-radius: 10px;
+        font-size: 20px;
+        margin-top: 60;
+        margin-bottom: 30px;
+        color: white;
     }
 </style>
