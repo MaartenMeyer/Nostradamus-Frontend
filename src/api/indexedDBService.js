@@ -91,6 +91,37 @@ async function saveToDatabase(storeName, object){
     });
 }
 
+async function deleteFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber){
+    await getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, function (items) {
+        if (items.length > 0) {
+            let obj = items[0];
+            deleteFromDatabase(storeName, obj.id);
+        }
+    });
+
+}
+
+async function updateFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, synced){
+    let sync = synced;
+    console.log(userNumber)
+    console.log(synced)
+    await getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, function (items) {
+        if (items.length > 0) {
+            let breakEntry = {
+                userNumber: "",
+                beginTime: null,
+                endTime: null,
+                synced: null
+            }
+            breakEntry.userNumber = userNumber;
+            breakEntry.synced = sync;
+
+            var object = JSON.parse(JSON.stringify(breakEntry));
+            saveToDatabase(storeName, object);
+        }
+    });
+}
+
 async function getAllFromDatabase(storeName, callback){
     openDatabase(storeName, function (db) {
         var transaction = db.transaction(storeName, 'readonly');
@@ -222,5 +253,7 @@ export default {
     getAllFromDatabaseWithUserNumberWithoutEndtime,
     getUnsynchronizedData,
     deleteFromDatabase,
-    updateSync
+    updateSync,
+    deleteFromDatabaseWithUserNumberWithoutEndtime,
+    updateFromDatabaseWithUserNumberWithoutEndtime
 }

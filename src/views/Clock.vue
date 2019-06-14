@@ -230,7 +230,9 @@
                     if(this.clockingEntry.userNumber != ""){
                         let promise = rs.postClockingEntry(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, this.$cookie.get('access-token'));
                         promise.then((response) => {
-                                    this.saveClockEntryOffline(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, true)
+                                    // Todo remove break from breakEntries
+                                    idbs.deleteFromDatabaseWithUserNumberWithoutEndtime("breakEntries", this.clockingEntry.userNumber);
+                                    this.saveClockEntryOffline(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, true);
                                     this.clockInSuccessful(response);
                                 })
                                .catch((error) => {
@@ -240,6 +242,9 @@
                                         }
                                     // If the server is unreachable, a network request error is returned
                                     }else if (error.request.status == 0){
+										// Todo: also clock out break
+										console.log("Also clock out break called")
+										idbs.updateFromDatabaseWithUserNumberWithoutEndtime("breakEntries", this.clockingEntry.userNumber, false);
                                         this.saveClockEntryOffline(this.clockingEntry.userNumber, this.clockingEntry.branchId, this.clockingEntry.departmentId, false);
 
                                         let date = new Date();
@@ -306,6 +311,20 @@
                 var object = JSON.parse(JSON.stringify(clockEntry));
 
                 idbs.saveToDatabase("clockingEntries", object);
+            },
+            saveBreakEntryOffline(userNumber, synced){
+                let breakEntry = {
+                    userNumber: "",
+                    beginTime: null,
+                    endTime: null,
+                    synced: null
+                }
+                breakEntry.userNumber = userNumber;
+                breakEntry.synced = synced;
+
+                var object = JSON.parse(JSON.stringify(breakEntry));
+
+                idbs.saveToDatabase("breakEntries", object);
             },
             // Called when clock-in/out is successful
             // Parameter object is response from api call to api/clocking
