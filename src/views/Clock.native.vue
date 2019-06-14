@@ -130,10 +130,16 @@
                 } else if (this.selectedItemBranch == 0) {
                     this.alert("Er is geen locatie ingevoerd.");
                 } else {
+                    console.log(this.clockingEntry.userNumber);
+                    console.log("branch " + this.clockingEntry.branchId);
+                    console.log("department " + this.clockingEntry.departmentId);
                     this.clickStartClocking();
                 }
             },
             clickStartClocking() {
+                var self = this;
+                var token = localStorage.token;
+                console.log("token " + token);
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/clocking',
@@ -141,7 +147,7 @@
                         userNumber: this.clockingEntry.userNumber,
                         branchId: this.clockingEntry.branchId ,
                         departmentId: this.clockingEntry.departmentId},
-                    config: { headers: {'Authorization': "bearer " + localStorage.token}}     
+                     headers: {'Authorization': "bearer " + token}     
                 })
                 .then((response) => 
                 this.clockingSuccesful(response)
@@ -149,8 +155,13 @@
                 .catch(
                     this.clockingFailed()
                 )
+
+                axios.interceptors.response.use(function(response){
+                    return response;
+                })
             },
             clockingSuccesful(response){
+                console.log(this.response);
                 this.toHome();
             },
             clockingFailed(){
