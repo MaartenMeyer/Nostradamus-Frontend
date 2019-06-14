@@ -85,11 +85,11 @@ function postBreakEntry(userNumber, accessToken){
     })
 }
 
-function postNewUser(firstName, lastName, userName, dateOfBirth, emailAddress, userNumber, accountType, password) {
+function postNewUser(firstName, lastName, userName, dateOfBirth, emailAddress, userNumber, accountType, password, companyId) {
     return axios({
         method: 'post',
         url: 'http://127.0.0.1:3000/api/register',
-        data: { firstName: firstName, lastName: lastName, userName: userName, dateOfBirth: dateOfBirth, emailAddress: emailAddress, accountType: accountType, password: password, userNumber: userNumber},
+        data: { firstName: firstName, lastName: lastName, userName: userName, dateOfBirth: dateOfBirth, emailAddress: emailAddress, accountType: accountType, password: password, userNumber: userNumber, companyId: companyId},
         headers: { 'Content-Type': 'application/json' }
     })
 }

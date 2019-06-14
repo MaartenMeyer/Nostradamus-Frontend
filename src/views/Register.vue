@@ -98,11 +98,13 @@
                 }
             },
             register() {
+                let jsonObj = JSON.parse(localStorage.getItem('company'));
+                let companyId = jsonObj.companyId;
                 if(this.userNumbers.includes(parseInt(this.input.userNumber, 10))){
                     this.showErrorMessage("Werknemmersnummer al in gebruik.", true);
 
                 } else if (this.input.firstName != "" && this.input.lastName != "" && this.input.userName != "" && this.input.dateOfBirth != null && this.input.emailAddress != "" && this.input.userNumber != null && this.input.accountType != null && this.input.password != "") {
-                    let promise = rs.postNewUser(this.input.firstName, this.input.lastName, this.input.userName, this.input.dateOfBirth, this.input.emailAddress, parseInt(this.input.userNumber, 10), parseInt(this.input.accountType, 10), this.input.password);
+                    let promise = rs.postNewUser(this.input.firstName, this.input.lastName, this.input.userName, this.input.dateOfBirth, this.input.emailAddress, parseInt(this.input.userNumber, 10), parseInt(this.input.accountType, 10), this.input.password, companyId);
                     promise.then(response => this.registerSuccessful(response))
                         .catch((error) => {
                             if (error.response) {
@@ -197,6 +199,7 @@
     input[type=text] {
         width: 300px;
         font-family: "Roboto";
+        color: #676A6C;
         font-size: 16px;
         padding: 6px 20px;
         margin: 3px 0;
@@ -208,6 +211,7 @@
     input[type=password] {
         width: 300px;
         font-family: "Roboto";
+        color: #676A6C;
         font-size: 16px;
         padding: 6px 20px;
         margin: 3px 0;
@@ -219,6 +223,7 @@
     input[type=email] {
         width: 300px;
         font-family: "Roboto";
+        color: #676A6C;
         font-size: 16px;
         padding: 6px 20px;
         margin: 3px 0;
@@ -230,6 +235,7 @@
     input[type=number] {
         width: 300px;
         font-family: "Roboto";
+        color: #676A6C;
         font-size: 16px;
         padding: 6px 20px;
         margin: 3px 0;
