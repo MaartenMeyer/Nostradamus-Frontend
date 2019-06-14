@@ -10,7 +10,7 @@
 
             <StackLayout class="form">
                 <TextField class="input" @textChange="changeNumber" hint="Werknemersnummer"
-                           keyboardType="number" v-model="personNumber" />
+                           keyboardType="number" v-model="userNumber" />
                 <ListPicker required id='branchPicker' v-if="displayBranch" :items="listBranch"
                     @selectedIndexChange="changeBranch" v-model="selectedItemBranch"
                     style="width:75%;" />
@@ -123,13 +123,8 @@
                 }
             },
             clickClockingValidate() {
-<<<<<<< HEAD
                 if (this.userNumber == "") {
                     this.alert("Er is geen personeelsnummer ingevoerd.");
-=======
-                if (this.personNumber == "") {
-                    this.alert("Er is geen werknemersnummer ingevoerd.");
->>>>>>> 9c52fc9ffdf6a359f2129528a6f66d5057f636d4
                 } else if (this.selectedItemDepartment == 0) {
                     this.alert("Er is geen afdeling ingevoerd.");
                 } else if (this.selectedItemBranch == 0) {
