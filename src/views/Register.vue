@@ -100,7 +100,6 @@
             register() {
                 if(this.userNumbers.includes(parseInt(this.input.userNumber, 10))){
                     this.showErrorMessage("Werknemmersnummer al in gebruik.", true);
-                    console.log(this.userNumbers)
 
                 } else if (this.input.firstName != "" && this.input.lastName != "" && this.input.userName != "" && this.input.dateOfBirth != null && this.input.emailAddress != "" && this.input.userNumber != null && this.input.accountType != null && this.input.password != "") {
                     let promise = rs.postNewUser(this.input.firstName, this.input.lastName, this.input.userName, this.input.dateOfBirth, this.input.emailAddress, parseInt(this.input.userNumber, 10), parseInt(this.input.accountType, 10), this.input.password);

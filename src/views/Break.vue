@@ -151,7 +151,6 @@
             clockBreak(){
                 if(this.userNumber != ""){
                     // If userNumber is already clocked in on break, do this
-                    console.log(this.breakEntry.userNumber)
                     if(this.breakEntry.userNumber != ""){
                         let promise = rs.postBreakEntry(this.breakEntry.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => {
@@ -192,10 +191,8 @@
 
                                         let date = new Date();
                                         let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-                                        let t = new Date(this.breakEntry.beginTime);
-                                        let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
 
-                                        this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.breakEntry.userNumber + "<br>Begintijd: " + beginTime + "<br><br><i>Je pauze is offline ingeklokt!</i>")
+                                        this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.breakEntry.userNumber + "<br>Begintijd: " + time + "<br><br><i>Je pauze is offline ingeklokt!</i>")
                                     }
                                 })
                     }
@@ -238,7 +235,6 @@
                 this.$router.push('/dashboard');
             },
             updateForm(response){
-                console.log("Updateform response: " +JSON.parse(JSON.stringify(response)))
                 if(response.status == 200){
                     this.breakEntry.userNumber = response.data.userNumber;
                     this.breakEntry.beginTime = response.data.beginTime;
