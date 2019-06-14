@@ -10,7 +10,7 @@
 
             <StackLayout class="form">
                 <TextField class="input" @textChange="changeNumber" hint="Werknemersnummer"
-                           keyboardType="number" v-model="personNumber" />
+                           keyboardType="number" v-model="userNumber" />
                 <ListPicker required id='branchPicker' v-if="displayBranch" :items="listBranch"
                     @selectedIndexChange="changeBranch" v-model="selectedItemBranch"
                     style="width:75%;" />
@@ -39,7 +39,7 @@
                 listDepartment: [],
                 selectedItemBranch: 0,
                 selectedItemDepartment: 0,
-                personNumber: null,
+                userNumber: null,
                 displayDepartment: 0,
                 displayBranch: 0,
                 displayButton: 0,
@@ -116,15 +116,15 @@
                 }
             },
             changeNumber() {
-                if (this.personNumber != null) {
-                    this.clockingEntry.personNumber = this.personNumber;
+                if (this.userNumber != null) {
+                    this.clockingEntry.userNumber = this.userNumber;
                     this.getBranchData();
                     this.displayBranch = 1;
                 }
             },
             clickClockingValidate() {
-                if (this.personNumber == "") {
-                    this.alert("Er is geen werknemersnummer ingevoerd.");
+                if (this.userNumber == "") {
+                    this.alert("Er is geen personeelsnummer ingevoerd.");
                 } else if (this.selectedItemDepartment == 0) {
                     this.alert("Er is geen afdeling ingevoerd.");
                 } else if (this.selectedItemBranch == 0) {
@@ -138,7 +138,7 @@
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/clocking',
                     data: { 
-                        userNumber: this.currentUser.userNumber,
+                        userNumber: this.clockingEntry.userNumber,
                         branchId: this.clockingEntry.branchId ,
                         departmentId: this.clockingEntry.departmentId},
                     config: { headers: {'Authorization': "bearer " + localStorage.token}}     
