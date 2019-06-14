@@ -13,8 +13,14 @@ export default {
     delete localStorage.token;
     delete localStorage.userId;
     localStorage.removeItem('company');
-    this.$goto('login');
+    this.$goto('login', {clearHistory: true});
   },
+  updated(){
+    delete localStorage.token;
+    delete localStorage.userId;
+    localStorage.removeItem('company');
+    this.$goto('login', {clearHistory: true});
+  }
 }
 </script>
 
