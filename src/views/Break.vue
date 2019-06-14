@@ -111,7 +111,6 @@
 
                     }else if(status == "offline"){
                         idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("breakEntries", this.userNumber, (items) => {
-                            console.log("Usernumber before object: " +this.userNumber);
                             let object = {
                                 status: null,
                                 data: {
@@ -130,7 +129,6 @@
                             }else {
                                 object.status = 404;
                             }
-                            console.log("Usernumber after object: " +object.data.userNumber);
                             this.updateForm(object);
                         });
 
@@ -153,10 +151,11 @@
             clockBreak(){
                 if(this.userNumber != ""){
                     // If userNumber is already clocked in on break, do this
+                    console.log(this.breakEntry.userNumber)
                     if(this.breakEntry.userNumber != ""){
-                        let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
+                        let promise = rs.postBreakEntry(this.breakEntry.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => {
-                                    this.saveBreakEntryOffline(this.userNumber, true);
+                                    this.saveBreakEntryOffline(this.breakEntry.userNumber, true);
                                     this.clockBreakSuccessful(response);
                                 })
                                .catch((error) => {
@@ -189,7 +188,7 @@
                                         }
                                     } else if (error.request.status == 0){
                                         // Todo: check if user is clocked in offline before saving
-                                        this.saveBreakEntryOffline(this.breakEntry.userNumber, false);
+                                        this.saveBreakEntryOffline(this.userNumber, false);
 
                                         let date = new Date();
                                         let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
@@ -239,7 +238,7 @@
                 this.$router.push('/dashboard');
             },
             updateForm(response){
-                console.log(response)
+                console.log("Updateform response: " +JSON.parse(JSON.stringify(response)))
                 if(response.status == 200){
                     this.breakEntry.userNumber = response.data.userNumber;
                     this.breakEntry.beginTime = response.data.beginTime;

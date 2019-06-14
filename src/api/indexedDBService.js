@@ -111,6 +111,7 @@ async function getAllFromDatabaseWithUserNumber(storeName, userNumber, callback)
         var transaction = db.transaction(storeName, 'readonly');
         var objectStore = transaction.objectStore(storeName);
         var items = [];
+        console.log("Gafdwu: " +userNumber)
 
         // Get all entries from the given storename from the database
         var a = objectStore.getAll();
@@ -164,7 +165,6 @@ async function getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNum
                     items.push(result[i]);
                 }
             }
-            console.log(items)
             callback(items);
         });
     });

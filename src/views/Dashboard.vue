@@ -102,32 +102,32 @@
                         console.log("Dashboard: no data synchronization needed!");
                     }
 				});
-				idbs.getUnsynchronizedData("breakEntries", (items) => {
-                    if(items.length > 0){
-                        for(var i = 0; i < items.length; i++){
-							let id = items[i].id;
-							let beginTime = items[i].beginTime;
-							let endTime = items[i].endTime;
-							let synced = items[i].synced;
+				// idbs.getUnsynchronizedData("breakEntries", (items) => {
+                //     if(items.length > 0){
+                //         for(var i = 0; i < items.length; i++){
+				// 			let id = items[i].id;
+				// 			let beginTime = items[i].beginTime;
+				// 			let endTime = items[i].endTime;
+				// 			let synced = items[i].synced;
 
-							if(beginTime != null && endTime != null && synced != false){
-								beginTime = null;
-							}
+				// 			if(beginTime != null && endTime != null && synced != false){
+				// 				beginTime = null;
+				// 			}
 
-							let promise = rs.synchronizeBreakEntry(items[i].userNumber, beginTime, items[i].endTime, this.$cookie.get('access-token'));
-                			promise.then(response => {
-										console.log("Dashboard: break data synchronized!");
-										idbs.updateSync("breakEntries", id, true);
-										console.log(items[i])
-									})
-                       				.catch((error) => {
-                            			console.log("Error in break data, data skipped!");
-                        			});
-                        }
-                    }else {
-                        console.log("Dashboard: no data synchronization needed!");
-                    }
-				});
+				// 			let promise = rs.synchronizeBreakEntry(items[i].userNumber, beginTime, items[i].endTime, this.$cookie.get('access-token'));
+                // 			promise.then(response => {
+				// 						console.log("Dashboard: break data synchronized!");
+				// 						idbs.updateSync("breakEntries", id, true);
+				// 						console.log(items[i])
+				// 					})
+                //        				.catch((error) => {
+                //             			console.log("Error in break data, data skipped!");
+                //         			});
+                //         }
+                //     }else {
+                //         console.log("Dashboard: no data synchronization needed!");
+                //     }
+				// });
 			},
 			synchronizeBreak(){
 
