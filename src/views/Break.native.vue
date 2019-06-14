@@ -120,10 +120,12 @@
         font-size: 20px;
         margin-top: 30px;
         placeholder-color: #A8A8A8;
+        text-align: center;
     }
 
     .input-field .input {
         font-size: 20px;
+        font-weight: bold;
     }
 
     .button {

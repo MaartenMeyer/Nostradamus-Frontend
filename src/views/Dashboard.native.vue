@@ -6,8 +6,9 @@
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
-                <Label class="box" text= "Welkom Persoon" />
-<!--                <Label class="box" text=" Welkom {{currentUser.userId}}"/>-->
+<!--                <Label class="box">Welkom {{currentUser.userName}} </Label>-->
+
+                <Label class="box" text=" Welkom Person"/>
                 <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
                 <Button class="button" @tap="clickPause()"> Pauze </Button>
             </StackLayout>
