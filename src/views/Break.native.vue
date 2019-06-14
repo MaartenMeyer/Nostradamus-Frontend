@@ -88,14 +88,14 @@
     }
 
     .page {
-        align-items: center;
+        /*align-items: center;*/
         flex-direction: column;
     }
 
     .invoer {
         margin-left: 30;
         margin-right: 30;
-        margin-bottom: 100;
+        margin-bottom: 80;
         flex-grow: 2;
     }
 

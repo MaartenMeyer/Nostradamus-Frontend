@@ -2,15 +2,14 @@
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <ActionBar class="action-bar">
             <Label class="action-bar-title" text="Dashboard"></Label>
-            <NavigationButton visibility="collapsed" />
+            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout" />
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
                 <Label class="box" text= "Welkom Persoon" />
 <!--                <Label class="box" text=" Welkom {{currentUser.userId}}"/>-->
                 <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
-                <Button class="button" @tap="clickPause()"> Pauze </Button> <!--                    :text="'Pauze'" @tap="clickPause" class="btn btn-primary m-t-20" />-->
-                <Button class="lbutton" @tap="clickLogout"> Logout </Button> <!--                    text="Log out" @tap="clickLogout" class="btn btn-secondary" />-->
+                <Button class="button" @tap="clickPause()"> Pauze </Button>
             </StackLayout>
         </FlexboxLayout>
     </Page>
@@ -106,15 +105,6 @@
         /*margin-left: 10px;*/
         /*margin-right: 10px;*/
         color: white;
-    }
-
-    .lbutton {
-        height: 50;
-        margin: 30 5 15 5;
-        background-color: gray;
-        border-radius: 5;
-        color: white;
-        font-size: 20;
     }
 
 </style>
