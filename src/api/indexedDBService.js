@@ -1,21 +1,64 @@
 import { openDB } from 'idb';
 
-async function saveToDatabase(storeName, object){
-    const db = await openDB('ClockingDB', 1, {
-        upgrade(db) {
-            const store = db.createObjectStore(storeName, {
-                keyPath: 'id',
-                autoIncrement: true,
-            });
-            // Create an index on userNumber property of objects
-            store.createIndex('userNumber', 'userNumber');
-        }
-    });
+async function openDatabase(storeName, callback){
+    let db = null;
+    if (storeName == "clockingEntries") {
+        db = await openDB('ClockingDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    } else if (storeName == "breakEntries") {
+        db = await openDB('BreakDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    }
 
-    getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, object.userNumber, function (items) {
+    callback(db);
+}
+
+async function saveToDatabase(storeName, object){
+    let db = null;
+    if (storeName == "clockingEntries") {
+        db = await openDB('ClockingDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    } else if (storeName == "breakEntries") {
+        db = await openDB('BreakDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    }
+
+    await getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, object.userNumber, function (items) {
         // If there are entries in the database with the usernumber and without endtime, do this
         // This means the user is currently clocked in offline
-        if(items.length > 0){
+        if (items.length > 0) {
 
             let obj = items[0];
 
@@ -32,9 +75,9 @@ async function saveToDatabase(storeName, object){
             // Overwrites object in store by obj
             db.put(storeName, obj);
 
-        // If there are no entries in the database with the usernumber and without endtime, do this
-        // This means the user is not currently clocked in offline
-        } else{
+            // If there are no entries in the database with the usernumber and without endtime, do this
+            // This means the user is not currently clocked in offline
+        } else {
             // Lines to get the current time in the format the database requires
             let today = new Date();
             let date = today.getFullYear() + '-' + (("0" + (today.getMonth() + 1)).slice(-2)) + '-' + ("0" + today.getDate()).slice(-2);
@@ -48,110 +91,159 @@ async function saveToDatabase(storeName, object){
     });
 }
 
+async function deleteFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber){
+    await getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, function (items) {
+        if (items.length > 0) {
+            let obj = items[0];
+            deleteFromDatabase(storeName, obj.id);
+        }
+    });
+
+}
+
+async function updateFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, synced){
+    let sync = synced;
+    console.log(userNumber)
+    console.log(synced)
+    await getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, function (items) {
+        if (items.length > 0) {
+            let breakEntry = {
+                userNumber: "",
+                beginTime: null,
+                endTime: null,
+                synced: null
+            }
+            breakEntry.userNumber = userNumber;
+            breakEntry.synced = sync;
+
+            var object = JSON.parse(JSON.stringify(breakEntry));
+            saveToDatabase(storeName, object);
+        }
+    });
+}
+
 async function getAllFromDatabase(storeName, callback){
-    const db = await openDB('ClockingDB', 1);
+    openDatabase(storeName, function (db) {
+        var transaction = db.transaction(storeName, 'readonly');
+        var objectStore = transaction.objectStore(storeName);
 
-    var transaction = db.transaction(storeName, 'readonly');
-    var objectStore = transaction.objectStore(storeName);
+        // Get all entries from the given storename from the database
+        var a = objectStore.getAll();
+        // objectStore.getAll returns a Promise, function to return contents of the Promise
+        a.then(function (result) {
+            callback(result);
+        })
+    });
 
-    // Get all entries from the given storename from the database
-    var a = objectStore.getAll();
-    // objectStore.getAll returns a Promise, function to return contents of the Promise
-    a.then(function (result) {
-        callback(result);
-    })
 }
 
 async function getAllFromDatabaseWithUserNumber(storeName, userNumber, callback) {
-    const db = await openDB('ClockingDB', 1);
+    openDatabase(storeName, function (db) {
+        var transaction = db.transaction(storeName, 'readonly');
+        var objectStore = transaction.objectStore(storeName);
+        var items = [];
 
-    var transaction = db.transaction(storeName, 'readonly');
-    var objectStore = transaction.objectStore(storeName);
-    var items = [];
-
-    // Get all entries from the given storename from the database
-    var a = objectStore.getAll();
-    // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
-    a.then(function (result) {
-        for(var i = 0; i < result.length; i++){
-            if(result[i].userNumber == userNumber){
-                items.push(result[i]);
+        // Get all entries from the given storename from the database
+        var a = objectStore.getAll();
+        // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
+        a.then(function (result) {
+            for (var i = 0; i < result.length; i++) {
+                if (result[i].userNumber == userNumber) {
+                    items.push(result[i]);
+                }
             }
-        }
-        callback(items);
-    })
+            callback(items);
+        })
+    });
 }
 
 // Gets all entries from database where startTime and endTime are not null
 // e.g. clockIn/clockOut has been completed
 async function getUnsynchronizedData(storeName, callback) {
-    const db = await openDB('ClockingDB', 1, {
-        upgrade(db) {
-            const store = db.createObjectStore(storeName, {
-                keyPath: 'id',
-                autoIncrement: true,
-            });
-            // Create an index on userNumber property of objects
-            store.createIndex('userNumber', 'userNumber');
-        }
-    });
+    openDatabase(storeName, function (db) {
+        var transaction = db.transaction(storeName, 'readonly');
+        var objectStore = transaction.objectStore(storeName);
+        var items = [];
 
-    var transaction = db.transaction(storeName, 'readonly');
-    var objectStore = transaction.objectStore(storeName);
-    var items = [];
-
-    // Get all entries from the given storename from the database
-    var a = objectStore.getAll();
-    // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
-    a.then(function (result) {
-        for (var i = 0; i < result.length; i++) {
-            if (result[i].synced == false) {
-                items.push(result[i]);
+        // Get all entries from the given storename from the database
+        var a = objectStore.getAll();
+        // objectStore.getAll returns a Promise, function to return contents of the Promise after performing operations
+        a.then(function (result) {
+            for (var i = 0; i < result.length; i++) {
+                if (result[i].synced == false) {
+                    items.push(result[i]);
+                }
+                if (result[i].synced == true && result[i].beginTime != null && result[i].endTime != null) {
+                    deleteFromDatabase(storeName, result[i].id);
+                }
             }
-            if(result[i].synced == true && result[i].beginTime != null && result[i].endTime != null){
-                deleteFromDatabase("clockingEntries", result[i].id);
-            }
-        }
-        callback(items);
+            callback(items);
+        });
     });
 }
 
 async function getAllFromDatabaseWithUserNumberWithoutEndtime(storeName, userNumber, callback) {
-    const db = await openDB('ClockingDB', 1);
+    await openDatabase(storeName, function (db) {
+        var transaction = db.transaction(storeName, 'readonly');
+        var objectStore = transaction.objectStore(storeName);
+        var items = [];
 
-    var transaction = db.transaction(storeName, 'readonly');
-    var objectStore = transaction.objectStore(storeName);
-    var items = [];
-
-    var a = objectStore.getAll();
-    a.then(function (result) {
-        for (var i = 0; i < result.length; i++) {
-            if (result[i].userNumber == userNumber && result[i].endTime == null) {
-                items.push(result[i]);
+        var a = objectStore.getAll();
+        a.then(function (result) {
+            for (var i = 0; i < result.length; i++) {
+                if (result[i].userNumber == userNumber && result[i].endTime == null) {
+                    items.push(result[i]);
+                }
             }
-        }
-        callback(items);
-    })
+            callback(items);
+        });
+    });
 }
 
 async function deleteFromDatabase(storeName, id){
-    const db = await openDB('ClockingDB', 1);
+    openDatabase(storeName, function (db) {
+        var transaction = db.transaction([storeName], 'readwrite');
+        var objectStore = transaction.objectStore(storeName);
 
-    var transaction = db.transaction([storeName], 'readwrite');
-    var objectStore = transaction.objectStore(storeName);
-
-    objectStore.delete(id);
+        objectStore.delete(id);
+    });
 }
 
 async function updateSync(storeName, id, status){
-    const db = await openDB('ClockingDB', 1);
+    let db = null;
+    if (storeName == "clockingEntries") {
+        db = await openDB('ClockingDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    } else if (storeName == "breakEntries") {
+        db = await openDB('BreakDB', 1, {
+            upgrade(db) {
+                const store = db.createObjectStore(storeName, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
+                // Create an index on userNumber property of objects
+                store.createIndex('userNumber', 'userNumber');
+            }
+        });
+    }
 
     var transaction = db.transaction(storeName, 'readonly');
     var objectStore = transaction.objectStore(storeName);
 
     let value = await db.get(storeName, id);
     value.synced = status;
+
     await db.put(storeName, value);
+    db.close();
+
 }
 
 export default {
@@ -161,5 +253,7 @@ export default {
     getAllFromDatabaseWithUserNumberWithoutEndtime,
     getUnsynchronizedData,
     deleteFromDatabase,
-    updateSync
+    updateSync,
+    deleteFromDatabaseWithUserNumberWithoutEndtime,
+    updateFromDatabaseWithUserNumberWithoutEndtime
 }

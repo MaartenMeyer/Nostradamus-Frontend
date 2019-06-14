@@ -25,10 +25,11 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex';
     import modal from './Modal.vue';
-    import debounce from 'v-debounce'
-    import rs from '../api/RequestService'
+    import debounce from 'v-debounce';
+    import rs from '../api/RequestService';
+    import idbs from '../api/indexedDBService';
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
@@ -48,8 +49,7 @@
                 userNumbers: [],
                 breakEntry: {
                     userNumber: "",
-                    beginTime: "",
-                    endTime: ""
+                    beginTime: ""
                 }
             }
         },
@@ -84,34 +84,54 @@
             },
             // Checks if userNumber entered into input field is present in the array userNumbers
             checkUsernumberValidity(){
+                this.breakEntry.userNumber = "";
+                this.breakEntry.beginTime = "";
                 if(this.userNumbers.includes(parseInt(this.userNumber, 10))){
                     this.showErrorMessage("", false);
                     this.checkConnection(this.checkBreakStatus(""));
-                    this.disabled = false;
                 }else{
                     if(this.userNumber != ""){
-                        this.disabled = true;
                         this.showErrorMessage("Medewerkersnummer ongeldig!", true);
                     }else{
-                        this.disabled = false;
                         this.showErrorMessage("", false);
                     }
 
                     this.breakEntry.userNumber = "";
                     this.breakEntry.beginTime = "";
-                    this.breakEntry.endTime = "";
                     document.getElementById("submitButton").innerHTML="Pauze";
                 }
             },
             checkBreakStatus(status){
                 return (status) => {
+                    console.info("Connection status: " +status);
                     if(status == "online"){
                         let promise = rs.getBreakStatus(this.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => this.updateForm(response))
                                .catch(error => this.updateForm(error.response));
 
                     }else if(status == "offline"){
-                        // Todo: check if user is clocked in offline
+                        idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("breakEntries", this.userNumber, (items) => {
+                            let object = {
+                                status: null,
+                                data: {
+                                    userNumber: "",
+                                    beginTime: null,
+                                    endTime: null,
+                                    synced: null
+                                }
+                            };
+
+                            if(items.length > 0){
+                                object.status = 200;
+                                object.data.userNumber = items[0].userNumber;
+                                object.data.beginTime = items[0].beginTime;
+                                object.data.synced = items[0].synced;
+                            }else {
+                                object.status = 404;
+                            }
+                            this.updateForm(object);
+                        });
+
                     }
                 }
             },
@@ -130,30 +150,76 @@
             },
             clockBreak(){
                 if(this.userNumber != ""){
-                    if(this.error != true){
-                        let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
+                    // If userNumber is already clocked in on break, do this
+                    if(this.breakEntry.userNumber != ""){
+                        let promise = rs.postBreakEntry(this.breakEntry.userNumber, this.$cookie.get('access-token'));
                         promise.then(response => {
+                                    this.saveBreakEntryOffline(this.breakEntry.userNumber, true);
                                     this.clockBreakSuccessful(response);
                                 })
                                .catch((error) => {
                                     if(error.response){
                                         if(error.response.status == 500){
                                             this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
-                                        }else{
-                                            //console.log(error.response);
-                                            //this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
                                         }
                                     } else if (error.request.status == 0){
-                                        // Todo: offline pauze inklokken
+                                        // Todo: check if user is clocked in offline before saving
+                                        this.saveBreakEntryOffline(this.breakEntry.userNumber, false);
+
+                                        let date = new Date();
+                                        let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+                                        let t = new Date(this.breakEntry.beginTime);
+                                        let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
+
+                                        this.showModal("<b>Pauze uitgeklokt!</b><br><br>Werknemersnummer: " + this.breakEntry.userNumber + "<br>Begintijd: " + beginTime + "<br>Eindtijd: " + time + "<br><br><i>Je pauze is offline uitgeklokt!</i>")
                                     }
                                 })
                     }else{
-                        this.showErrorMessage("Medewerkersnummer ongeldig!", true)
-                    }
+                        let promise = rs.postBreakEntry(this.userNumber, this.$cookie.get('access-token'));
+                        promise.then(response => {
+                                    this.saveBreakEntryOffline(this.userNumber, true);
+                                    this.clockBreakSuccessful(response);
+                                })
+                               .catch((error) => {
+                                    if(error.response){
+                                        if(error.response.status == 500){
+                                            this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
+                                        }
+                                    } else if (error.request.status == 0){
+                                        idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("clockingEntries", this.userNumber, (items) =>{
+                                            // Creates an object in the same format as the response  required in updateForm()
+                                            if(items.length > 0){
+                                                this.saveBreakEntryOffline(this.userNumber, false);
 
+                                                let date = new Date();
+                                                let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
+                                                this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.breakEntry.userNumber + "<br>Begintijd: " + time + "<br><br><i>Je pauze is offline ingeklokt!</i>")
+
+                                            }else{
+                                                this.showErrorMessage("Je bent nog niet ingeklokt!", true)
+                                            }
+                                        });
+                                    }
+                                })
+                    }
                 }else{
                     this.showErrorMessage("Voer een werknemersnummer in!", true)
                 }
+            },
+            saveBreakEntryOffline(userNumber, synced){
+                let breakEntry = {
+                    userNumber: "",
+                    beginTime: null,
+                    endTime: null,
+                    synced: null
+                }
+                breakEntry.userNumber = userNumber;
+                breakEntry.synced = synced;
+
+                var object = JSON.parse(JSON.stringify(breakEntry));
+
+                idbs.saveToDatabase("breakEntries", object);
             },
             // Called when clock break-in/out is successful
             // Parameter object is response from api call to api/breaking
@@ -178,12 +244,10 @@
                 if(response.status == 200){
                     this.breakEntry.userNumber = response.data.userNumber;
                     this.breakEntry.beginTime = response.data.beginTime;
-                    this.breakEntry.endTime = response.data.endTime;
                     document.getElementById("submitButton").innerHTML="Pauze uitklokken";
                 }else if(response.status == 404){
                     this.breakEntry.userNumber = "";
                     this.breakEntry.beginTime = "";
-                    this.breakEntry.endTime = "";
                     this.showErrorMessage("", false);
                     document.getElementById("submitButton").innerHTML="Pauze inklokken";
                 }

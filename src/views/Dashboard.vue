@@ -52,6 +52,7 @@
                 this.$router.replace('/clock');
             },
             takeBreak(){
+                this.checkConnection();
                 this.$router.replace('/break');
             },
             overview(){
@@ -84,27 +85,52 @@
 							let endTime = items[i].endTime;
 							let synced = items[i].synced;
 
-							if(beginTime != null && endTime != null && synced != false){
-								beginTime = null;
-							}
-							//console.log(items[i]);
-							console.log(beginTime)
+							// if(beginTime != null && endTime != null && synced != false){
+							// 	beginTime = null;
+							// }
 
 							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {
-										console.log("Dashboard: data synchronized!");
+										console.log("Dashboard: clock data synchronized!");
 										idbs.updateSync("clockingEntries", id, true);
-										console.log(items[i])
 									})
                        				.catch((error) => {
-                            			console.log("Error in data, data skipped!");
+                            			console.log("Error in clock data, data skipped!");
                         			});
                         }
                     }else {
-                        console.log("Dashboard: no data synchronization needed!");
+                        console.log("Dashboard: no clock data synchronization needed!");
                     }
-                });
-            }
+				});
+				idbs.getUnsynchronizedData("breakEntries", (items) => {
+                    if(items.length > 0){
+                        for(var i = 0; i < items.length; i++){
+							let id = items[i].id;
+							let beginTime = items[i].beginTime;
+							let endTime = items[i].endTime;
+							let synced = items[i].synced;
+
+							if(beginTime != null && endTime != null && synced != false){
+								beginTime = null;
+							}
+
+							let promise = rs.synchronizeBreakEntry(items[i].userNumber, beginTime, items[i].endTime, this.$cookie.get('access-token'));
+                			promise.then(response => {
+										console.log("Dashboard: break data synchronized!");
+										idbs.updateSync("breakEntries", id, true);
+									})
+                       				.catch((error) => {
+                            			console.log("Error in break data, data skipped!");
+                        			});
+                        }
+                    }else {
+                        console.log("Dashboard: no break data synchronization needed!");
+                    }
+				});
+			},
+			synchronizeBreak(){
+
+			}
         }
     }
 </script>
