@@ -193,15 +193,15 @@
     }
 
     .form {
-        margin-left: 30;
-        margin-right: 30;
+        margin-left: 30px;
+        margin-right: 30px;
         flex-grow: 2;
         vertical-align: middle;
     }
 
     .invoer {
-        margin-left: 30;
-        margin-right: 30;
+        margin-left: 30px;
+        margin-right: 30px;
         flex-grow: 2;
     }
 
@@ -211,7 +211,7 @@
         font-size: 28px;
         text-align: center;
         margin-top: 30px;
-        margin-bottom: 80px;
+        margin-bottom: 60px;
         color: #676A6C;
     }
 
@@ -219,6 +219,8 @@
     .input {
         font-size: 20px;
         placeholder-color: #A8A8A8;
+        text-align: center;
+
     }
 
     .input-field .input {
@@ -226,11 +228,10 @@
     }
 
     .button {
+        margin: 30 5 15 5;
         background-color: #00A0D1;
         border-radius: 10px;
         font-size: 20px;
-        margin-top: 10;
-        margin-bottom: 30px;
         color: white;
     }
 </style>
