@@ -52,6 +52,7 @@
                 this.$router.replace('/clock');
             },
             takeBreak(){
+                this.checkConnection();
                 this.$router.replace('/break');
             },
             overview(){
@@ -84,9 +85,9 @@
 							let endTime = items[i].endTime;
 							let synced = items[i].synced;
 
-							if(beginTime != null && endTime != null && synced != false){
-								beginTime = null;
-							}
+							// if(beginTime != null && endTime != null && synced != false){
+							// 	beginTime = null;
+							// }
 
 							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {
@@ -98,7 +99,7 @@
                         			});
                         }
                     }else {
-                        console.log("Dashboard: no data synchronization needed!");
+                        console.log("Dashboard: no clock data synchronization needed!");
                     }
 				});
 				idbs.getUnsynchronizedData("breakEntries", (items) => {
@@ -123,7 +124,7 @@
                         			});
                         }
                     }else {
-                        console.log("Dashboard: no data synchronization needed!");
+                        console.log("Dashboard: no break data synchronization needed!");
                     }
 				});
 			},

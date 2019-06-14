@@ -119,7 +119,7 @@
                                     endTime: null,
                                     synced: null
                                 }
-                            }
+                            };
 
                             if(items.length > 0){
                                 object.status = 200;
@@ -186,17 +186,23 @@
                                             this.showErrorMessage("Pauze niet ingeklokt. Je bent nog niet ingeklokt!", true)
                                         }
                                     } else if (error.request.status == 0){
-                                        // Todo: check if user is clocked in offline before saving
-                                        this.saveBreakEntryOffline(this.userNumber, false);
+                                        idbs.getAllFromDatabaseWithUserNumberWithoutEndtime("clockingEntries", this.userNumber, (items) =>{
+                                            // Creates an object in the same format as the response  required in updateForm()
+                                            if(items.length > 0){
+                                                this.saveBreakEntryOffline(this.userNumber, false);
 
-                                        let date = new Date();
-                                        let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+                                                let date = new Date();
+                                                let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
-                                        this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.breakEntry.userNumber + "<br>Begintijd: " + time + "<br><br><i>Je pauze is offline ingeklokt!</i>")
+                                                this.showModal("<b>Pauze ingeklokt!</b><br><br>Werknemersnummer: " + this.breakEntry.userNumber + "<br>Begintijd: " + time + "<br><br><i>Je pauze is offline ingeklokt!</i>")
+
+                                            }else{
+                                                this.showErrorMessage("Je bent nog niet ingeklokt!", true)
+                                            }
+                                        });
                                     }
                                 })
                     }
-
                 }else{
                     this.showErrorMessage("Voer een werknemersnummer in!", true)
                 }
