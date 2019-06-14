@@ -10,7 +10,7 @@
             </StackLayout>
 
             <StackLayout class="form">
-                <TextField class="input" hint="Werknemersnummer" keyboardType="number" v-model="personNumber" />
+                <TextField class="input" hint="Werknemersnummer" keyboardType="number" v-model="userNumber" />
                 <Button :text="'Pauze'" @tap="clickValidatePause" class="button" />
             </StackLayout>
         </FlexboxLayout>
@@ -31,7 +31,8 @@
                 user: {
                     username: "",
                     password: ""
-                }
+                },
+                userNumber: null
             };
         },
     computed: {
@@ -40,7 +41,7 @@
 
     methods: {
         clickValidatePause() {
-            if (this.personNumber == null) {
+            if (this.userNumber == null) {
                 this.alert("Er is geen werknemersnummer ingevoerd.");
             } else {
                 this.clickStartPause();
@@ -49,20 +50,26 @@
         clickStartPause() {
                 console.log("pause");
                 var self = this;
-                var token = this.localStorage.token;
+                let token = this.localStorage.token;
                 axios({
                     method: 'post',
                     url: 'http://145.49.8.169:3000/api/breaking',
-                    data: { userNumber: this.currentUser.userNumber },
-                    headers: {'Authorization': "bearer " + localStorage.token}
+                    data: { userNumber: this.userNumber},
+                    headers: {'Authorization': "bearer " + token}
                 })
-                .then(request => this.breakSuccessful(request))
-                .catch(() => this.breakFailed());
-                //this.alert(this.personNumber + " is het personeels nummer.");
-                //this.toHome();
+                .then((response) =>
+                    this.breakSuccessful(response)
+                )
+                .catch(
+                    this.breakFailed()
+                )
+                axios.interceptors.response.use(function(response) {
+                    return response;
+                })
+
             },
             breakSuccessful(){
-                this.alert("Pauze gestart, uw werknemersnummer is " +localStorage.user.personNumber);
+                this.alert("Pauze gestart, uw werknemersnummer is " + this.userNumber);
                 this.toHome();
             },
             breakFailed(){
