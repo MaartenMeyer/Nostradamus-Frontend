@@ -1,42 +1,121 @@
 <template native>
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
+        <ActionBar class="action-bar">
+            <Label class="action-bar-title" text="Dashboard"></Label>
+            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout"/>
+        </ActionBar>
         <FlexboxLayout class="page">
-            <Label text="Welcome to the new page" />
-            <Button text="Log out" @tap="clickLogout" />
+            <StackLayout class="form" verticalAlignment="center">
+<!--                <Label class="box">Welkom {{currentUser.userName}} </Label>-->
+
+                <Label class="box1" text="Welkom bij"/>
+                <Label class="box" text="Nostradamus"/>
+
+                <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
+                <Button class="button" @tap="clickPause()"> Pauze </Button>
+            </StackLayout>
         </FlexboxLayout>
     </Page>
 </template>
 
 <script>
-    import axios from "axios"
+    import axios from "axios/index"
 
-    const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
+    import PausePage from "./Break.native.vue";
+    import { request } from 'http';
+    import { mapGetters } from 'vuex';
+    import 'nativescript-localstorage';
+
+    //const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
-        name: "Login",
+        name: "Dashboard",
         data () {
             return {
-                user: {
-                    name: "Jesse"
-                }
-            }
+                //props:[currentUser]
+            };
+        },
+        created(){
+            this.checkToken();
+        },
+        updated(){
+            this.checkToken();
+        },
+        computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
         },
         methods: {
-            getUserData: function () {
-                let self = this;
-                axios.get("/api/user")
-                    .then((response) => {
-                        console.log(response);
-                        self.$set(this, "user", response.data.user)
-                    })
-                    .catch((errors) => {
-                        console.log(errors);
-                        router.push("/")
-                    })
+            clickLogout() {
+                this.$goto('logout');
+            },
+            clickPause() {
+                this.$goto('break');
+            },
+            clickClocking() {
+                this.$goto('clock');
+            },
+            checkToken(){
+                if(!localStorage.token){
+                    this.alert("Er is iets fout gegaan met de applicatie")
+                    this.$goto('login');
+                }
+            },
+            alert(message) {
+                return alert({
+                    title: "Melding",
+                    okButtonText: "OK",
+                    message: message
+                });
             }
         },
         mounted () {
-            this.getUserData()
+            //this.getUserData()
         }
     }
 </script>
+
+<style scoped>
+    .action-bar-title{
+        font-size: 25px;
+    }
+
+    .page {
+        /*align-items: center;*/
+        flex-direction: column;
+    }
+
+    .form {
+        margin-left: 30;
+        margin-right: 30;
+        flex-grow: 2;
+        vertical-align: middle;
+    }
+
+    .box1 {
+        horizontal-align: center;
+        font-size: 35;
+        text-align: center;
+        color: #676A6C;
+    }
+
+    .box {
+        horizontal-align: center;
+        font-size: 40px;
+        font-weight: bold;
+        margin-bottom: 70;
+        text-align: center;
+        color: #00A0D1;
+    }
+
+    .button {
+        height: 50;
+        margin: 30 5 15 5;
+        background-color: #00A0D1;
+        border-radius: 10px;
+        font-size: 20px;
+        /*margin-left: 10px;*/
+        /*margin-right: 10px;*/
+        color: white;
+    }
+
+</style>

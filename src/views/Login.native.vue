@@ -1,13 +1,15 @@
 <template native>
     <Page actionBarHidden="true">
         <FlexboxLayout class="page">
+
             <StackLayout class="form">
-                <Label class="header" text="ClockSystem" />
+                <Image class="logo" src="~/assets/logos.png" />
+                <Label class="header" text="Welkom" />
 
                 <StackLayout class="input-field" marginBottom="25">
-                    <TextField class="input" hint="Email" keyboardType="email"
+                    <TextField class="input" hint="Gebruikersnaam" keyboardType="text"
                                autocorrect="false" autocapitalizationType="none"
-                               @returnPress="focusPassword" v-model="user.email"
+                               @returnPress="focusPassword" v-model="user.username"
                                returnKeyType="next" fontSize="18" />
                     <StackLayout class="hr-light" />
                 </StackLayout>
@@ -19,7 +21,7 @@
                     <StackLayout class="hr-light" />
                 </StackLayout>
 
-                <Button :text="'Log In'" @tap="submit" class="btn btn-primary m-t-20" />
+                <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
             </StackLayout>
 
 
@@ -28,64 +30,92 @@
 </template>
 
 <script>
+    import axios from "axios"
+    import Dashboard from "./Dashboard.native.vue";
+    import { request } from 'http';
+    import { mapGetters } from 'vuex';
+    import 'nativescript-localstorage';
+
     const userService = {
         login(user) {
-            return Promise.resolve(user);
+            return new Promise(resolve => {
+                resolve(user);
+            })
         }
     };
 
-    import axios from "axios/index"
-    import Dashboard from "./Dashboard.native.vue";
-
     export default {
+        name: 'Login',
         data() {
             return {
                 user: {
-                    email: "",
+                    username: "",
                     password: ""
                 }
             };
         },
+
+        computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
+        },
+
         methods: {
             focusPassword() {
                 this.$refs.password.nativeView.focus();
             },
 
             submit() {
-                if (!this.user.email || !this.user.password) {
+                //this.alert("pressed");
+                if (!this.user.username || !this.user.password) {
+                    console.log("invoer niet goed");
+                    //quick test $goto, uncomment for faster
+                    //testing in case of styling edits.
+                    //this.$goto('dashboard')
                     this.alert(
                         "Email en/of wachtwoord vergeten in te voeren.");
                     return;
+                }else{
+                    this.validate();
                 }
-                this.validate();
             },
+
             validate() {
                 // CHECK DATA
-                if (this.user.email == "p") {
-                    this.alert("HACKS.");
-                } else {
-                    this.login();
-                }
+                //
+                //url needs to be changed to server IP
+                //local IP does not work with emulator/phys. device
+                //Using 145.49.8.169:3000/api for testing
+                //check local IP of device running back-end before testing yourself
+                //https://www.whatismybrowser.com/detect/what-is-my-local-ip-address
+                //
+                var self = this;
+
+                axios({
+                    method: 'post',
+                    url: 'http://145.49.8.169:3000/api/login',
+                    data: { userName: this.user.username, password: this.user.password },
+                    config: { headers: {'Content-Type': 'application/json' }}
+                })
+                .then(response => {
+                    //console.log(response)
+                    this.login(response);
+                })
+                .catch(() => this.loginFailed());
+
+                axios.interceptors.response.use(function(response){
+                    return response;
+                })
             },
-            login() {
-                userService
-                    .login(this.user)
-                    .then(() => {
-                        this.$navigateTo(Dashboard, {
-                            props: { },
-                            animated: true,
-                            transition: {
-                                name: "slideTop",
-                                duration: 380,
-                                curve: "easeIn"
-                            }
-                        });
-                    })
-                    .catch(() => {
-                        this.alert(
-                            "Er ging iets mis met het verbinden van de applicatie."
-                        );
-                    });
+            login(response) {
+                if(!response.data.token){
+                    this.loginFailed();
+                    return;
+                }
+
+                this.error = false;
+                localStorage.token = response.data.token;
+                this.$store.dispatch('login');
+                this.loadData();
             },
             alert(message) {
                 return alert({
@@ -93,37 +123,51 @@
                     okButtonText: "OK",
                     message: message
                 });
-            }
-            // login: (e) => {
-            //           e.preventDefault();
-            //           let email = e.target.elements.email.value;
-            //           let password = e.target.elements.password.value;
+            },
+            loginFailed(){
+                this.error = true;
+                this.alert(
+                    "Er ging iets mis met het verbinden van de applicatie."
+                );
 
-            //           let login = () => {
-            //               let data = {
-            //                   email: email,
-            //                   password: password
-            //               };
+                delete localStorage.token;
+            },
+            loadData(){
 
-            //               axios.post("/api/login", data)
-            //                   .then((response) => {
-            //                       console.log("Logged in");
-            //                       this.$router.push("/dashboard")
-            //                   })
-            //                   .catch((errors) => {
-            //                       console.log("Cannot log in")
-            //                   })
-            //           };
-            //           login();
-            //       }
-        }
-    };
+                axios({
+                    method: 'get',
+                    url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
+                    config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
+                    .then((request) => 
+                        this.loadDataSuccessful(request)
+                    )
+                    .catch((err) => {
+                        if(err.response){
+                            console.log("res "+ err.response)
+                        }else{
+                            console.log("req " + err.request.status)
+                        }
+                        this.loadDataFailed()
+                    });
+            },
+            loadDataSuccessful(req){
+                console.log("Load succes");
+                localStorage.setItem('company', JSON.stringify(req.data));
+                this.$goto('dashboard');
+            },
+            loadDataFailed(){
+                console.log("Load-data Failed");
+                this.alert("Er ging iets mis met het verbinden van de applicatie.");
+            },
+    }
+};
 </script>
 
 <style scoped>
     .page {
         align-items: center;
         flex-direction: column;
+        background-color: #F9F9F9;
     }
 
     .form {
@@ -134,18 +178,17 @@
     }
 
     .logo {
-        margin-bottom: 12;
         height: 90;
         font-weight: bold;
     }
 
     .header {
         horizontal-align: center;
-        font-size: 25;
-        font-weight: 600;
-        margin-bottom: 70;
+        font-size: 35;
+        margin-bottom: 50;
+        margin-top: 20;
         text-align: center;
-        color: #00A2D3;
+        color: #00A0D1;
     }
 
     .input-field {
@@ -164,23 +207,10 @@
     .btn-primary {
         height: 50;
         margin: 30 5 15 5;
-        background-color: #00A2D3;
+        background-color: #00A0D1;
+        color: white;
         border-radius: 5;
         font-size: 20;
-        font-weight: 600;
     }
 
-    .login-label {
-        horizontal-align: center;
-        color: #A8A8A8;
-        font-size: 16;
-    }
-
-    .sign-up-label {
-        margin-bottom: 20;
-    }
-
-    .bold {
-        color: #000000;
-    }
 </style>
