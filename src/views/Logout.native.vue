@@ -1,9 +1,13 @@
 <template native>
-    <div class="mainDiv">
-        <div class="formBox">
-            <h2 class="welcome1">U bent uitgelogd.</h2>
-        </div>
-    </div>
+    <Page actionBarHidden="true">
+        <FlexboxLayout class="page">
+
+            <StackLayout class="form">
+                <Label class="header" text="Welkom" />
+            </StackLayout>
+
+        </FlexboxLayout>
+    </Page>
 </template>
 
 <script>
@@ -13,14 +17,29 @@ export default {
     delete localStorage.token;
     delete localStorage.userId;
     localStorage.removeItem('company');
+    localStorage.removeItem('users');
+    this.$store.dispatch('logout');
+    this.alert("U bent uitgelogd");
     this.$goto('login', {clearHistory: true});
   },
   updated(){
     delete localStorage.token;
     delete localStorage.userId;
     localStorage.removeItem('company');
+    localStorage.removeItem('users');
+    this.$store.dispatch('logout');
+    this.alert("U bent uitgelogd");
     this.$goto('login', {clearHistory: true});
-  }
+  },
+    methods:{
+        alert(message) {
+            return alert({
+                title: "Melding",
+                okButtonText: "OK",
+                message: message
+            });
+        }
+    }
 }
 </script>
 

@@ -2,7 +2,7 @@
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <ActionBar class="action-bar">
             <Label class="action-bar-title" text="Dashboard"></Label>
-            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout" />
+            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout"/>
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
@@ -62,7 +62,7 @@
             },
             alert(message) {
                 return alert({
-                    title: "Oops",
+                    title: "Melding",
                     okButtonText: "OK",
                     message: message
                 });
