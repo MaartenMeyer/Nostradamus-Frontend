@@ -4,9 +4,9 @@
             <Label class="action-bar-title" text="In/Uit Klokken"></Label>
         </ActionBar>
         <FlexboxLayout class="page" verticalAlignment="center">
-            <!-- <StackLayout class="invoer">
+            <StackLayout class="invoer">
                 <Label class="action" text="Voer je gegevens in:"></Label>
-            </StackLayout> -->
+            </StackLayout>
 
             <StackLayout class="form">
                 <TextField class="input" @textChange="changeNumber" hint="Werknemersnummer"
@@ -228,7 +228,8 @@
     }
 
     .button {
-        margin: 30 5 15 5;
+        height: 50;
+        /*margin: 30 5 15 5;*/
         background-color: #00A0D1;
         border-radius: 10px;
         font-size: 20px;

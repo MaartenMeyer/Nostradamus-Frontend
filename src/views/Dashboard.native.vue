@@ -8,7 +8,9 @@
             <StackLayout class="form" verticalAlignment="center">
 <!--                <Label class="box">Welkom {{currentUser.userName}} </Label>-->
 
-                <Label class="box" text=" Welkom Person"/>
+                <Label class="box1" text="Welkom bij"/>
+                <Label class="box" text="Nostradamus"/>
+
                 <Button class="button" @tap="clickClocking()"> In/Uit Klokken </Button>
                 <Button class="button" @tap="clickPause()"> Pauze </Button>
             </StackLayout>
@@ -78,7 +80,7 @@
     }
 
     .page {
-        align-items: center;
+        /*align-items: center;*/
         flex-direction: column;
     }
 
@@ -89,9 +91,17 @@
         vertical-align: middle;
     }
 
-    .box {
+    .box1 {
         horizontal-align: center;
         font-size: 35;
+        text-align: center;
+        color: #676A6C;
+    }
+
+    .box {
+        horizontal-align: center;
+        font-size: 40px;
+        font-weight: bold;
         margin-bottom: 70;
         text-align: center;
         color: #00A0D1;
