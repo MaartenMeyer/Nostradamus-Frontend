@@ -9,14 +9,16 @@
             <div class="overviewDiv">
 
                 <select id="overviewFilter" >
+					<option value="" disabled selected hidden>Selecteer je locatie</option>
                     <option value="1">Werknemersnummer</option>
                     <option value="2">Achternaam</option>
                     <option value="3">Datum</option>
                 </select>
 
-                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="input" v-debounce="delay" placeholder="" name="filterInput" /><br>
+                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="input" placeholder="" name="filterInput" /><br>
 
                 <button class="submitBtn" v-on:click="filter()">Filter</button>
+				<p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                     <table border="1" class="overviewTable">
                         <tr>
@@ -27,11 +29,12 @@
 <!--                            <th>Start pauze</th>-->
 <!--                            <th>Eind pauze</th>-->
                         </tr>
-                        <tr v-for="el in array">
-                            <td>{{el.userNumber}}</td>
-                            <td>{{el.lastName}}}</td>
-                            <td>{{el.beginTime}}</td>
-                            <td>{{el.endTime}}</td>
+						<!-- Error below is not important -->
+                        <tr v-for="item in items">
+                            <td>{{ item.userNumber }}</td>
+                            <td>{{ item.lastName }}</td>
+                            <td>{{ item.beginTime }}</td>
+                            <td>{{ item.endTime }}</td>
 
                         </tr>
                     </table>
@@ -52,42 +55,81 @@
 
 <script>
     import axios from 'axios';
-    import { mapGetters } from 'vuex'
-    import VueCookie from 'vue-cookie';
-    import idbs from '../api/indexedDBService'
+	import { mapGetters } from 'vuex';
+	import rs from '../api/RequestService'
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
         name: "Overview",
-        data: {
-            current: {
-                userNumber: '',
-                lastName: '',
-                beginTime: '',
-                endTime: ''
-            }
+		data() {
+            return {
+                input: "",
+				error: false,
+            	errorMessage: "",
+            	currentItem: {
+                	userNumber: '',
+                	lastName: '',
+                	beginTime: '',
+                	endTime: ''
+            	},
+            	items: []
+            	}
+        },
+		computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
         },
         methods: {
-            addItems(){
-                this.arr.push(JSON.parse(JSON.stringify(this.current)));
-            },
-
             filter() {
-                let select = document.getElementById("overviewFilter");
-                let selectType = select.options[select.selectedIndex].value;
+				if(this.input != ""){
+					this.items = [];
+					this.showErrorMessage("", false);
+					let select = document.getElementById("overviewFilter");
+					let selectType = select.options[select.selectedIndex].value;
 
-                if(selectType == 1){
-                    let promise = rs.getUserClockOverviewByUserNumber()
-                    promise.then()
-                }else if(selectType == 2){
-                    let promise = rs.getUserClockOverviewByLastName()
-                    promise.then()
-                }else if(selectType == 3){
-                    let promise = rs.getUserClockOverviewByDate()
-                    promise.then()
-                }
+                	if(selectType == 1){
+                    	let promise = rs.getUserClockOverviewByUserNumber(this.input);
+                    	promise.then(response => this.loadItems(response.data))
+							   .catch((error) => this.showErrorMessage("Data ophalen mislukt!", true));
+                	}else if(selectType == 2){
+                    	let promise = rs.getUserClockOverviewByLastName(this.input);
+                    	promise.then(response => this.loadItems(response.data))
+                    		   .catch((error) => this.showErrorMessage("Data ophalen mislukt!", true));
+                	}else if(selectType == 3){
+                    	let promise = rs.getUserClockOverviewByDate(this.input);
+                    	promise.then(response => this.loadItems(response.data))
+                    		   .catch((error) => this.showErrorMessage("Data ophalen mislukt!", true));
+                	}
+				}else{
+					this.showErrorMessage("Voer iets in!", true);
+				}
 
+			},
+			addItem(object){
+                this.items.push(JSON.parse(JSON.stringify(object)));
+            },
+			loadItems(data){
+				let clockEntries = data.clockEntries;
+
+				for(var i = 0; i < clockEntries.length; i++){
+					let object = {
+                		userNumber: data.userNumber,
+                		lastName: data.lastName,
+                		beginTime: "",
+						endTime: ""
+					}
+					let beginTime = new Date(clockEntries[i].beginTime);
+					let endTime = new Date(clockEntries[i].endTime);
+					object.beginTime = beginTime.toLocaleString();
+					object.endTime = endTime.toLocaleString();
+
+					this.addItem(object);
+				}
+			},
+			// Shows error message with text of parameter string if parameter status is true
+            showErrorMessage(string, status) {
+                this.errorMessage = string;
+                this.error = status;
             },
             logout() {
                 this.$router.push('/logout');
@@ -336,4 +378,5 @@
         margin-bottom: 0px;
         color: red;
     }
+
 </style>
