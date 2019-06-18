@@ -94,10 +94,26 @@ function postNewUser(firstName, lastName, userName, dateOfBirth, emailAddress, u
     })
 }
 
-function getUserClockOverview(userNumber){
+function getUserClockOverviewByUserNumber(userNumber){
     return axios({
         method: 'get',
         url: 'http://127.0.0.1:3000/api/overview/usernumber/' + userNumber,
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
+function getUserClockOverviewByLastName(lastName){
+    return axios({
+        method: 'get',
+        url: 'http://127.0.0.1:3000/api/overview/lastname/' + lastName,
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
+function getUserClockOverviewByDate(date){
+    return axios({
+        method: 'get',
+        url: 'http://127.0.0.1:3000/api/overview/date/' + date,
         headers: { 'Content-Type': 'application/json' }
     })
 }
@@ -113,6 +129,8 @@ export default {
     synchronizeClockingEntry,
     postBreakEntry,
     postNewUser,
-    getUserClockOverview,
+    getUserClockOverviewByUserNumber,
+    getUserClockOverviewByLastName,
+    getUserClockOverviewByDate,
     synchronizeBreakEntry
 }

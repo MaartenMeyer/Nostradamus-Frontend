@@ -9,12 +9,12 @@
             <div class="overviewDiv">
 
                 <select id="overviewFilter" >
-                    <option value="">Werknemersnummer</option>
-                    <option value="">Achternaam</option>
-                    <option value="">Datum</option>
+                    <option value="1">Werknemersnummer</option>
+                    <option value="2">Achternaam</option>
+                    <option value="3">Datum</option>
                 </select>
 
-                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Filter op..." name="filterInput" /><br>
+                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="input" v-debounce="delay" placeholder="" name="filterInput" /><br>
 
                 <button class="submitBtn" v-on:click="filter()">Filter</button>
 
@@ -26,6 +26,13 @@
                             <th>Eindtijd</th>
 <!--                            <th>Start pauze</th>-->
 <!--                            <th>Eind pauze</th>-->
+                        </tr>
+                        <tr v-for="el in array">
+                            <td>{{el.userNumber}}</td>
+                            <td>{{el.lastName}}}</td>
+                            <td>{{el.beginTime}}</td>
+                            <td>{{el.endTime}}</td>
+
                         </tr>
                     </table>
 
@@ -53,12 +60,33 @@
 
     export default {
         name: "Overview",
-
-
+        data: {
+            current: {
+                userNumber: '',
+                lastName: '',
+                beginTime: '',
+                endTime: ''
+            }
+        },
         methods: {
+            addItems(){
+                this.arr.push(JSON.parse(JSON.stringify(this.current)));
+            },
+
             filter() {
+                let select = document.getElementById("overviewFilter");
+                let selectType = select.options[select.selectedIndex].value;
 
-
+                if(selectType == 1){
+                    let promise = rs.getUserClockOverviewByUserNumber()
+                    promise.then()
+                }else if(selectType == 2){
+                    let promise = rs.getUserClockOverviewByLastName()
+                    promise.then()
+                }else if(selectType == 3){
+                    let promise = rs.getUserClockOverviewByDate()
+                    promise.then()
+                }
 
             },
             logout() {
@@ -147,6 +175,7 @@
     input[type=text] {
         width: 200px;
         font-family: "Roboto";
+        color: #676A6C;
         font-size: 16px;
         margin-top: 20px;
         float: left;

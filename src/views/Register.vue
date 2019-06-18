@@ -13,7 +13,7 @@
                 <input class="registerInput" type="date" v-model="input.dateOfBirth" placeholder="Geboortedatum" name="Geboortedatum"/><br>
                 <input class="registerInput" type="email" v-model="input.emailAddress" placeholder="Email" name="email"/><br>
                 <input class="registerInput" type="text" v-model="input.userNumber" placeholder="Werknemersnummer" name="Werknemersnummer"/><br>
-                <input class="registerInput" type="number" v-model="input.accountType" placeholder="Accounttype" name="Account type"/><br>
+                <input class="registerInput" type="number" v-model="input.accountType" placeholder="Accounttype (1-3)" min="1" max="3" name="Account type"/><br>
                 <input class="registerInput" type="text" v-model="input.userName" placeholder="Gebruikersnaam" name="Gebruikersnaam"/><br>
                 <input class="registerInput" type="password" v-model="input.password" placeholder="Wachtwoord" name="password"/><br>
 
@@ -109,7 +109,9 @@
                         .catch((error) => {
                             if (error.response) {
                                 if (error.response.status == 401) {
-                                    this.showErrorMessage("Invoer niet compleet!", true);
+                                    this.showErrorMessage("Niet geauthorizeerd!", true);
+                                } else if (error.response.status == 500){
+                                    this.showErrorMessage("Werknemer bestaat al of foute invoer!", true);
                                 }
                             } else if (error.request.status == 0) {
                                 this.showErrorMessage("Registeren niet mogelijk. Geen verbinding met server!", true);
