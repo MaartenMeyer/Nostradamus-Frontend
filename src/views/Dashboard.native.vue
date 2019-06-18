@@ -2,11 +2,10 @@
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <ActionBar class="action-bar">
             <Label class="action-bar-title" text="Dashboard"></Label>
-            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout"/>
+            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout()"/>
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
-<!--                <Label class="box">Welkom {{currentUser.userName}} </Label>-->
 
                 <Label class="box1" text="Welkom bij"/>
                 <Label class="box" text="Nostradamus"/>
@@ -19,10 +18,6 @@
 </template>
 
 <script>
-    import axios from "axios/index"
-
-    import PausePage from "./Break.native.vue";
-    import { request } from 'http';
     import { mapGetters } from 'vuex';
     import 'nativescript-localstorage';
 
@@ -46,7 +41,9 @@
         },
         methods: {
             clickLogout() {
+                this.alert("U bent uitgelogd")
                 this.$goto('logout');
+
             },
             clickPause() {
                 this.$goto('break');
@@ -61,12 +58,14 @@
                 }
             },
             alert(message) {
-                return alert({
+                var dialogs = require("tns-core-modules/ui/dialogs");
+                dialogs.alert({
                     title: "Melding",
-                    okButtonText: "OK",
-                    message: message
+                    message: message,
+                    okButtonText: "Ok"
                 });
-            }
+            },
+
         },
         mounted () {
             //this.getUserData()
@@ -113,8 +112,6 @@
         background-color: #00A0D1;
         border-radius: 10px;
         font-size: 20px;
-        /*margin-left: 10px;*/
-        /*margin-right: 10px;*/
         color: white;
     }
 

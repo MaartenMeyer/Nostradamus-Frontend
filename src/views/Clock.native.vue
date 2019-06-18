@@ -122,9 +122,24 @@
                     this.displayBranch = 1;
                 }
             },
+
+            // checkClockingStatus(){
+            //     axios({
+            //         method: 'post',
+            //         url: 'http://145.49.8.169:3000/api/clockingStatus',
+            //         data: { userNumber: this.clockingEntry.userNumber},
+            //         headers: {'Authorization': "bearer " + token}})
+            //         .then((response) =>
+            //
+            //         )
+            //         .catch(
+            //             //offline
+            //         )
+            //
+            // },
             clickClockingValidate() {
                 if (this.userNumber == "") {
-                    this.alert("Er is geen personeelsnummer ingevoerd.");
+                    this.alert("Er is geen werknemersnummer ingevoerd.");
                 } else if (this.selectedItemDepartment == 0) {
                     this.alert("Er is geen afdeling ingevoerd.");
                 } else if (this.selectedItemBranch == 0) {
@@ -137,6 +152,9 @@
                 }
             },
             clickStartClocking() {
+                // if(this.userNumber != ""){
+                //     // If userNumber is already clocked in, do this
+                //     if(this.clockingEntry.userNumber != ""){
                 var self = this;
                 var token = localStorage.token;
                 console.log("token " + token);
@@ -147,35 +165,104 @@
                         userNumber: this.clockingEntry.userNumber,
                         branchId: this.clockingEntry.branchId ,
                         departmentId: this.clockingEntry.departmentId},
-                     headers: {'Authorization': "bearer " + token}     
+                        headers: {'Authorization': "bearer " + token}
                 })
                 .then((response) => 
-                this.clockingSuccesful(response)
+                    this.clockingSuccesful(response)
                 )
                 .catch(
-                    this.clockingFailed()
+
                 )
+
+                // )
+                // .catch((error) => {
+                //         if(error.response){
+                //             if(error.response.status == 500){
+                //                 this.alert("Medewerkersnummer bestaat niet!");
+                //             }
+                //             // If the server is unreachable, a network request error is returned
+                //         }else if (error.request.status == 0){
+                //             let date = new Date();
+                //             let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+                //             let t = new Date(this.clockingEntry.beginTime);
+                //             let beginTime = ('0' + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2);
+                //
+                //             this.alert("Werknemersnummer: " + this.clockingEntry.userNumber + "Begintijd: "+ beginTime + "Eindtijd: "+ time + " Je bent uitgeklokt")
+                //         }
+                //     })// If user is not clocked in already, do this
+                //     }else{
+                //         let branch = document.getElementById("selectBranch")
+                //         let branchId = branch.options[branch.selectedIndex].value;
+                //         let department = document.getElementById("selectDepartment")
+                //         let departmentId = department.options[department.selectedIndex].value;
+                //
+                //         // Checks if default values have been changed / if user has selected options for both branch and department
+                //         if(branchId != "" && departmentId != "" && this.userNumber != ""){
+                //             var self = this;
+                //             var token = localStorage.token;
+                //             console.log("token " + token);
+                //             axios({
+                //                 method: 'post',
+                //                 url: 'http://145.49.8.169:3000/api/clocking',
+                //                 data: {
+                //                     userNumber: this.clockingEntry.userNumber,
+                //                     branchId: this.clockingEntry.branchId ,
+                //                     departmentId: this.clockingEntry.departmentId},
+                //                 headers: {'Authorization': "bearer " + token}
+                //             })
+                //                 .then((response) =>
+                //                     this.clockingSuccesful(response)
+                //                 )
+                //                 .catch((error) => {
+                //                     // If the server returns an error response
+                //                     // Server returns 500 when userNumber is invalid after previous checks
+                //                     if(error.response){
+                //                         if(error.response.status == 500){
+                //                             this.alert("Medewerkersnummer bestaat niet!");
+                //                         }
+                //                         // If the server is unreachable, a network request error is returned
+                //                     }else if(error.request.status == 0){
+                //                         let date = new Date();
+                //                         let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+                //
+                //                         this.showModal("Ingeklokt! Werknemersnummer: " + this.userNumber + "Locatie: " + branchId + "Afdeling: " + departmentId + "Begintijd: " + time + "Fijne dienst! Je bent ingeklokt");
+                //                     }
+                //                 })
+                //         }else {
+                //             this.alert("Invoer is nog niet compleet!");
+                //         }
+                //     }
+                // }else{
+                //     this.alert("Voer een medewerkersnummer in!");
+                // }
+                //
 
                 axios.interceptors.response.use(function(response){
                     return response;
                 })
             },
+
             clockingSuccesful(response){
-                console.log(this.response);
+                //console.log(this.response);
                 this.toHome();
             },
+
             clockingFailed(){
+                //todo
                 this.alert("Er is een probleem met ");
             },
+
             toHome(){
-            console.log("going home");
-            this.$goto('dashboard');
-        },
+                console.log("going home");
+                this.$goto('dashboard');
+            },
+
             alert(message) {
-                return alert({
-                title: "Test message",
-                okButtonText: "OK",
-                message: message
+                var dialogs = require("tns-core-modules/ui/dialogs");
+                dialogs.alert({
+                    title: "Melding",
+                    message: message,
+                    okButtonText: "Ok"
                 });
             }        
         }
