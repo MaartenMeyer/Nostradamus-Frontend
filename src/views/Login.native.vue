@@ -97,7 +97,7 @@
                     config: { headers: {'Content-Type': 'application/json' }}
                 })
                 .then(response => {
-                    //console.log(response)
+                    console.log(response)
                     this.login(response);
                 })
                 .catch(() => this.loginFailed());
@@ -115,6 +115,7 @@
                 this.error = false;
                 localStorage.token = response.data.token;
                 this.$store.dispatch('login');
+                console.log(localStorage.token);
                 this.loadData();
             },
             alert(message) {
@@ -139,7 +140,9 @@
                     url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
+                        console.log("Axios : " + request),
                         this.loadDataSuccessful(request)
+                        
                     )
                     .catch((err) => {
                         if(err.response){

@@ -1,7 +1,7 @@
 import Vue from 'nativescript-vue';
 import router from './router.native';
 
-import store from './store';
+import store from './store.native';
 
 
 // Set the following to `true` to hide the logs created by nativescript-vue

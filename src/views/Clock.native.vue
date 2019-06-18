@@ -59,6 +59,7 @@
     methods: {
             getBranchData(){
                 //fills listBranch
+                console.log(localStorage.token);
                 this.listBranch = [];
                 let jsonObject = JSON.parse(localStorage.getItem('company'));
                 let branches = jsonObject.branches;
@@ -78,6 +79,7 @@
                 this.getDepartmentData();
             },
             getDepartmentData(){
+                console.log(localStorage.token);
                 //Fills listDepartment
                 this.listDepartment = [];
                 this.listDepartment.push("Afdeling");
