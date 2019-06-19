@@ -24,7 +24,7 @@
     import PausePage from "./Break.native.vue";
     import { request } from 'http';
     import { mapGetters } from 'vuex';
-    import 'nativescript-localstorage';
+    import localStorage from 'nativescript-localstorage';
 
     //const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 

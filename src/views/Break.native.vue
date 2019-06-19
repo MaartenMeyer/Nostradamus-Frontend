@@ -22,7 +22,7 @@
     import HomePage from "./Dashboard";
     import { request } from 'http';
     import { mapGetters } from 'vuex';
-    import 'nativescript-localstorage';    
+    import localStorage from 'nativescript-localstorage';    
 
     export default {
         name: "Break.native",

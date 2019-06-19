@@ -1,4 +1,4 @@
-import User from '@/models/User'
+import User from '@/models/User.native'
 import * as MutationTypes from './mutation-types'
 
 const state = {

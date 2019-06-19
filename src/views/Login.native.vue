@@ -34,7 +34,7 @@
     import Dashboard from "./Dashboard.native.vue";
     import { request } from 'http';
     import { mapGetters } from 'vuex';
-    import 'nativescript-localstorage';
+
 
     const userService = {
         login(user) {
@@ -68,6 +68,7 @@
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
                     console.log("invoer niet goed");
+                    console.log();
                     //quick test $goto, uncomment for faster
                     //testing in case of styling edits.
                     //this.$goto('dashboard')
@@ -97,7 +98,6 @@
                     config: { headers: {'Content-Type': 'application/json' }}
                 })
                 .then(response => {
-                    console.log(response)
                     this.login(response);
                 })
                 .catch(() => this.loginFailed());
@@ -115,7 +115,6 @@
                 this.error = false;
                 localStorage.token = response.data.token;
                 this.$store.dispatch('login');
-                console.log(localStorage.token);
                 this.loadData();
             },
             alert(message) {
@@ -140,26 +139,30 @@
                     url: 'http://145.49.8.169:3000/api/data/'+localStorage.userId,
                     config: { headers: {"Authorization" : "Bearer "+ localStorage.token+""}}})
                     .then((request) => 
-                        console.log("Axios : " + request),
-                        this.loadDataSuccessful(request)
+                        {
+                            this.loadDataSuccessful(request);
+                        }
+                        
                         
                     )
                     .catch((err) => {
                         if(err.response){
-                            console.log("res "+ err.response)
+                            console.log("res "+ err.response);
                         }else{
-                            console.log("req " + err.request.status)
+                            console.log("req " + err.request.status);
                         }
-                        this.loadDataFailed()
+                        this.loadDataFailed();
                     });
             },
-            loadDataSuccessful(req){
-                console.log("Load succes");
-                localStorage.setItem('company', JSON.stringify(req.data));
+            loadDataSuccessful(req){        
+                let company = JSON.stringify(req.data);
+                localStorage.setItem('company', company);
+
                 this.$goto('dashboard');
             },
             loadDataFailed(){
                 console.log("Load-data Failed");
+                console.log();
                 this.alert("Er ging iets mis met het verbinden van de applicatie.");
             },
     }

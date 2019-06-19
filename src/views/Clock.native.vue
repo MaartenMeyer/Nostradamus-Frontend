@@ -13,7 +13,7 @@
                            keyboardType="number" v-model="userNumber" />
                 <ListPicker required id='branchPicker' v-if="displayBranch" :items="listBranch"
                     @selectedIndexChange="changeBranch" v-model="selectedItemBranch"
-                    style="width:75%;" />
+                    style="width:75%;" disabled="true" />
                 <ListPicker required id='departmentPicker' v-if="displayDepartment" :items="listDepartment"
                     @selectedIndexChange="changeDepartment" v-model="selectedItemDepartment"
                     style="width:75%;" disabled="true" />
@@ -29,10 +29,10 @@
     import Dashboard from "./Dashboard.native.vue";
     import { request } from 'http';
     import { mapGetters } from 'vuex';
-    import 'nativescript-localstorage';
+    import localStorage from 'nativescript-localstorage';
 
     export default {
-        name: "Clock.native",
+        name: "Clock",
         data() {
             return {
                 listBranch: [],
@@ -59,7 +59,6 @@
     methods: {
             getBranchData(){
                 //fills listBranch
-                console.log(localStorage.token);
                 this.listBranch = [];
                 let jsonObject = JSON.parse(localStorage.getItem('company'));
                 let branches = jsonObject.branches;
@@ -68,6 +67,7 @@
                 for(var i = 0; i < branches.length; i++){
                     this.listBranch.push(branches[i].branchName)
                 }
+
             },
             dunkDepartmentData(){
                 //empties listDepartment
@@ -79,7 +79,6 @@
                 this.getDepartmentData();
             },
             getDepartmentData(){
-                console.log(localStorage.token);
                 //Fills listDepartment
                 this.listDepartment = [];
                 this.listDepartment.push("Afdeling");
