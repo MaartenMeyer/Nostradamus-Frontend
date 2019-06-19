@@ -125,6 +125,7 @@
 
                 this.error = false;
                 this.$cookie.set('access-token', response.data.token);
+                this.$cookie.set('account-type', response.data.accountType);
                 this.$store.dispatch('login');
                 this.loadData();
             },

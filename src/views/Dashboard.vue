@@ -21,11 +21,11 @@
       </div>
 
     <div class="buttons">
-      <button class="buttonOverview" v-on:click="overview()"><i class="fas fa-list-ul"></i></button>
+      <button class="buttonOverview" v-on:click="overview()" v-show="isOverviewVisible"><i class="fas fa-list-ul"></i></button>
     </div>
 
     <div class="buttons">
-      <button class="buttonRegister" v-on:click="registerUser()"><i class="fas fa-user-plus"></i></button>
+      <button class="buttonRegister" v-on:click="registerUser()" v-show="isRegisterVisible"><i class="fas fa-user-plus"></i></button>
     </div>
 
   </div>
@@ -40,11 +40,18 @@
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
+      data() {
+        return{
+          isRegisterVisible: false,
+          isOverviewVisible: false
+        }
+      },
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
         created(){
             this.checkConnection();
+            this.changeOptions();
         },
         methods: {
             clock(){
@@ -85,10 +92,6 @@
 							let endTime = items[i].endTime;
 							let synced = items[i].synced;
 
-							// if(beginTime != null && endTime != null && synced != false){
-							// 	beginTime = null;
-							// }
-
 							let promise = rs.synchronizeClockingEntry(items[i].userNumber, items[i].branchId, items[i].departmentId, beginTime, items[i].endTime, this.$cookie.get('access-token'));
                 			promise.then(response => {
 										console.log("Dashboard: clock data synchronized!");
@@ -128,9 +131,20 @@
                     }
 				});
 			},
-			synchronizeBreak(){
+          changeOptions(){
+            let accountType = this.$cookie.get('account-type');
 
-			}
+            if (accountType == 1){
+              this.isOverviewVisible = true;
+              this.isRegisterVisible = true;
+            }else if (accountType == 2){
+              this.isOverviewVisible = true;
+              this.isRegisterVisible = false;
+            }else if (accountType == 3) {
+              this.isOverviewVisible = false;
+              this.isRegisterVisible = false;
+            }
+          },
         }
     }
 </script>
