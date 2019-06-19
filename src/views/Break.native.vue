@@ -43,8 +43,6 @@
             if (this.userNumber == null) {
                 this.alert("Er is geen werknemersnummer ingevoerd.");
             } else {
-                console.log("Clicked ValidatePause")
-                console.log("local token: " + localStorage.token);
                 this.clickStartPause();
             }
         },
@@ -65,13 +63,11 @@
                 .then((response) =>
                     this.breakSuccessful(response)
                 )
-                .catch(
-                    this.breakFailed()
-                )
-
-                // axios.interceptors.response.use(function(response) {
-                //     return response;
-                // })
+                .catch((error) =>{ 
+                    if(error.response){
+                        this.breakFailed()
+                    }
+                })
 
         },
         breakSuccessful(response){
