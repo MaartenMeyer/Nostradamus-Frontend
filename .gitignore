@@ -3,3 +3,26 @@ node_modules
 .idea
 build
 .env
+bin/
+gen/
+out/
+release/
+*.apk
+*.ap_
+*.aab
+.gradle/
+build/
+*.log
+local.properties
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+# Android Studio 3 in .gitignore file.
+.idea/caches
+.idea/modules.xml
+# Comment next line if keeping position of elements in Navigation Editor is relevant for you
+.idea/navEditor.xml

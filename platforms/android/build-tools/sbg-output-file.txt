@@ -1,0 +1,1 @@
+C:\dev\nostradamus-frontend\platforms\android\app/src/main/java

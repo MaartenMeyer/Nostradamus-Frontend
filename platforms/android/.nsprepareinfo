@@ -1,0 +1,31 @@
+{
+	"nativePlatformStatus": "3",
+	"appFilesHashes": {
+		"C:\\dev\\nostradamus-frontend\\src\\App.vue": "e39e57cf5ec2a7b712fd9373cbbe686d1d8a766f",
+		"C:\\dev\\nostradamus-frontend\\src\\assets\\logo-nostradamus.png": "f55c8c4b7e0c8dcc8e9f8185b7d325642162d1f4",
+		"C:\\dev\\nostradamus-frontend\\src\\models\\User.js": "2e8569287a3a2fffa523753eb0748bd29a8694a8",
+		"C:\\dev\\nostradamus-frontend\\src\\main.js": "181045b38a1209b877e6fcfac0dffb7902aa0093",
+		"C:\\dev\\nostradamus-frontend\\src\\router.js": "c11ee1c067cd5bc2c7ae5c3071114caf56d9ef50",
+		"C:\\dev\\nostradamus-frontend\\src\\store\\auth.js": "c4bf2a8d38fc239d027c12b6c1f4165e05d9dce4",
+		"C:\\dev\\nostradamus-frontend\\src\\main.native.js": "15e0528d92332761e146c18ce21fc7d4afa39c4e",
+		"C:\\dev\\nostradamus-frontend\\src\\store\\index.js": "c8787c3d11538b9754771e43f9ab0f1dbe6e1e7f",
+		"C:\\dev\\nostradamus-frontend\\src\\styles\\style.css": "e458f84c0ba5af7dda0f7e43c46f64e89d4708b8",
+		"C:\\dev\\nostradamus-frontend\\src\\store\\mutation-types.js": "94552d5eca2cf0a161aab0c81d78e965d7f09353",
+		"C:\\dev\\nostradamus-frontend\\src\\styles\\style.scss": "a55a3bb6a174b1031f1619f493122582a882133a",
+		"C:\\dev\\nostradamus-frontend\\src\\package.json": "4954d8e81fd95692cc002298eee594bf922a9063",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Dashboard.native.vue": "24dfa2051000e9c80e9888d92ca45732f708f79d",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Dashboard.vue": "834e6b081d269f584e7fbf0b760b60f7ee3df110",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Login.native.vue": "315ba5a88974097597d4be9c14b007c9dcad6be8",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Login.vue": "0bdb4e81cc6a00b424aba3f6366e77bdf0175306",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Logout.vue": "58c1bd21bc6f603f0c14d8da3215d6ed01b6eff8",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Register.native.vue": "8db89f052675d48d007e4c7511e1719da2fc8297",
+		"C:\\dev\\nostradamus-frontend\\src\\views\\Register.vue": "1738796d4a8b5142aafb1607f6852f559aab5cb4",
+		"C:\\dev\\nostradamus-frontend\\src\\assets\\personeelsHeader.jpg": "293e4151fe12d0849b169f56bec23d259871a096"
+	},
+	"release": false,
+	"bundle": true,
+	"changesRequireBuild": true,
+	"time": "Wed May 29 2019 10:25:41 GMT+0200 (GMT+02:00)",
+	"changesRequireBuildTime": "Wed May 29 2019 10:25:41 GMT+0200 (GMT+02:00)",
+	"projectFileHash": "705c3ac36964ec5e95fa942cfa60ecb500679a82c37f97145ffcf9908347a18a"
+}
