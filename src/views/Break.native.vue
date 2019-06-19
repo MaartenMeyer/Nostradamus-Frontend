@@ -25,7 +25,7 @@
     import localStorage from 'nativescript-localstorage';    
 
     export default {
-        name: "Break.native",
+        name: "Break",
         data(){
             return {
                 userNumber: null,
@@ -73,23 +73,24 @@
                 //     return response;
                 // })
 
-            },
-            breakSuccessful(response){
+        },
+        breakSuccessful(response){
                 this.alert("Pauze gestart, uw werknemersnummer is " + this.userNumber);
                 this.toHome();
-            },
-            breakFailed(){
+        },
+        breakFailed(){
                 this.alert("Er ging iets fout met het pauzeren")
-            },            
-            toHome(){
+        },
+        toHome(){
             console.log("going home");
             this.$goto('dashboard');
         },
         alert(message) {
-            return confirm({
-                title: "Test message",
-                okButtonText: "OK",
-                message: message
+            var dialogs = require("tns-core-modules/ui/dialogs");
+            dialogs.alert({
+                title: "Melding",
+                message: message,
+                okButtonText: "Ok"
             });
         }
     }

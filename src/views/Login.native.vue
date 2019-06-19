@@ -22,6 +22,7 @@
                 </StackLayout>
 
                 <Button :text="'Login'" @tap="submit()" class="btn btn-primary m-t-20" />
+
             </StackLayout>
 
 
@@ -72,8 +73,7 @@
                     //quick test $goto, uncomment for faster
                     //testing in case of styling edits.
                     //this.$goto('dashboard')
-                    this.alert(
-                        "Email en/of wachtwoord vergeten in te voeren.");
+                    this.alert("Gebruikersnaam en/of wachtwoord vergeten in te voeren.");
                     return;
                 }else{
                     this.validate();
@@ -118,18 +118,16 @@
                 this.loadData();
             },
             alert(message) {
-                return alert({
-                    title: "Oops",
-                    okButtonText: "OK",
-                    message: message
+                var dialogs = require("tns-core-modules/ui/dialogs");
+                dialogs.alert({
+                    title: "Melding",
+                    message: message,
+                    okButtonText: "Ok"
                 });
             },
             loginFailed(){
                 this.error = true;
-                this.alert(
-                    "Er ging iets mis met het verbinden van de applicatie."
-                );
-
+                this.alert("Er ging iets mis met het verbinden van de applicatie.");
                 delete localStorage.token;
             },
             loadData(){
