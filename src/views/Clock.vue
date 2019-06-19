@@ -106,6 +106,7 @@
             addBranchOptions(){
                 let jsonObj = JSON.parse(localStorage.getItem('company'));
                 let branches = jsonObj.branches;
+                branches.sort((a,b) => (a.branchName > b.branchName) ? 1 : ((b.branchName > a.branchName) ? -1 : 0));
 
                 // Creates and inserts new options from the array branches into the selectBranch options list
                 let optionsAsString = "";
@@ -138,6 +139,7 @@
 
                 let branch = findElement(branches, "branchId", branchId);
                 let departments = branch.departments;
+                departments.sort((a,b) => (a.departmentName > b.departmentName) ? 1 : ((b.departmentName > a.departmentName) ? -1 : 0));
 
                 // Creates and inserts new options from the array departments into the selectDepartment options list
                 let optionsAsString = "";
@@ -280,10 +282,15 @@
                                         }else if(error.request.status == 0){
                                             this.saveClockEntryOffline(this.userNumber, branchId, departmentId, false);
 
+                                            let branch = document.getElementById("selectBranch");
+                                            let branchName = branch.options[branch.selectedIndex].text;
+                                            let department = document.getElementById("selectDepartment");
+                                            let departmentName = department.options[department.selectedIndex].text;
+
                                             let date = new Date();
                                             let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
-                                            this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!<br><br><i>Je bent offline ingeklokt</i>");
+                                            this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchName + "<br>Afdeling: " + departmentName + "<br>Begintijd: " + time + "<br>Fijne dienst!<br><br><i>Je bent offline ingeklokt</i>");
                                         }
                                     })
                         }else {
@@ -330,15 +337,15 @@
             // Parameter object is response from api call to api/clocking
             clockInSuccessful(object){
                 let branch = document.getElementById("selectBranch");
-                let branchId = branch.options[branch.selectedIndex].text;
+                let branchName = branch.options[branch.selectedIndex].text;
                 let department = document.getElementById("selectDepartment");
-                let departmentId = department.options[department.selectedIndex].text;
+                let departmentName = department.options[department.selectedIndex].text;
                 let date = new Date();
                 // Formats beginTime to format hh:mm with leading zeros
                 let time = ('0' + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
                 if (object.data.message === "User is clocked in."){
-                    this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchId + "<br>Afdeling: " + departmentId + "<br>Begintijd: " + time + "<br>Fijne dienst!");
+                    this.showModal("<b>Ingeklokt!</b><br><br>Werknemersnummer: " + this.userNumber + "<br>Locatie: " + branchName + "<br>Afdeling: " + departmentName + "<br>Begintijd: " + time + "<br>Fijne dienst!");
                 } else if (object.data.message === "User is clocked off."){
                     let t = new Date(this.clockingEntry.beginTime);
                     // Formats beginTime to format hh:mm with leading zeros
