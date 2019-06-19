@@ -39,6 +39,7 @@
         },
 
     methods: {
+        //Checks is userNumber is valid
         clickValidatePause() {
             if (this.userNumber == null) {
                 this.alert("Er is geen werknemersnummer ingevoerd.");
@@ -46,6 +47,9 @@
                 this.clickStartPause();
             }
         },
+        //Sends http request to server
+        //Sends userNumber
+        //and token from localStorage.token
         clickStartPause() {
                 console.log("Pause");
                 var self = this;
@@ -70,11 +74,16 @@
                 })
 
         },
+        //Sends alert based on message
+        //from response.data.message
         breakSuccessful(response){
-           if(response.status == 200){     
+           if(response.status == 200){
+               //User clocks in break     
                 if (response.data.message === "User break clocked in."){
                     this.alert("Pauze gestart, uw werknemersnummer is: " + this.userNumber);
-                } else if (response.data.message === "User break clocked off.") {
+                } 
+                //User clocks off break
+                else if (response.data.message === "User break clocked off.") {
                     this.alert("Pauze gestopt, uw werknemersnummer is: " + this.userNumber);
                 }
                 this.toHome();
@@ -82,13 +91,16 @@
                this.breakFailed();
            }
         },
+        //Error handling for Break
         breakFailed(){
                 this.alert("Er ging iets fout met het pauzeren")
         },
+        //Navigate back to Dashboard
         toHome(){
             console.log("going home");
             this.$goto('dashboard');
         },
+        //Definition for alert
         alert(message) {
             var dialogs = require("tns-core-modules/ui/dialogs");
             dialogs.alert({

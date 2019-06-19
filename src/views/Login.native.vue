@@ -59,7 +59,7 @@
         computed: {
             ...mapGetters({ currentUser: 'currentUser' })
         },
-
+        //Focus screen on password field
         methods: {
             focusPassword() {
                 this.$refs.password.nativeView.focus();
@@ -85,11 +85,13 @@
             validate() {
                 // CHECK DATA
                 //
+                //LOCAL TESTING ONLY:
                 //url needs to be changed to server IP
                 //local IP does not work with emulator/phys. device
                 //Using 145.49.8.169:3000/api for testing
                 //check local IP of device running back-end before testing yourself
                 //https://www.whatismybrowser.com/detect/what-is-my-local-ip-address
+                //
                 //
                 var self = this;
 
@@ -108,6 +110,9 @@
                     return response;
                 })
             },
+            //Checks token
+            //Sets token to localStorage
+            //Calls loadData()
             login(response) {
                 if(!response.data.token){
                     this.loginFailed();
@@ -120,6 +125,7 @@
                 this.loadData();
                 console.log();
             },
+            //Definition of alert message
             alert(message) {
                 var dialogs = require("tns-core-modules/ui/dialogs");
                 dialogs.alert({
@@ -128,11 +134,17 @@
                     okButtonText: "Ok"
                 });
             },
+            //Error handler for Login
             loginFailed(){
                 this.error = true;
                 this.alert("Er ging iets mis met het verbinden van de applicatie.");
                 delete localStorage.token;
             },
+            //Sends http request to server
+            //Sends userId
+            //and token from localStorage.token
+            //returns user data
+            //
             loadData(){
 
                 axios({
@@ -155,12 +167,15 @@
                         this.loadDataFailed();
                     });
             },
+            //Sets company to localStorage
+            //Then navigates to Dashboard
             loadDataSuccessful(req){        
                 let company = JSON.stringify(req.data);
                 localStorage.setItem('company', company);
                 //Alert for succesful login here
                 this.$goto('dashboard');
             },
+            //Error handling for loadData()
             loadDataFailed(){
                 console.log("Load-data Failed");
                 console.log();
