@@ -1,8 +1,9 @@
 <template native>
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <ActionBar class="action-bar">
+            <NavigationButton visibility="hidden" ></NavigationButton>
             <Label class="action-bar-title" text="Dashboard"></Label>
-            <NavigationButton class="uitlogIcon" android.systemIcon="ic_menu_set_as" text="Log uit" @tap="clickLogout()"/>
+            <Button class="uitlog" android.systemIcon="ic_menu_set_as" @tap="clickLogout()">Log uit</Button>
         </ActionBar>
         <FlexboxLayout class="page">
             <StackLayout class="form" verticalAlignment="center">
@@ -43,7 +44,7 @@
             clickLogout() {
                 this.alert("U bent uitgelogd")
                 this.$goto('logout');
-
+                this.$navigateTo('logout');
             },
             clickPause() {
                 this.$goto('break');
@@ -76,6 +77,13 @@
 <style scoped>
     .action-bar-title{
         font-size: 25px;
+    }
+
+    .uitlog{
+        color: white;
+        background-color: #676A6C;
+        margin-left: 800px;
+        border-radius: 10px;
     }
 
     .page {

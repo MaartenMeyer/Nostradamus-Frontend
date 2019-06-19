@@ -57,6 +57,11 @@
     },    
     
     methods: {
+            //Called from changeBranch()
+            //Fills Branch array
+            //Based on Company from localstorage
+            //Company is bound to logged-in User
+            //and is set in Login.native.vue/loadData()
             getBranchData(){
                 //fills listBranch
                 this.listBranch = [];
@@ -69,6 +74,12 @@
                 }
 
             },
+            //Called from changeBranch()
+            //Empties Department array
+            //when the selected Branch is changed
+            //then calls getDepartmentData() again
+            //to fill array with Departments
+            //bound to new selected Branch
             dunkDepartmentData(){
                 //empties listDepartment
                 this.listDepartment = [];
@@ -78,6 +89,10 @@
                 this.selectedItemDepartment = 0;
                 this.getDepartmentData();
             },
+            //Called from dunkDepartmentData()
+            //Fills Department array
+            //based on Departments bound to
+            //selected Branch
             getDepartmentData(){
                 //Fills listDepartment
                 this.listDepartment = [];
@@ -103,6 +118,10 @@
                 }
 
             },
+            //Called when Branch is selected
+            //from listPicker
+            //Calls dunkDepartmentData
+            //and sets department element to visible
             changeBranch() {
                 if (this.selectedItemBranch != 0) {
                     this.clockingEntry.branchId = this.selectedItemBranch;
@@ -110,12 +129,18 @@
                     this.displayDepartment = 1;
                 }
             },
+            //Called when department is selected
+            //Sets clock button to visible
             changeDepartment() {
                 if (this.selectedItemDepartment != 0) {
                     this.clockingEntry.departmentId = this.selectedItemDepartment;
                     this.displayButton = 1;
                 }
             },
+            //Called when Usernumber is entered
+            //Sets clockingEntry.userNumber
+            //Calls getBranchData()
+            //Sets displayBranch element to visible
             changeNumber() {
                 if (this.userNumber != null) {
                     this.clockingEntry.userNumber = this.userNumber;
@@ -124,6 +149,8 @@
                 }
             },
 
+            //Checks if Usernumber, selected Branch&Department are valid
+            //Proceeds to http clock method
             clickClockingValidate() {
                 if (this.userNumber == "") {
                     this.alert("Er is geen werknemersnummer ingevoerd.");
@@ -132,12 +159,13 @@
                 } else if (this.selectedItemBranch == 0) {
                     this.alert("Er is geen locatie ingevoerd.");
                 } else {
-                    console.log(this.clockingEntry.userNumber);
-                    console.log("branch " + this.clockingEntry.branchId);
-                    console.log("department " + this.clockingEntry.departmentId);
                     this.clickStartClocking();
                 }
             },
+            //Sends http request to server
+            //Sends userNumber/branchId/departmentId
+            //and token from localStorage
+            //Returns response
             clickStartClocking() {
                 var self = this;
                 var token = localStorage.token;
@@ -154,30 +182,66 @@
                 .then((response) => 
                     this.clockingSuccesful(response)
                 )
-                .catch(
-
-                )
+                .catch((error) =>{ 
+                    if(error.response){
+                        this.breakFailed()
+                    }
+                })
 
                 axios.interceptors.response.use(function(response){
                     return response;
                 })
             },
 
+            //Called when response is succesfully received from
+            //clickStartClocking()
+            //Returns alert based on response.data.message
             clockingSuccesful(response){
                 //console.log(this.response);
-                this.toHome();
+                if(response.status == 200){
+                    //Alert when User clocks in
+                    if (response.data.message === "User is clocked in."){
+                        function findElement(arr, propName, propValue) {
+                        for (var i=0; i < arr.length; i++)
+                            if (arr[i][propName] == propValue){
+                                return arr[i];
+                            }
+                        }
+
+                        let jsonObject = JSON.parse(localStorage.getItem('company'));
+                        let branches = jsonObject.branches;
+                        let branchId = this.clockingEntry.branchId;
+                        let branch = findElement(branches, "branchId", branchId);
+                        this.alert(
+                            "Gebruikersnummer: " + this.clockingEntry.userNumber + 
+                            "\n" + 
+                            "Locatie: " + 
+                            branch.branchName
+                        );
+                    } 
+                    //Alert when User clocks off
+                    else if (response.data.message === "User is clocked off."){
+                        this.alert("U bent uitgeklokt")
+                    }
+                    this.toHome();
+                } else{
+                    this.clockingFailed();
+                }                
             },
 
+            //Error handler for clocking
             clockingFailed(){
                 //todo
-                this.alert("Er is een probleem met ");
+                this.alert("Er is een probleem met het klokken, probeer het later nog een keer");
             },
 
+            //Navigate back to Dashboard
             toHome(){
                 console.log("going home");
                 this.$goto('dashboard');
             },
 
+            //Alert message definition
             alert(message) {
                 var dialogs = require("tns-core-modules/ui/dialogs");
                 dialogs.alert({
