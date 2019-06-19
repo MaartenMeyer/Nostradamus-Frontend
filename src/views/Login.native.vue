@@ -65,6 +65,8 @@
                 this.$refs.password.nativeView.focus();
             },
 
+            //Called when login button is pressed
+            //
             submit() {
                 //this.alert("pressed");
                 if (!this.user.username || !this.user.password) {
@@ -116,6 +118,7 @@
                 localStorage.token = response.data.token;
                 this.$store.dispatch('login');
                 this.loadData();
+                console.log();
             },
             alert(message) {
                 var dialogs = require("tns-core-modules/ui/dialogs");
@@ -155,7 +158,7 @@
             loadDataSuccessful(req){        
                 let company = JSON.stringify(req.data);
                 localStorage.setItem('company', company);
-
+                //Alert for succesful login here
                 this.$goto('dashboard');
             },
             loadDataFailed(){

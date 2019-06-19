@@ -103,6 +103,8 @@
                 }
 
             },
+            //Called when Branch is selected
+            //
             changeBranch() {
                 if (this.selectedItemBranch != 0) {
                     this.clockingEntry.branchId = this.selectedItemBranch;
@@ -116,6 +118,10 @@
                     this.displayButton = 1;
                 }
             },
+            //Called when Usernumber is entered
+            //Sets clockingEntry.userNumber
+            //Calls getBranchData()
+            //Sets displayBranch element to visible
             changeNumber() {
                 if (this.userNumber != null) {
                     this.clockingEntry.userNumber = this.userNumber;
@@ -124,6 +130,7 @@
                 }
             },
 
+            //Checks if Usernumber, selected Branch&Department are valid
             clickClockingValidate() {
                 if (this.userNumber == "") {
                     this.alert("Er is geen werknemersnummer ingevoerd.");
@@ -132,9 +139,6 @@
                 } else if (this.selectedItemBranch == 0) {
                     this.alert("Er is geen locatie ingevoerd.");
                 } else {
-                    console.log(this.clockingEntry.userNumber);
-                    console.log("branch " + this.clockingEntry.branchId);
-                    console.log("department " + this.clockingEntry.departmentId);
                     this.clickStartClocking();
                 }
             },
@@ -165,19 +169,48 @@
 
             clockingSuccesful(response){
                 //console.log(this.response);
-                this.toHome();
+                if(response.status == 200){
+                    
+                    if (response.data.message === "User is clocked in."){
+                        function findElement(arr, propName, propValue) {
+                        for (var i=0; i < arr.length; i++)
+                            if (arr[i][propName] == propValue){
+                                return arr[i];
+                            }
+                        }
+
+                        let jsonObject = JSON.parse(localStorage.getItem('company'));
+                        let branches = jsonObject.branches;
+                        let branchId = this.clockingEntry.branchId;
+                        let branch = findElement(branches, "branchId", branchId);
+                        this.alert(
+                            "Gebruikersnummer: " + this.clockingEntry.userNumber + 
+                            "\n" + 
+                            "Locatie: " + 
+                            branch.branchName
+                        );
+                    } else if (response.data.message === "User is clocked off."){
+                        this.alert("U bent uitgeklokt")
+                    }
+                    this.toHome();
+                } else{
+                    this.clockingFailed();
+                }                
             },
 
+            //Error handler for clocking
             clockingFailed(){
                 //todo
-                this.alert("Er is een probleem met ");
+                this.alert("Er is een probleem met het klokken, probeer het later nog een keer");
             },
 
+            //Navigate back to Dashboard
             toHome(){
                 console.log("going home");
                 this.$goto('dashboard');
             },
 
+            //Alert message definition
             alert(message) {
                 var dialogs = require("tns-core-modules/ui/dialogs");
                 dialogs.alert({
