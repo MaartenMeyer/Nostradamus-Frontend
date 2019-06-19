@@ -16,7 +16,8 @@ export default {
   name: 'Logout',
   created () {
     this.$cookie.delete('access-token');
-    this.$cookie.delete('user-id')
+    this.$cookie.delete('user-id');
+    this.$cookie.delete('account-type');
     localStorage.removeItem('company');
     localStorage.removeItem('users');
     this.$store.dispatch('logout');
