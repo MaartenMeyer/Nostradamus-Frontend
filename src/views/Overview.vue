@@ -7,16 +7,19 @@
             <h2 class="titleMain">Uren overzicht</h2>
 
             <div class="overviewDiv">
-
-                <select id="overviewFilter" >
-                    <option value="">Werknemersnummer</option>
-                    <option value="">Achternaam</option>
-                    <option value="">Datum</option>
+                <select id="overviewFilter" @change="changeFilter()" >
+					<option value="" disabled selected hidden>Filter op...</option>
+                    <option value="1">Werknemersnummer</option>
+                    <option value="2">Achternaam</option>
+                    <option value="3">Datum</option>
                 </select>
 
-                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="userNumber" v-debounce="delay" placeholder="Filter op..." name="filterInput" /><br>
+                <input class="overviewInput" id='overviewInput' type="text" v-model.lazy="input" v-show="isInputVisible" placeholder="" name="filterInput" /><br>
+                <input class="overviewInput" type="date" v-model="beginTime" v-show="isDateVisible" placeholder="Begintijd" name="Begintijd"/>
+                <input class="overviewInput" type="date" v-model="endTime" v-show="isDateVisible" placeholder="Eindtijd" name="Eindtijd"/>
 
                 <button class="submitBtn" v-on:click="filter()">Filter</button>
+				<p class="errorMsg" v-if="error">{{ errorMessage }}</p>
 
                     <table border="1" class="overviewTable">
                         <tr>
@@ -27,8 +30,14 @@
 <!--                            <th>Start pauze</th>-->
 <!--                            <th>Eind pauze</th>-->
                         </tr>
+						<!-- Error below is not important -->
+                        <tr v-for="item in items">
+                            <td>{{ item.userNumber }}</td>
+                            <td>{{ item.lastName }}</td>
+                            <td>{{ item.beginTime }}</td>
+                            <td>{{ item.endTime }}</td>
+                        </tr>
                     </table>
-
             </div>
         </div>
 
@@ -45,21 +54,99 @@
 
 <script>
     import axios from 'axios';
-    import { mapGetters } from 'vuex'
-    import VueCookie from 'vue-cookie';
-    import idbs from '../api/indexedDBService'
+	import { mapGetters } from 'vuex';
+	import rs from '../api/RequestService'
 
     const { VUE_APP_MODE, VUE_APP_PLATFORM } = process.env;
 
     export default {
         name: "Overview",
-
-
+		data() {
+            return {
+                input: "",
+                beginTime: null,
+                endTime: null,
+				error: false,
+            	errorMessage: "",
+                isInputVisible: false,
+                isDateVisible: false,
+            	items: []
+            	}
+        },
+		computed: {
+            ...mapGetters({ currentUser: 'currentUser' })
+        },
         methods: {
             filter() {
+                let select = document.getElementById("overviewFilter");
+                let selectType = select.options[select.selectedIndex].value;
 
+                if(selectType == 3){
+                    if(this.beginTime != null && this.endTime != null){
+                        let promise = rs.getUserClockOverviewByDate(this.beginTime, this.endTime);
+                        promise.then(response => this.loadItems(response.data))
+                            .catch((error) => this.showErrorMessage("Data ophalen mislukt!", true));
+                    }else{
+                        this.showErrorMessage("Voer een begin- en einddatum in!", true);
+                    }
+                }else if(selectType == 1){
+                    if(this.input != ""){
+                        let promise = rs.getUserClockOverviewByUserNumber(this.input);
+                        promise.then(response => this.loadItems(response.data))
+                            .catch((error) => this.showErrorMessage("Geen data gevonden!", true));
+                    }else{
+                        this.showErrorMessage("Voer iets in!", true);
+                    }
 
+                }else if(selectType == 2){
+                    if(this.input != ""){
+                        let promise = rs.getUserClockOverviewByLastName(this.input);
+                        promise.then(response => this.loadItems(response.data))
+                            .catch((error) => this.showErrorMessage("Geen data gevonden!", true));
+                    }else{
+                        this.showErrorMessage("Voer iets in!", true);
+                    }
+                }
+			},
+            changeFilter(){
+                let select = document.getElementById("overviewFilter");
+                let selectType = select.options[select.selectedIndex].value;
 
+                if(selectType == 3){
+                    this.isDateVisible = true;
+                    this.isInputVisible = false;
+                }else if(selectType == 1 || selectType == 2){
+                   this.isDateVisible = false;
+                   this.isInputVisible = true;
+                }
+            },
+			addItem(object){
+                this.items.push(JSON.parse(JSON.stringify(object)));
+            },
+			loadItems(data){
+                this.items = [];
+                this.showErrorMessage("", false);
+				let clockEntries = data.clockEntries;
+
+				for(var i = 0; i < clockEntries.length; i++){
+					let object = {
+                		userNumber: data.userNumber,
+                		lastName: data.lastName,
+                		beginTime: "",
+						endTime: ""
+					};
+					let beginTime = new Date(clockEntries[i].beginTime);
+					let endTime = new Date(clockEntries[i].endTime);
+					object.beginTime = beginTime.toLocaleString();
+					object.endTime = endTime.toLocaleString();
+
+					this.addItem(object);
+				}
+			},
+			// Shows error message with text of parameter string if parameter status is true
+            showErrorMessage(string, status) {
+                this.errorMessage = string;
+                this.error = status;
             },
             logout() {
                 this.$router.push('/logout');
@@ -101,7 +188,7 @@
         height: 400px;
         background: #fff;
         border-radius: 15px;
-        overflow: hidden;
+        overflow-y: auto;
         margin: 0 auto 0 auto;
         padding:0px 0px 20px 0px;
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
@@ -121,11 +208,11 @@
     select {
         font-family: "Roboto";
         color: #676A6C;
-        width: 300px;
+        width: 180px;
         font-size: 16px;
         margin-top: 20px;
         margin-right: 5px;
-        margin-left: 70px;
+        margin-left: 50px;
         outline: none;
         border: none;
         border-bottom: 1px solid #00A0D1;
@@ -147,8 +234,21 @@
     input[type=text] {
         width: 200px;
         font-family: "Roboto";
+        color: #676A6C;
         font-size: 16px;
         margin-top: 20px;
+        float: left;
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 1px solid #00A0D1;
+        background: transparent;
+    }
+    input[type=date]{
+        width: 150px;
+        font-family: "Roboto";
+        color: #676A6C;
+        font-size: 16px;
+        margin-right: 5px;
         float: left;
         box-sizing: border-box;
         border: none;
@@ -195,7 +295,7 @@
         font-family: "Roboto";
         margin-top: 10px;
         border-collapse: collapse;
-        width: 101%;
+        width: 100%;
         border-top: none;
     }
     th {
@@ -219,6 +319,12 @@
     tr:hover {
         background-color: #676a6c;
         color: white;
+    }
+
+    /* table inner div */
+    .tableDiv{
+        /*overflow-y:scroll;*/
+        /*width: 100%;*/
     }
 
     /* Log out button */
@@ -307,4 +413,5 @@
         margin-bottom: 0px;
         color: red;
     }
+
 </style>
