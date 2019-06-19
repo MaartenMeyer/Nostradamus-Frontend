@@ -73,9 +73,9 @@
         breakSuccessful(response){
            if(response.status == 200){     
                 if (response.data.message === "User break clocked in."){
-                    this.alert("Pauze gestart, uw werknemersnummer is " + this.userNumber);
+                    this.alert("Pauze gestart, uw werknemersnummer is: " + this.userNumber);
                 } else if (response.data.message === "User break clocked off.") {
-                    this.alert("Pauze gestopt, uw werknemersnummer is " + this.userNumber);
+                    this.alert("Pauze gestopt, uw werknemersnummer is: " + this.userNumber);
                 }
                 this.toHome();
            } else{
